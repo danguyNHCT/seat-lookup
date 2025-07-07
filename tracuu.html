@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu mã số ghế ngồi</title>
+    <style>
+        body {
+            font-family: 'SVN-Gilroy', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4);
+        }
+        .header {
+            margin-bottom: 40px;
+        }
+        h1 {
+            color: rgb(0, 89, 147);
+            margin: 0 0 10px 0;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin: 0;
+        }
+        .search-section {
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 16px;
+        }
+        .input-container {
+            position: relative;
+        }
+        input[type="email"] {
+            width: 100%;
+            padding: 18px 50px 18px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+        }
+        input[type="email"]:focus {
+            border-color: #4ECDC4;
+            outline: none;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.2);
+        }
+        .input-icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 20px;
+        }
+        .search-btn {
+            background: rgb(126, 211, 247);
+            color: rgb(0, 89, 147);
+            padding: 18px 40px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(126, 211, 247, 0.4);
+        }
+        .search-btn:active {
+            transform: translateY(0);
+        }
+        .result {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .success {
+            background: linear-gradient(45deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 2px solid #b8e6c0;
+        }
+        .error {
+            background: linear-gradient(45deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 2px solid #f1aeb5;
+        }
+        .info {
+            background: linear-gradient(45deg, #d1ecf1, #bee5eb);
+            color: #0c5460;
+            border: 2px solid #a6d5db;
+        }
+        .warning {
+            background: linear-gradient(45deg, #fff3cd, #ffeaa7);
+            color: #856404;
+            border: 2px solid #ffd32a;
+        }
+        .seat-code {
+            font-size: 72px;
+            font-weight: 800;
+            color: rgb(0, 89, 147);
+            margin: 15px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .debug-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #FF6B6B;
+            text-align: left;
+        }
+        .debug-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .debug-text {
+            color: #666;
+            font-size: 12px;
+            line-height: 1.5;
+            margin: 5px 0;
+            font-family: monospace;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4ECDC4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .debug-btn {
+            background: #17a2b8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+            .seat-code {
+                font-size: 56px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎫 TRA CỨU MÃ SỐ GHẾ NGỒI</h1>
+            <p class="subtitle">Nhập email để xem mã ghế đại biểu tham dự đại hội</p>
+        </div>
+        
+        <div class="search-section">
+            <div class="form-group">
+                <label for="email">📧 Email của đại biểu:</label>
+                <div class="input-container">
+                    <input type="email" id="email" placeholder="Ví dụ: userAD@vietinbank.vn" required autocomplete="email">
+                    <span class="input-icon">@</span>
+                </div>
+            </div>
+            
+            <button class="search-btn" onclick="lookupSeat()" id="searchBtn">
+                🔍 Tra cứu ngay
+            </button>
+        </div>
+        
+        <div id="result"></div>
+        
+
+    </div>
+
+    <script>
+        // Lấy dữ liệu từ localStorage (được cập nhật từ trang admin)
+        let seatData = {};
+        let isLoading = false;
+
+        function loadData() {
+            try {
+                const data = localStorage.getItem('seatData');
+                seatData = data ? JSON.parse(data) : {};
+            } catch (error) {
+                console.error('Lỗi khi load dữ liệu:', error);
+                seatData = {};
+            }
+        }
+
+
+
+        function lookupSeat() {
+            if (isLoading) return;
+            
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const resultDiv = document.getElementById('result');
+            const searchBtn = document.getElementById('searchBtn');
+            
+            if (!email) {
+                showResult('⚠️ Vui lòng nhập email của bạn!', 'error');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showResult('❌ Email không đúng định dạng! Vui lòng kiểm tra lại.', 'error');
+                return;
+            }
+            
+            // Hiệu ứng loading
+            isLoading = true;
+            searchBtn.innerHTML = '<span class="loading"></span>Đang tra cứu...';
+            searchBtn.disabled = true;
+            
+            // Reload dữ liệu mới nhất
+            loadData();
+            
+            console.log('🔍 Tìm kiếm email:', email);
+            console.log('📊 Dữ liệu hiện tại:', seatData);
+            console.log('🎯 Kết quả tìm kiếm:', seatData[email]);
+            
+            // Giả lập delay để tạo hiệu ứng
+            setTimeout(() => {
+                const seatCode = seatData[email];
+                
+                if (seatCode) {
+                    showResult(`
+                        🎉 <strong>Mã số ghế của đại biểu:</strong><br>
+                        <div class="seat-code">${seatCode}</div>
+                        <small>Vui lòng ghi nhớ mã ghế này</small>
+                    `, 'success');
+                } else {
+                    // Kiểm tra email tương tự
+                    const similarEmails = Object.keys(seatData).filter(e => 
+                        e.includes(email.split('@')[0]) || email.includes(e.split('@')[0])
+                    );
+                    
+                    let errorMsg = `
+                        ❌ <strong>Không tìm thấy email này!</strong><br>
+                        <small>Vui lòng kiểm tra lại email hoặc liên hệ ban tổ chức.</small>
+                    `;
+                    
+                    if (similarEmails.length > 0) {
+                        errorMsg += `<br><br><strong>🔍 Email tương tự:</strong><br>`;
+                        similarEmails.slice(0, 3).forEach(e => {
+                            errorMsg += `💡 ${e}<br>`;
+                        });
+                    }
+                    
+                    showResult(errorMsg, 'error');
+                }
+                
+                // Reset button
+                isLoading = false;
+                searchBtn.innerHTML = '🔍 Tra cứu ngay';
+                searchBtn.disabled = false;
+            }, 800);
+        }
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<div class="result ${type}">${message}</div>`;
+            
+            // Scroll to result nếu cần
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Event listeners
+        document.getElementById('email').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                lookupSeat();
+            }
+        });
+        
+        // Auto-reload dữ liệu khi có thay đổi trong localStorage
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'seatData') {
+                loadData();
+                showResult('🔄 Dữ liệu đã được cập nhật!', 'info');
+            }
+        });
+        
+        // Load dữ liệu khi trang khởi tạo
+        loadData();
+        
+        // Tự động làm mới dữ liệu mỗi 30 giây
+        setInterval(loadData, 30000);
+        
+        // Focus vào input email khi trang load
+        document.getElementById('email').focus();
+    </script>
+</body>
+</html>

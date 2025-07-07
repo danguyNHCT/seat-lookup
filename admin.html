@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản trị - Upload dữ liệu ghế ngồi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .subtitle {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        /* LOGIN FORM STYLES */
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .login-header {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .login-input:focus {
+            border-color: #4ECDC4;
+            outline: none;
+        }
+        .login-btn {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #f5c6cb;
+        }
+        
+        /* ADMIN CONTENT STYLES */
+        .admin-content {
+            display: none;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            background-color: #fafafa;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #444;
+            border-bottom: 3px solid #4ECDC4;
+            padding-bottom: 10px;
+            font-size: 22px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+            font-size: 16px;
+        }
+        input[type="file"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px dashed #4ECDC4;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #f8f9fa;
+        }
+        input[type="file"]:focus {
+            border-color: #FF6B6B;
+            outline: none;
+            background-color: white;
+        }
+        button {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .upload-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+        }
+        .clear-btn {
+            background: linear-gradient(45deg, #fd79a8, #e84393);
+        }
+        .export-btn {
+            background: linear-gradient(45deg, #00b894, #00a085);
+        }
+        .logout-btn {
+            background: linear-gradient(45deg, #e17055, #d63031);
+            float: right;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #bee5eb;
+        }
+        .file-instructions {
+            background: linear-gradient(45deg, #fff3cd, #ffeaa7);
+            border: 2px solid #ffd32a;
+            color: #856404;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        .file-instructions h3 {
+            margin-top: 0;
+            color: #b8860b;
+        }
+        .data-preview {
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border: 1px solid #dee2e6;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .drag-drop-area {
+            border: 3px dashed #4ECDC4;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .drag-drop-area:hover {
+            background-color: #e9ecef;
+            border-color: #FF6B6B;
+        }
+        .drag-drop-area.dragover {
+            background-color: #e3f2fd;
+            border-color: #2196F3;
+        }
+        .file-icon {
+            font-size: 48px;
+            color: #4ECDC4;
+            margin-bottom: 15px;
+        }
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #4ECDC4;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN FORM -->
+    <div id="loginContainer" class="login-container">
+        <div class="login-form">
+            <div class="login-header">
+                <h1>🔐 Đăng nhập Admin</h1>
+                <p class="subtitle">Vui lòng nhập mật khẩu để truy cập</p>
+            </div>
+            
+            <div id="loginError" style="display: none;"></div>
+            
+            <input type="password" id="adminPassword" class="login-input" placeholder="Nhập mật khẩu admin" maxlength="50">
+            <button class="login-btn" onclick="checkPassword()">🚪 Đăng nhập</button>
+            
+            <div style="margin-top: 20px; color: #666; font-size: 14px;">
+                <p>💡 <strong>Liên hệ quản trị viên để biết mật khẩu</strong></p>
+                <p>🔧 Mật khẩu được bảo mật và chỉ admin biết</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN CONTENT -->
+    <div id="adminContent" class="admin-content">
+        <div class="container">
+            <div class="header">
+                <h1>🔧 Trang Quản Trị</h1>
+                <p class="subtitle">Quản lý dữ liệu ghế ngồi - Dành cho Admin</p>
+                <button class="logout-btn" onclick="logout()">🚪 Đăng xuất</button>
+                <div style="clear: both;"></div>
+            </div>
+            
+            <!-- Library Loading Status -->
+            <div id="libraryStatus" class="result info" style="display: none;">
+                <div class="loading-indicator">📚 Đang tải thư viện XLSX...</div>
+            </div>
+            
+            <!-- Upload Section -->
+            <div class="section">
+                <h2>📂 Upload file Excel</h2>
+                <div class="file-instructions">
+                    <h3>📋 Yêu cầu định dạng file Excel:</h3>
+                    <ul>
+                        <li><strong>Cột A:</strong> Email (bắt buộc)</li>
+                        <li><strong>Cột B:</strong> Mã ghế (bắt buộc)</li>
+                        <li><strong>Dòng đầu tiên:</strong> Tiêu đề (sẽ được bỏ qua)</li>
+                        <li><strong>Định dạng:</strong> .xlsx hoặc .xls</li>
+                    </ul>
+                    <p><strong>Ví dụ:</strong> Email | Mã ghế<br>
+                    nguyen@email.com | A01<br>
+                    tran@email.com | A02</p>
+                </div>
+                
+                <div class="drag-drop-area" onclick="document.getElementById('excelFile').click()" 
+                     ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <div class="file-icon">📁</div>
+                    <h3>Kéo thả file Excel vào đây</h3>
+                    <p>hoặc click để chọn file</p>
+                    <input type="file" id="excelFile" accept=".xlsx,.xls" onchange="handleFileUpload(event)" style="display: none;">
+                </div>
+                
+                <div class="admin-actions">
+                    <button class="upload-btn" onclick="document.getElementById('excelFile').click()">
+                        📁 Chọn file Excel
+                    </button>
+                    <button class="clear-btn" onclick="clearAllData()">
+                        🗑️ Xóa tất cả dữ liệu
+                    </button>
+                    <button class="export-btn" onclick="exportToExcel()">
+                        📊 Xuất Excel
+                    </button>
+                </div>
+                
+                <div id="uploadResult"></div>
+                <div id="dataPreview"></div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="section" id="statsSection">
+                <h2>📊 Thống kê dữ liệu</h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalRecords">0</div>
+                        <div class="stat-label">Tổng số bản ghi</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="validEmails">0</div>
+                        <div class="stat-label">Email hợp lệ</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="duplicateEmails">0</div>
+                        <div class="stat-label">Email trùng lặp</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="lastUpdated">Chưa có</div>
+                        <div class="stat-label">Cập nhật cuối</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Test Section -->
+            <div class="section">
+                <h2>🧪 Kiểm tra nhanh</h2>
+                <div class="form-group">
+                    <label for="testEmail">Nhập email để test:</label>
+                    <input type="email" id="testEmail" placeholder="Nhập email để kiểm tra" style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; width: 70%; margin-right: 10px;">
+                    <button onclick="quickTest()" style="padding: 12px 20px;">🔍 Test</button>
+                </div>
+                <div id="testResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- XLSX library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <script>
+        // 🔐 CẤU HÌNH MẬT KHẨU
+        const ADMIN_PASSWORD = "Tl852741@"; // Thay đổi mật khẩu tại đây
+        const PASSWORD_EXPIRY = 8 * 60 * 60 * 1000; // 8 giờ (milliseconds)
+        
+        // Check login status on page load
+        window.addEventListener('load', function() {
+            checkLoginStatus();
+            setTimeout(checkXLSXLibrary, 1000);
+        });
+        
+        function checkLoginStatus() {
+            const loginTime = localStorage.getItem('adminLoginTime');
+            const currentTime = Date.now();
+            
+            if (loginTime && (currentTime - parseInt(loginTime)) < PASSWORD_EXPIRY) {
+                showAdminContent();
+            } else {
+                showLoginForm();
+            }
+        }
+        
+        function checkPassword() {
+            const inputPassword = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (inputPassword === ADMIN_PASSWORD) {
+                // Lưu thời gian đăng nhập
+                localStorage.setItem('adminLoginTime', Date.now().toString());
+                showAdminContent();
+                errorDiv.style.display = 'none';
+            } else {
+                errorDiv.innerHTML = '<div class="error-message">❌ Mật khẩu không đúng! Vui lòng thử lại.</div>';
+                errorDiv.style.display = 'block';
+                
+                // Clear password field
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').focus();
+            }
+        }
+        
+        function showLoginForm() {
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('adminContent').style.display = 'none';
+            document.getElementById('adminPassword').focus();
+        }
+        
+        function showAdminContent() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            loadData();
+        }
+        
+        function logout() {
+            localStorage.removeItem('adminLoginTime');
+            showLoginForm();
+        }
+        
+        // Enter key to login
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && document.getElementById('loginContainer').style.display !== 'none') {
+                checkPassword();
+            }
+        });
+        
+        // Auto logout after expiry time
+        setInterval(function() {
+            const loginTime = localStorage.getItem('adminLoginTime');
+            if (loginTime && (Date.now() - parseInt(loginTime)) >= PASSWORD_EXPIRY) {
+                logout();
+                alert('⏰ Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            }
+        }, 60000); // Check every minute
+
+        // === REST OF ADMIN FUNCTIONALITY === //
+        
+        // Check if XLSX library loaded successfully
+        let xlsxReady = false;
+        
+        function checkXLSXLibrary() {
+            if (typeof XLSX !== 'undefined') {
+                xlsxReady = true;
+                document.getElementById('libraryStatus').style.display = 'none';
+                console.log('✅ XLSX library loaded successfully');
+                return true;
+            } else {
+                document.getElementById('libraryStatus').innerHTML = '<div class="result error">❌ Lỗi: Không thể tải thư viện XLSX. Vui lòng kiểm tra kết nối internet.</div>';
+                document.getElementById('libraryStatus').style.display = 'block';
+                console.error('❌ XLSX library failed to load');
+                return false;
+            }
+        }
+
+        // Dữ liệu được lưu trong localStorage để chia sẻ với trang user
+        let seatData = {};
+        let dataStats = {};
+
+        function loadData() {
+            seatData = JSON.parse(localStorage.getItem('seatData') || '{}');
+            dataStats = JSON.parse(localStorage.getItem('dataStats') || '{"total": 0, "valid": 0, "duplicates": 0, "lastUpdated": ""}');
+            updateStats();
+        }
+
+        // Drag & Drop handlers
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+        
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) processFile(file);
+        }
+
+        function processFile(file) {
+            if (!checkXLSXLibrary()) {
+                showUploadResult('❌ Lỗi: Thư viện XLSX chưa sẵn sàng. Vui lòng tải lại trang.', 'error');
+                return;
+            }
+
+            if (!file.name.match(/\.(xlsx|xls)$/i)) {
+                showUploadResult('❌ Vui lòng chọn file Excel (.xlsx hoặc .xls)', 'error');
+                return;
+            }
+
+            showUploadResult('⏳ Đang xử lý file Excel...', 'info');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                    
+                    processExcelData(jsonData);
+                    
+                } catch (error) {
+                    console.error('XLSX Error:', error);
+                    showUploadResult('❌ Lỗi khi đọc file Excel: ' + error.message, 'error');
+                }
+            };
+            
+            reader.onerror = function() {
+                showUploadResult('❌ Lỗi khi đọc file. Vui lòng thử lại.', 'error');
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+
+        function processExcelData(data) {
+            if (data.length < 2) {
+                showUploadResult('❌ File Excel phải có ít nhất 2 dòng (tiêu đề + dữ liệu)', 'error');
+                return;
+            }
+
+            const newSeatData = {};
+            let validCount = 0;
+            let duplicateCount = 0;
+            const duplicateEmails = new Set();
+            
+            for (let i = 1; i < data.length; i++) {
+                const row = data[i];
+                if (!row || row.length < 2) continue;
+                
+                const email = String(row[0] || '').trim().toLowerCase();
+                const seatCode = String(row[1] || '').trim();
+                
+                if (!email || !seatCode || !isValidEmail(email)) continue;
+                
+                if (seatData[email] || newSeatData[email]) {
+                    duplicateEmails.add(email);
+                    duplicateCount++;
+                } else {
+                    newSeatData[email] = seatCode;
+                    validCount++;
+                }
+            }
+            
+            // Cập nhật dữ liệu
+            seatData = {...seatData, ...newSeatData};
+            
+            // Cập nhật thống kê
+            dataStats = {
+                total: Object.keys(seatData).length,
+                valid: validCount,
+                duplicates: duplicateCount,
+                lastUpdated: new Date().toLocaleString('vi-VN')
+            };
+            
+            // Lưu vào localStorage
+            localStorage.setItem('seatData', JSON.stringify(seatData));
+            localStorage.setItem('dataStats', JSON.stringify(dataStats));
+            
+            updateStats();
+            showDataPreview(newSeatData, duplicateEmails);
+            showUploadResult(`✅ Upload thành công! Đã thêm ${validCount} email mới${duplicateCount > 0 ? `, ${duplicateCount} email bị trùng lặp` : ''}`, 'success');
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function updateStats() {
+            document.getElementById('totalRecords').textContent = dataStats.total || 0;
+            document.getElementById('validEmails').textContent = dataStats.valid || 0;
+            document.getElementById('duplicateEmails').textContent = dataStats.duplicates || 0;
+            document.getElementById('lastUpdated').textContent = dataStats.lastUpdated || 'Chưa có';
+        }
+
+        function showDataPreview(newData, duplicates) {
+            const previewDiv = document.getElementById('dataPreview');
+            let html = '<div class="data-preview"><strong>📋 Dữ liệu vừa upload:</strong><br><br>';
+            
+            let count = 0;
+            for (const [email, seat] of Object.entries(newData)) {
+                if (count >= 15) {
+                    html += `<br>... và ${Object.keys(newData).length - 15} email khác`;
+                    break;
+                }
+                html += `✅ ${email} → ${seat}<br>`;
+                count++;
+            }
+            
+            if (duplicates.size > 0) {
+                html += '<br><strong style="color: orange;">⚠️ Email bị trùng lặp:</strong><br>';
+                duplicates.forEach(email => {
+                    html += `🔄 ${email}<br>`;
+                });
+            }
+            
+            html += '</div>';
+            previewDiv.innerHTML = html;
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ Bạn có chắc chắn muốn xóa TẤT CẢ dữ liệu không?\n\nHành động này không thể hoàn tác!')) {
+                seatData = {};
+                dataStats = {total: 0, valid: 0, duplicates: 0, lastUpdated: ''};
+                
+                localStorage.removeItem('seatData');
+                localStorage.removeItem('dataStats');
+                
+                updateStats();
+                document.getElementById('dataPreview').innerHTML = '';
+                showUploadResult('🗑️ Đã xóa tất cả dữ liệu thành công!', 'info');
+            }
+        }
+
+        function exportToExcel() {
+            if (!checkXLSXLibrary()) {
+                showUploadResult('❌ Lỗi: Thư viện XLSX chưa sẵn sàng.', 'error');
+                return;
+            }
+
+            if (Object.keys(seatData).length === 0) {
+                showUploadResult('❌ Không có dữ liệu để xuất!', 'error');
+                return;
+            }
+
+            try {
+                const ws_data = [['Email', 'Mã ghế']];
+                for (const [email, seat] of Object.entries(seatData)) {
+                    ws_data.push([email, seat]);
+                }
+
+                const ws = XLSX.utils.aoa_to_sheet(ws_data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Danh sách ghế');
+                
+                const filename = `danh-sach-ghe-${new Date().toISOString().slice(0,10)}.xlsx`;
+                XLSX.writeFile(wb, filename);
+                
+                showUploadResult(`📊 Đã xuất file: ${filename}`, 'success');
+            } catch (error) {
+                showUploadResult('❌ Lỗi khi xuất file: ' + error.message, 'error');
+            }
+        }
+
+        function quickTest() {
+            const email = document.getElementById('testEmail').value.trim().toLowerCase();
+            const resultDiv = document.getElementById('testResult');
+            
+            if (!email) {
+                resultDiv.innerHTML = '<div class="result error">Vui lòng nhập email!</div>';
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                resultDiv.innerHTML = '<div class="result error">Email không đúng định dạng!</div>';
+                return;
+            }
+            
+            const seatCode = seatData[email];
+            if (seatCode) {
+                resultDiv.innerHTML = `<div class="result success">✅ Email "${email}" → Ghế: <strong>${seatCode}</strong></div>`;
+            } else {
+                resultDiv.innerHTML = `<div class="result error">❌ Không tìm thấy email "${email}" trong hệ thống</div>`;
+            }
+        }
+        
+        function showUploadResult(message, type) {
+            document.getElementById('uploadResult').innerHTML = `<div class="result ${type}">${message}</div>`;
+        }
+        
+        // Test email với Enter
+        document.getElementById('testEmail')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') quickTest();
+        });
+    </script>
+</body>
+</html>

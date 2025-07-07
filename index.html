@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống tra cứu mã số ghế ngồi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: rgb(0, 89, 147);
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: rgb(126, 211, 247);
+            color: rgb(0, 89, 147);
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .description {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .redirect-info {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎫 Hệ thống tra cứu ghế ngồi</h1>
+        
+        <div class="redirect-info">
+            <p><strong>Đang chuyển hướng tự động...</strong></p>
+            <p>Nếu không chuyển hướng, vui lòng click vào nút bên dưới.</p>
+        </div>
+        
+        <div class="description">
+            <p>Hệ thống tra cứu mã số ghế ngồi cho đại hội đại biểu</p>
+        </div>
+        
+        <a href="tracuu.html" class="btn btn-primary">
+            🔍 Tra cứu mã ghế
+        </a>
+        
+        <br>
+        
+        <a href="admin.html" class="btn btn-secondary">
+            🔧 Trang quản trị
+        </a>
+    </div>
+
+    <script>
+        // Tự động chuyển hướng đến trang tra cứu sau 3 giây
+        setTimeout(function() {
+            window.location.href = 'tracuu.html';
+        }, 3000);
+    </script>
+</body>
+</html>
