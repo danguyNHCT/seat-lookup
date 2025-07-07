@@ -155,27 +155,6 @@
             margin: 15px 0;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
-        .debug-section {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 12px;
-            border-left: 4px solid #FF6B6B;
-            text-align: left;
-        }
-        .debug-title {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        .debug-text {
-            color: #666;
-            font-size: 12px;
-            line-height: 1.5;
-            margin: 5px 0;
-            font-family: monospace;
-        }
         .loading {
             display: inline-block;
             width: 20px;
@@ -190,15 +169,29 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .debug-btn {
-            background: #17a2b8;
-            color: white;
-            padding: 10px 20px;
-            border: none;
+        .data-status {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            color: #2e7d32;
+            padding: 10px;
             border-radius: 8px;
-            cursor: pointer;
+            margin-bottom: 20px;
             font-size: 14px;
-            margin: 5px;
+            display: none; /* Ẩn đi */
+        }
+        .admin-note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: left;
+            display: none; /* Ẩn đi */
+        }
+        .admin-note strong {
+            color: #dc3545;
         }
         
         /* Mobile responsive */
@@ -225,6 +218,8 @@
             <p class="subtitle">Nhập email để xem mã ghế đại biểu tham dự đại hội</p>
         </div>
         
+
+        
         <div class="search-section">
             <div class="form-group">
                 <label for="email">📧 Email của đại biểu:</label>
@@ -240,26 +235,31 @@
         </div>
         
         <div id="result"></div>
-        
-
     </div>
 
     <script>
-        // Lấy dữ liệu từ localStorage (được cập nhật từ trang admin)
-        let seatData = {};
+        // 📊 DỮ LIỆU GHẾ NGỒI - THAY THẾ DỮ LIỆU TẠI ĐÂY
+       const SEAT_DATA = {
+    "thaolt2@vietinbank.vn": "1",
+    "huongdtk@vietinbank.vn": "2",
+    "thanhptn@vietinbank.vn": "3",
+    "luyen.pt@vietinbank.vn": "4",
+    "dongvh@vietinbank.vn": "5",
+    "nguyenminh.thu@vietinbank.vn": "6",
+    "quettt@vietinbank.vn": "7",
+    "n.thanhhuyen@vietinbank.vn": "8",
+    "anhlth3@vietinbank.vn": "9",
+};
+        
         let isLoading = false;
 
-        function loadData() {
-            try {
-                const data = localStorage.getItem('seatData');
-                seatData = data ? JSON.parse(data) : {};
-            } catch (error) {
-                console.error('Lỗi khi load dữ liệu:', error);
-                seatData = {};
-            }
+        function initializeData() {
+            // Log thông tin debug
+            const recordCount = Object.keys(SEAT_DATA).length;
+            console.log('📊 Dữ liệu đã được tải:');
+            console.log('- Tổng số bản ghi:', recordCount);
+            console.log('- 5 email đầu tiên:', Object.keys(SEAT_DATA).slice(0, 5));
         }
-
-
 
         function lookupSeat() {
             if (isLoading) return;
@@ -283,38 +283,44 @@
             searchBtn.innerHTML = '<span class="loading"></span>Đang tra cứu...';
             searchBtn.disabled = true;
             
-            // Reload dữ liệu mới nhất
-            loadData();
-            
-            console.log('🔍 Tìm kiếm email:', email);
-            console.log('📊 Dữ liệu hiện tại:', seatData);
-            console.log('🎯 Kết quả tìm kiếm:', seatData[email]);
+            console.log('🔍 Đang tìm kiếm email:', email);
+            console.log('📋 Dữ liệu có sẵn:', Object.keys(SEAT_DATA).length, 'bản ghi');
             
             // Giả lập delay để tạo hiệu ứng
             setTimeout(() => {
-                const seatCode = seatData[email];
+                const seatCode = SEAT_DATA[email];
                 
                 if (seatCode) {
+                    console.log('✅ Tìm thấy:', email, '→', seatCode);
                     showResult(`
                         🎉 <strong>Mã số ghế của đại biểu:</strong><br>
                         <div class="seat-code">${seatCode}</div>
                         <small>Vui lòng ghi nhớ mã ghế này</small>
                     `, 'success');
                 } else {
-                    // Kiểm tra email tương tự
-                    const similarEmails = Object.keys(seatData).filter(e => 
-                        e.includes(email.split('@')[0]) || email.includes(e.split('@')[0])
-                    );
+                    console.log('❌ Không tìm thấy email:', email);
+                    
+                    // Tìm kiếm email tương tự
+                    const similarEmails = findSimilarEmails(email);
                     
                     let errorMsg = `
-                        ❌ <strong>Không tìm thấy email này!</strong><br>
-                        <small>Vui lòng kiểm tra lại email hoặc liên hệ ban tổ chức.</small>
+                        ❌ <strong>Không tìm thấy email này trong hệ thống!</strong>
                     `;
                     
                     if (similarEmails.length > 0) {
-                        errorMsg += `<br><br><strong>🔍 Email tương tự:</strong><br>`;
+                        errorMsg += `<br><br><strong>🔍 Email tương tự có trong hệ thống:</strong><br>`;
                         similarEmails.slice(0, 3).forEach(e => {
                             errorMsg += `💡 ${e}<br>`;
+                        });
+                    }
+                    
+                    // Hiển thị mẫu domain nếu không tìm thấy
+                    const emailDomain = email.split('@')[1];
+                    const domainEmails = Object.keys(SEAT_DATA).filter(e => e.includes(emailDomain));
+                    if (domainEmails.length > 0 && similarEmails.length === 0) {
+                        errorMsg += `<br><br><strong>📧 Email từ domain ${emailDomain}:</strong><br>`;
+                        domainEmails.slice(0, 2).forEach(e => {
+                            errorMsg += `💼 ${e}<br>`;
                         });
                     }
                     
@@ -325,7 +331,24 @@
                 isLoading = false;
                 searchBtn.innerHTML = '🔍 Tra cứu ngay';
                 searchBtn.disabled = false;
-            }, 800);
+            }, 500);
+        }
+        
+        function findSimilarEmails(searchEmail) {
+            const searchUser = searchEmail.split('@')[0].toLowerCase();
+            const searchDomain = searchEmail.split('@')[1].toLowerCase();
+            
+            return Object.keys(SEAT_DATA).filter(email => {
+                const emailUser = email.split('@')[0].toLowerCase();
+                const emailDomain = email.split('@')[1].toLowerCase();
+                
+                // Tìm username tương tự hoặc domain giống
+                return (
+                    emailUser.includes(searchUser) || 
+                    searchUser.includes(emailUser) ||
+                    (searchDomain === emailDomain && Math.abs(emailUser.length - searchUser.length) <= 2)
+                );
+            });
         }
         
         function isValidEmail(email) {
@@ -337,7 +360,7 @@
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = `<div class="result ${type}">${message}</div>`;
             
-            // Scroll to result nếu cần
+            // Scroll to result
             resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         
@@ -348,22 +371,18 @@
             }
         });
         
-        // Auto-reload dữ liệu khi có thay đổi trong localStorage
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'seatData') {
-                loadData();
-                showResult('🔄 Dữ liệu đã được cập nhật!', 'info');
-            }
+        // Initialize when page loads
+        window.addEventListener('load', function() {
+            initializeData();
+            document.getElementById('email').focus();
         });
-        
-        // Load dữ liệu khi trang khởi tạo
-        loadData();
-        
-        // Tự động làm mới dữ liệu mỗi 30 giây
-        setInterval(loadData, 30000);
-        
-        // Focus vào input email khi trang load
-        document.getElementById('email').focus();
+
+        // Debug information
+        console.log('🔧 Thông tin hệ thống:');
+        console.log('- URL:', window.location.href);
+        console.log('- User Agent:', navigator.userAgent);
+        console.log('- Dữ liệu nhúng:', Object.keys(SEAT_DATA).length, 'bản ghi');
+        console.log('- Email mẫu:', Object.keys(SEAT_DATA).slice(0, 3));
     </script>
 </body>
 </html>
