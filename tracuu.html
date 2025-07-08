@@ -4,86 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tra cứu mã số ghế ngồi</title>
-    
-    <!-- Preload fonts quan trọng cho mobile -->
-    <link rel="preload" href="fonts/SVN-Gilroy-Regular.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="fonts/SVN-Gilroy-Bold.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="fonts/SVN-Gilroy-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
-    
     <style>
-        /* ===== PHẦN FONT SVN-GILROY - THÊM CSS FONT CỦA BẠN VÀO ĐÂY ===== */
-        /* Đặt CSS font SVN-Gilroy tại đây */
-        
-        /* Preload fonts để tăng tốc độ load trên mobile */
-        @font-face {
-            font-family: 'SVN-Gilroy';
-            src: url('fonts/SVN-Gilroy-Regular.woff2') format('woff2'),
-                 url('fonts/SVN-Gilroy-Regular.woff') format('woff'),
-                 url('fonts/SVN-Gilroy-Regular.ttf') format('truetype');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-        }
-        
-        @font-face {
-            font-family: 'SVN-Gilroy';
-            src: url('fonts/SVN-Gilroy-Medium.woff2') format('woff2'),
-                 url('fonts/SVN-Gilroy-Medium.woff') format('woff'),
-                 url('fonts/SVN-Gilroy-Medium.ttf') format('truetype');
-            font-weight: 500;
-            font-style: normal;
-            font-display: swap;
-            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-        }
-        
-        @font-face {
-            font-family: 'SVN-Gilroy';
-            src: url('fonts/SVN-Gilroy-SemiBold.woff2') format('woff2'),
-                 url('fonts/SVN-Gilroy-SemiBold.woff') format('woff'),
-                 url('fonts/SVN-Gilroy-SemiBold.ttf') format('truetype');
-            font-weight: 600;
-            font-style: normal;
-            font-display: swap;
-            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-        }
-        
-        @font-face {
-            font-family: 'SVN-Gilroy';
-            src: url('fonts/SVN-Gilroy-Bold.woff2') format('woff2'),
-                 url('fonts/SVN-Gilroy-Bold.woff') format('woff'),
-                 url('fonts/SVN-Gilroy-Bold.ttf') format('truetype');
-            font-weight: 700;
-            font-style: normal;
-            font-display: swap;
-            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-        }
-        
-        @font-face {
-            font-family: 'SVN-Gilroy';
-            src: url('fonts/SVN-Gilroy-ExtraBold.woff2') format('woff2'),
-                 url('fonts/SVN-Gilroy-ExtraBold.woff') format('woff'),
-                 url('fonts/SVN-Gilroy-ExtraBold.ttf') format('truetype');
-            font-weight: 800;
-            font-style: normal;
-            font-display: swap;
-            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-        }
-        
-        @font-face {
-            font-family: 'SVN-Gilroy';
-            src: url('fonts/SVN-Gilroy-Black.woff2') format('woff2'),
-                 url('fonts/SVN-Gilroy-Black.woff') format('woff'),
-                 url('fonts/SVN-Gilroy-Black.ttf') format('truetype');
-            font-weight: 900;
-            font-style: normal;
-            font-display: swap;
-            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-        }
-        /* =============================================== */
-
         body {
-            font-family: 'SVN-Gilroy', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
             padding: 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -91,8 +14,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
         .container {
             background: white;
@@ -122,13 +43,11 @@
             margin: 0 0 10px 0;
             font-size: 32px;
             font-weight: 700;
-            font-family: 'SVN-Gilroy', sans-serif;
         }
         .subtitle {
             color: #666;
             font-size: 16px;
             margin: 0;
-            font-family: 'SVN-Gilroy', sans-serif;
             font-weight: 400;
         }
         .search-section {
@@ -144,7 +63,6 @@
             font-weight: 600;
             color: #555;
             font-size: 16px;
-            font-family: 'SVN-Gilroy', sans-serif;
         }
         .input-container {
             position: relative;
@@ -158,7 +76,6 @@
             box-sizing: border-box;
             transition: all 0.3s ease;
             background-color: #fafafa;
-            font-family: 'SVN-Gilroy', sans-serif;
             font-weight: 400;
         }
         input[type="email"]:focus {
@@ -174,7 +91,6 @@
             transform: translateY(-50%);
             color: #999;
             font-size: 20px;
-            font-family: 'SVN-Gilroy', sans-serif;
         }
         .search-btn {
             background: rgb(126, 211, 247);
@@ -188,7 +104,6 @@
             width: 100%;
             transition: all 0.3s ease;
             margin-top: 10px;
-            font-family: 'SVN-Gilroy', sans-serif;
         }
         .search-btn:hover {
             transform: translateY(-2px);
@@ -204,7 +119,6 @@
             font-size: 18px;
             font-weight: 600;
             animation: slideIn 0.5s ease;
-            font-family: 'SVN-Gilroy', sans-serif;
         }
         @keyframes slideIn {
             from {
@@ -242,7 +156,6 @@
             color: rgb(0, 89, 147);
             margin: 15px 0;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            font-family: 'SVN-Gilroy', sans-serif;
         }
         .loading {
             display: inline-block;
@@ -257,43 +170,6 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-        .data-status {
-            background: #e8f5e8;
-            border: 1px solid #4caf50;
-            color: #2e7d32;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none;
-            font-family: 'SVN-Gilroy', sans-serif;
-        }
-        .admin-note {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            color: #856404;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            text-align: left;
-            display: none;
-            font-family: 'SVN-Gilroy', sans-serif;
-        }
-        .admin-note strong {
-            color: #dc3545;
-            font-weight: 700;
-        }
-        
-        /* Font loading fallback */
-        .font-loading {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        
-        /* Đảm bảo tất cả text đều dùng SVN-Gilroy */
-        * {
-            font-family: 'SVN-Gilroy', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         
         /* Mobile responsive */
@@ -313,7 +189,7 @@
         }
     </style>
 </head>
-<body class="font-loading">
+<body>
     <div class="container">
         <div class="header">
             <h1>🎫 TRA CỨU MÃ SỐ GHẾ NGỒI</h1>
@@ -338,93 +214,30 @@
     </div>
 
     <script>
-        // 📊 DỮ LIỆU GHẾ NGỒI - THAY THẾ DỮ LIỆU TẠI ĐÂY
-       const SEAT_DATA = {
-    "thaolt2@vietinbank.vn": "1",
-    "huongdtk@vietinbank.vn": "2",
-    "thanhptn@vietinbank.vn": "3",
-    "luyen.pt@vietinbank.vn": "4",
-    "dongvh@vietinbank.vn": "5",
-    "nguyenminh.thu@vietinbank.vn": "6",
-    "quettt@vietinbank.vn": "7",
-    "n.thanhhuyen@vietinbank.vn": "8",
-    "anhlth3@vietinbank.vn": "9",
-};
+        // 📊 DỮ LIỆU GHẾ NGỒI
+        const SEAT_DATA = {
+            "thaolt2@vietinbank.vn": "1",
+            "huongdtk@vietinbank.vn": "2",
+            "thanhptn@vietinbank.vn": "3",
+            "luyen.pt@vietinbank.vn": "4",
+            "dongvh@vietinbank.vn": "5",
+            "nguyenminh.thu@vietinbank.vn": "6",
+            "quettt@vietinbank.vn": "7",
+            "n.thanhhuyen@vietinbank.vn": "8",
+            "anhlth3@vietinbank.vn": "9",
+        };
         
         let isLoading = false;
 
-        // Cải thiện font loading cho mobile
-        let fontLoadTimeout;
-        
-        function checkFontLoad() {
-            if (document.fonts && document.fonts.check) {
-                // Kiểm tra từng font weight cụ thể
-                const fontsToCheck = [
-                    '400 16px SVN-Gilroy',
-                    '600 16px SVN-Gilroy', 
-                    '700 16px SVN-Gilroy',
-                    '800 16px SVN-Gilroy'
-                ];
-                
-                const allLoaded = fontsToCheck.every(font => document.fonts.check(font));
-                
-                if (allLoaded) {
-                    document.body.classList.remove('font-loading');
-                    document.body.classList.add('font-loaded');
-                    document.body.style.visibility = 'visible';
-                    console.log('✅ SVN-Gilroy fonts loaded successfully!');
-                    clearTimeout(fontLoadTimeout);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // Kiểm tra font đã load xong chưa với nhiều phương pháp
-        if (document.fonts) {
-            // Phương pháp 1: document.fonts.ready
-            document.fonts.ready.then(() => {
-                if (checkFontLoad()) return;
-                
-                // Thử kiểm tra lại sau 100ms
-                setTimeout(checkFontLoad, 100);
-            });
-            
-            // Phương pháp 2: Font load event
-            document.fonts.addEventListener('loadingdone', checkFontLoad);
-            
-            // Phương pháp 3: Polling check
-            const pollInterval = setInterval(() => {
-                if (checkFontLoad()) {
-                    clearInterval(pollInterval);
-                }
-            }, 100);
-            
-            // Dừng polling sau 5 giây
-            setTimeout(() => clearInterval(pollInterval), 5000);
-        }
-        
-        // Fallback timeout cho mobile chậm
-        fontLoadTimeout = setTimeout(() => {
-            document.body.classList.remove('font-loading');
-            document.body.classList.add('font-loaded');
-            document.body.style.visibility = 'visible';
-            console.log('⚠️ Font load timeout - using fallback fonts');
-        }, 3000); // Tăng từ 2s lên 3s cho mobile
-
-        function initializeData() {
-            // Log thông tin debug
-            const recordCount = Object.keys(SEAT_DATA).length;
-            console.log('📊 Dữ liệu đã được tải:');
-            console.log('- Tổng số bản ghi:', recordCount);
-            console.log('- 5 email đầu tiên:', Object.keys(SEAT_DATA).slice(0, 5));
-        }
+        // Tối ưu hóa: Khởi tạo đơn giản
+        const recordCount = Object.keys(SEAT_DATA).length;
+        console.log('📊 Đã tải', recordCount, 'bản ghi');
 
         function lookupSeat() {
             if (isLoading) return;
             
-            const email = document.getElementById('email').value.trim().toLowerCase();
-            const resultDiv = document.getElementById('result');
+            const emailInput = document.getElementById('email');
+            const email = emailInput.value.trim().toLowerCase();
             const searchBtn = document.getElementById('searchBtn');
             
             if (!email) {
@@ -442,44 +255,26 @@
             searchBtn.innerHTML = '<span class="loading"></span>Đang tra cứu...';
             searchBtn.disabled = true;
             
-            console.log('🔍 Đang tìm kiếm email:', email);
-            console.log('📋 Dữ liệu có sẵn:', Object.keys(SEAT_DATA).length, 'bản ghi');
-            
-            // Giả lập delay để tạo hiệu ứng
+            // Tối ưu hóa: Giảm delay từ 500ms xuống 200ms
             setTimeout(() => {
                 const seatCode = SEAT_DATA[email];
                 
                 if (seatCode) {
-                    console.log('✅ Tìm thấy:', email, '→', seatCode);
                     showResult(`
                         🎉 <strong>Mã số ghế của đại biểu:</strong><br>
                         <div class="seat-code">${seatCode}</div>
                         <small>Vui lòng ghi nhớ mã ghế này</small>
                     `, 'success');
                 } else {
-                    console.log('❌ Không tìm thấy email:', email);
-                    
-                    // Tìm kiếm email tương tự
+                    // Tối ưu hóa: Tìm kiếm email tương tự nhanh hơn
                     const similarEmails = findSimilarEmails(email);
                     
-                    let errorMsg = `
-                        ❌ <strong>Không tìm thấy email này trong hệ thống!</strong>
-                    `;
+                    let errorMsg = `❌ <strong>Không tìm thấy email này trong hệ thống!</strong>`;
                     
                     if (similarEmails.length > 0) {
-                        errorMsg += `<br><br><strong>🔍 Email tương tự có trong hệ thống:</strong><br>`;
-                        similarEmails.slice(0, 3).forEach(e => {
+                        errorMsg += `<br><br><strong>🔍 Email tương tự:</strong><br>`;
+                        similarEmails.slice(0, 2).forEach(e => {
                             errorMsg += `💡 ${e}<br>`;
-                        });
-                    }
-                    
-                    // Hiển thị mẫu domain nếu không tìm thấy
-                    const emailDomain = email.split('@')[1];
-                    const domainEmails = Object.keys(SEAT_DATA).filter(e => e.includes(emailDomain));
-                    if (domainEmails.length > 0 && similarEmails.length === 0) {
-                        errorMsg += `<br><br><strong>📧 Email từ domain ${emailDomain}:</strong><br>`;
-                        domainEmails.slice(0, 2).forEach(e => {
-                            errorMsg += `💼 ${e}<br>`;
                         });
                     }
                     
@@ -490,59 +285,47 @@
                 isLoading = false;
                 searchBtn.innerHTML = '🔍 Tra cứu ngay';
                 searchBtn.disabled = false;
-            }, 500);
+            }, 200);
         }
         
+        // Tối ưu hóa: Thuật toán tìm kiếm nhanh hơn
         function findSimilarEmails(searchEmail) {
-            const searchUser = searchEmail.split('@')[0].toLowerCase();
-            const searchDomain = searchEmail.split('@')[1].toLowerCase();
+            const [searchUser, searchDomain] = searchEmail.split('@');
             
             return Object.keys(SEAT_DATA).filter(email => {
-                const emailUser = email.split('@')[0].toLowerCase();
-                const emailDomain = email.split('@')[1].toLowerCase();
+                const [emailUser, emailDomain] = email.split('@');
                 
-                // Tìm username tương tự hoặc domain giống
-                return (
-                    emailUser.includes(searchUser) || 
-                    searchUser.includes(emailUser) ||
-                    (searchDomain === emailDomain && Math.abs(emailUser.length - searchUser.length) <= 2)
-                );
+                // Tìm kiếm nhanh: chỉ so sánh username hoặc domain
+                return emailUser.includes(searchUser) || 
+                       searchUser.includes(emailUser) ||
+                       (searchDomain === emailDomain);
             });
         }
         
+        // Tối ưu hóa: Regex đơn giản hơn
         function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
+            return /\S+@\S+\.\S+/.test(email);
         }
         
         function showResult(message, type) {
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = `<div class="result ${type}">${message}</div>`;
             
-            // Scroll to result
+            // Scroll mượt mà
             resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         
-        // Event listeners
+        // Event listeners tối ưu
         document.getElementById('email').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 lookupSeat();
             }
         });
         
-        // Initialize when page loads
-        window.addEventListener('load', function() {
-            initializeData();
+        // Tối ưu hóa: Khởi tạo nhanh hơn
+        document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('email').focus();
         });
-
-        // Debug information
-        console.log('🔧 Thông tin hệ thống:');
-        console.log('- URL:', window.location.href);
-        console.log('- User Agent:', navigator.userAgent);
-        console.log('- Dữ liệu nhúng:', Object.keys(SEAT_DATA).length, 'bản ghi');
-        console.log('- Email mẫu:', Object.keys(SEAT_DATA).slice(0, 3));
-        console.log('- Font: SVN-Gilroy');
     </script>
 </body>
 </html>
