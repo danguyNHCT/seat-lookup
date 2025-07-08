@@ -157,6 +157,10 @@
             margin: 15px 0;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
+        .seat-code.vip {
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(212, 175, 55, 0.3);
+        }
         .loading {
             display: inline-block;
             width: 20px;
@@ -214,24 +218,291 @@
     </div>
 
     <script>
-        // 📊 DỮ LIỆU GHẾ NGỒI
+        // 📊 DỮ LIỆU GHẾ NGỒI - CẬP NHẬT TỪ FILE EXCEL
         const SEAT_DATA = {
-            "thaolt2@vietinbank.vn": "1",
-            "huongdtk@vietinbank.vn": "2",
-            "thanhptn@vietinbank.vn": "3",
-            "luyen.pt@vietinbank.vn": "4",
-            "dongvh@vietinbank.vn": "5",
-            "nguyenminh.thu@vietinbank.vn": "6",
-            "quettt@vietinbank.vn": "7",
-            "n.thanhhuyen@vietinbank.vn": "8",
-            "anhlth3@vietinbank.vn": "9",
+            "binhtm@vietinbank.vn": "VIP",
+            "cuongtk@vietinbank.vn": "VIP",
+            "trungntm@vietinbank.vn": "VIP",
+            "tan.tv@vietinbank.vn": "VIP",
+            "huannt@vietinbank.vn": "VIP",
+            "dungnv7@vietinbank.vn": "VIP",
+            "haild@vietinbank.vn": "VIP",
+            "dtson@vietinbank.vn": "VIP",
+            "quandv@vietinbank.vn": "VIP",
+            "giangnq@vietinbank.vn": "VIP",
+            "hoaiptt@vietinbank.vn": "VIP",
+            "lethanhtung@vietinbank.vn": "VIP",
+            "hala@vietinbank.vn": "VIP",
+            "hoaln@vietinbank.vn": "VIP",
+            "nguyenducthanh@vietinbank.vn": "VIP",
+            "vannbt@vietinbank.vn": "VIP",
+            "lantcq@vietinbank.vn": "VIP",
+            "hung.nh@vietinbank.vn": "VIP",
+            "thaolt2@vietinbank.vn": "VIP",
+            "phuonglt106@vietinbank.vn": "VIP",
+            "huongdtk@vietinbank.vn": "VIP",
+            "tuyendx@vietinbank.vn": "VIP",
+            "nttung@vietinbank.vn": "VIP",
+            "duclv@vietinbank.vn": "VIP",
+            "ng.a.tuan@vietinbank.vn": "VIP",
+            "lanlp@vietinbank.vn": "VIP",
+            "huonglm@vietinbank.vn": "VIP",
+            "nt.hoa@vietinbank.vn": "VIP",
+            "huongnguyen@vietinbank.vn": "VIP",
+            "vyvt@vietinbank.vn": "VIP",
+            "nghia.dt@vietinbank.vn": "VIP",
+            "quydt@vietinbank.vn": "VIP",
+            "tiendh@vietinbank.vn": "VIP",
+            "vunx@vietinbank.vn": "VIP",
+            "duc.tm@vietinbank.vn": "37",
+            "nmtoan@vietinbank.vn": "38",
+            "thanhptn@vietinbank.vn": "39",
+            "nguyenthanh.hung@vietinbank.vn": "40",
+            "dung.nguyenthai@vietinbank.vn": "41",
+            "thangnt2@vietinbank.vn": "42",
+            "ngandtk@vietinbank.vn": "43",
+            "thaidh@vietinbank.vn": "44",
+            "trangbt@vietinbank.vn": "45",
+            "tt.thuhuyen@vietinbank.vn": "46",
+            "th.nam@vietinbank.vn": "47",
+            "tuctt@vietinbank.vn": "48",
+            "hienhtt@vietinbank.vn": "49",
+            "nguyenthuy.duong@vietinbank.vn": "50",
+            "haqtt@vietinbank.vn": "51",
+            "xuanptt@vietinbank.vn": "52",
+            "binhtq@vietinbank.vn": "53",
+            "hang.phamthi@vietinbank.vn": "54",
+            "thuybtt@vietinbank.vn": "55",
+            "khuepb@vietinbank.vn": "56",
+            "thinhnt@vietinbank.vn": "57",
+            "chauth@vietinbank.vn": "58",
+            "anhnh@vietinbank.vn": "59",
+            "truonghx@vietinbank.vn": "60",
+            "thanhxuannguyen@vietinbank.vn": "61",
+            "quangtd1@vietinbank.vn": "62",
+            "tm.hoang@vietinbank.vn": "63",
+            "phuongnm@vietinbank.vn": "64",
+            "halt@vietinbank.vn": "65",
+            "hant1@vietinbank.vn": "66",
+            "anh.tt@vietinbank.vn": "67",
+            "hiepnsn@vietinbank.vn": "68",
+            "haocv@vietinbank.vn": "79",
+            "ngocpl@vietinbank.vn": "80",
+            "nhung.vtt@vietinbank.vn": "81",
+            "diepln@vietinbank.vn": "82",
+            "trangntv@vietinbank.vn": "83",
+            "yen.lethihai@vietinbank.vn": "84",
+            "duong.nn@vietinbank.vn": "85",
+            "linh.lt@vietinbank.vn": "86",
+            "hiendtt@vietinbank.vn": "87",
+            "tung.nguyenthanh@vietinbank.vn": "88",
+            "pt.thang@vietinbank.vn": "89",
+            "nhanpt@vietinbank.vn": "90",
+            "nguyenthithu.huyen@vietinbank.vn": "91",
+            "longch@vietinbank.vn": "92",
+            "lien.nth@vietinbank.vn": "93",
+            "dtanh@vietinbank.vn": "94",
+            "mai.lt@vietinbank.vn": "95",
+            "haibm@vietinbank.vn": "96",
+            "ntb.hanh@vietinbank.vn": "97",
+            "dqtrung@vietinbank.vn": "98",
+            "linhtt@vietinbank.vn": "99",
+            "nhandth@vietinbank.vn": "100",
+            "tuelv@vietinbank.vn": "101",
+            "sontt@vietinbank.vn": "102",
+            "nd.hung@vietinbank.vn": "103",
+            "dtthang@vietinbank.vn": "104",
+            "quannh6@vietinbank.vn": "105",
+            "daonta@vietinbank.vn": "106",
+            "hue.nguyenthi@vietinbank.vn": "107",
+            "gianglv@vietinbank.vn": "108",
+            "quandm@vietinbank.vn": "109",
+            "giangdh@vietinbank.vn": "110",
+            "thunv2@vietinbank.vn": "111",
+            "phamthi.thuy@vietinbank.vn": "112",
+            "loi.nv@vietinbank.vn": "113",
+            "nguyenthikim.thanh@vietinbank.vn": "114",
+            "tuan.nt@vietinbank.vn": "115",
+            "leht@vietinbank.vn": "116",
+            "tuanna180@vietinbank.vn": "117",
+            "dt.nguyen@vietinbank.vn": "118",
+            "hung.vv@vietinbank.vn": "119",
+            "vuht@vietinbank.vn": "120",
+            "bac.tv@vietinbank.vn": "121",
+            "tuongnb@vietinbank.vn": "122",
+            "nguyen.thuy.hang@vietinbank.vn": "123",
+            "van.dtt@vietinbank.vn": "124",
+            "huy.nd@vietinbank.vn": "125",
+            "haotq@vietinbank.vn": "126",
+            "ng.thithu@vietinbank.vn": "127",
+            "nhquan@vietinbank.vn": "128",
+            "phuong.pv@vietinbank.vn": "129",
+            "ducnd@vietinbank.vn": "130",
+            "ntmphuong@vietinbank.vn": "131",
+            "dovan.phi@vietinbank.vn": "132",
+            "thuanpd@vietinbank.vn": "133",
+            "cannq@vietinbank.vn": "134",
+            "nv.tan@vietinbank.vn": "135",
+            "haipn@vietinbank.vn": "136",
+            "kien.nguyentrung@vietinbank.vn": "137",
+            "ducnv@vietinbank.vn": "138",
+            "duynq@vietinbank.vn": "139",
+            "tho.nh@vietinbank.vn": "140",
+            "nk.hieu@vietinbank.vn": "141",
+            "nguyen.tuyet@vietinbank.vn": "142",
+            "hastt@vietinbank.vn": "143",
+            "truong.nv@vietinbank.vn": "144",
+            "phuong.nguyenviet@vietinbank.vn": "145",
+            "phonghx@vietinbank.vn": "146",
+            "son.tq@vietinbank.vn": "147",
+            "thanvan.hung@vietinbank.vn": "148",
+            "tienpd@vietinbank.vn": "149",
+            "nthihuong@vietinbank.vn": "150",
+            "nguyentuancuong@vietinbank.vn": "151",
+            "dungpa@vietinbank.vn": "152",
+            "quangth@vietinbank.vn": "153",
+            "huyenlb@vietinbank.vn": "154",
+            "n.anhtuan@vietinbank.vn": "155",
+            "phuongnt3@vietinbank.vn": "156",
+            "vinhdm@vietinbank.vn": "157",
+            "nguyenquanghung@vietinbank.vn": "158",
+            "khangnv@vietinbank.vn": "159",
+            "anhnkd@vietinbank.vn": "160",
+            "viet.lt@vietinbank.vn": "161",
+            "tuyen.lh@vietinbank.vn": "162",
+            "lethemanh@vietinbank.vn": "163",
+            "thuynt22@vietinbank.vn": "164",
+            "quyenlx@vietinbank.vn": "165",
+            "linh.nguyenthimy@vietinbank.vn": "166",
+            "ngactb@vietinbank.vn": "167",
+            "anh.tn@vietinbank.vn": "168",
+            "anh.td@vietinbank.vn": "169",
+            "truong.nv2@vietinbank.vn": "170",
+            "nguyenquang.tam@vietinbank.vn": "171",
+            "tienpv@vietinbank.vn": "172",
+            "thiennq@vietinbank.vn": "173",
+            "vietpt@vietinbank.vn": "174",
+            "thuy.do@vietinbank.vn": "175",
+            "sondn@vietinbank.vn": "176",
+            "haidv@vietinbank.vn": "177",
+            "chungdq@vietinbank.vn": "178",
+            "vth.nhung@vietinbank.vn": "179",
+            "duy.nq@vietinbank.vn": "180",
+            "hungnd@vietinbank.vn": "181",
+            "thangdx@vietinbank.vn": "182",
+            "lyhoang.ha@vietinbank.vn": "183",
+            "hung.nguyenhuy@vietinbank.vn": "184",
+            "nampv@vietinbank.vn": "185",
+            "thaomtp@vietinbank.vn": "186",
+            "thinh.td@vietinbank.vn": "187",
+            "thiennv@vietinbank.vn": "188",
+            "levan.dung@vietinbank.vn": "189",
+            "dung.pv@vietinbank.vn": "190",
+            "cuongtxg@vietinbank.vn": "191",
+            "quynhltn@vietinbank.vn": "192",
+            "namth@vietinbank.vn": "193",
+            "thuynguyen@vietinbank.vn": "194",
+            "phucbx@vietinbank.vn": "195",
+            "dongbx@vietinbank.vn": "196",
+            "binh.nguyenvan@vietinbank.vn": "197",
+            "tandm@vietinbank.vn": "198",
+            "kienlk@vietinbank.vn": "199",
+            "dinhn@vietinbank.vn": "200",
+            "thanhtq@vietinbank.vn": "201",
+            "huonglpq@vietinbank.vn": "202",
+            "ttt.thanh@vietinbank.vn": "203",
+            "hadv@vietinbank.vn": "204",
+            "minh.pt@vietinbank.vn": "205",
+            "tuananh.nguyen@vietinbank.vn": "206",
+            "donglt@vietinbank.vn": "207",
+            "hanhttm@vietinbank.vn": "208",
+            "nguyenthi.nga@vietinbank.vn": "209",
+            "vinhnt9@vietinbank.vn": "210",
+            "nhadx@vietinbank.vn": "211",
+            "thinhdq@vietinbank.vn": "212",
+            "hao.ntt@vietinbank.vn": "213",
+            "donglp@vietinbank.vn": "214",
+            "hoang.tung@vietinbank.vn": "215",
+            "quyennqa@vietinbank.vn": "216",
+            "nvtoan@vietinbank.vn": "217",
+            "hthang@vietinbank.vn": "218",
+            "nguyencu@vietinbank.vn": "219",
+            "thuy.dt@vietinbank.vn": "220",
+            "anh.vh@vietinbank.vn": "221",
+            "honghd@vietinbank.vn": "222",
+            "huongbtx@vietinbank.vn": "223",
+            "ngocnn@vietinbank.vn": "224",
+            "minhpc@vietinbank.vn": "225",
+            "minhha@vietinbank.vn": "226",
+            "phuong.dtb@vietinbank.vn": "227",
+            "vietnt@vietinbank.vn": "228",
+            "phucndq@vietinbank.vn": "229",
+            "dung.htk@vietinbank.vn": "230",
+            "chinhtv@vietinbank.vn": "231",
+            "khanhbb@vietinbank.vn": "232",
+            "vu.trung.thanh@vietinbank.vn": "233",
+            "nv.chau@vietinbank.vn": "234",
+            "leptd@vietinbank.vn": "235",
+            "ng.thang@vietinbank.vn": "236",
+            "tung.vt@vietinbank.vn": "237",
+            "trinhbd@vietinbank.vn": "238",
+            "locpt@vietinbank.vn": "239",
+            "khanh.lh@vietinbank.vn": "240",
+            "hung.nguyenthanh@vietinbank.vn": "241",
+            "hauvp@vietinbank.vn": "242",
+            "phuoclt@vietinbank.vn": "243",
+            "trungtm@vietinbank.vn": "244",
+            "kinhbt@vietinbank.vn": "245",
+            "tt.toan@vietinbank.vn": "246",
+            "thuy.tran@vietinbank.vn": "247",
+            "truongnt@vietinbank.vn": "248",
+            "trananhtuanlong@vietinbank.vn": "249",
+            "tungvt@vietinbank.vn": "250",
+            "luatnt@vietinbank.vn": "251",
+            "trung.nh@vietinbank.vn": "252",
+            "nh.phuc@vietinbank.vn": "253",
+            "truong.ln@vietinbank.vn": "254",
+            "anntt2@vietinbank.vn": "255",
+            "khalm@vietinbank.vn": "256",
+            "phamkeanh@vietinbank.vn": "257",
+            "tanmt@vietinbank.vn": "258",
+            "tunguyen@vietinbank.vn": "259",
+            "nm.ha@vietinbank.vn": "260",
+            "habtt@vietinbank.vn": "261",
+            "nghiaht@vietinbank.vn": "262",
+            "tuyenph@vietinbank.vn": "263",
+            "thuptn@vietinbank.vn": "264",
+            "dunglv@vietinbank.vn": "265",
+            "haolv@vietinbank.vn": "266",
+            "hanhdm@vietinbank.vn": "267",
+            "nguyen.thi.haiyen@vietinbank.vn": "268",
+            "hungnk@vietinbank.vn": "269",
+            "quang.tx@vietinbank.vn": "270",
+            "thanh.ptv@vietinbank.vn": "271",
+            "hueptb@vietinbank.vn": "272",
+            "ducva@vietinbank.vn": "273",
+            "thuln@vietinbank.vn": "274",
+            "ph.tuan@vietinbank.vn": "275",
+            "linh.nguyentran@vietinbank.vn": "276",
+            "saubvb@vietinbank.vn": "277",
+            "tuyen.lt@vietinbank.vn": "278",
+            "thukt@vietinbank.vn": "279",
+            "venvh@vietinbank.vn": "280",
+            "tm.tien@vietinbank.vn": "281",
+            "hainm@vietinbank.vn": "282",
+            "lanptn@vietinbank.vn": "283",
+            "binh.duongthanh@vietinbank.vn": "284",
+            "tth.nhung@vietinbank.vn": "285",
+            "vietvq@vietinbank.vn": "286",
+            "letruonggiang@vietinbank.vn": "287",
+            "cannm@vietinbank.vn": "288"
         };
         
         let isLoading = false;
 
         // Tối ưu hóa: Khởi tạo đơn giản
         const recordCount = Object.keys(SEAT_DATA).length;
-        console.log('📊 Đã tải', recordCount, 'bản ghi');
+        console.log('📊 Đã tải', recordCount, 'bản ghi từ Excel');
 
         function lookupSeat() {
             if (isLoading) return;
@@ -260,10 +531,13 @@
                 const seatCode = SEAT_DATA[email];
                 
                 if (seatCode) {
+                    const isVip = seatCode === 'VIP';
+                    const seatClass = isVip ? 'vip' : '';
+                    const seatIcon = isVip ? '👑' : '🎫';
+                    
                     showResult(`
-                        🎉 <strong>Mã số ghế của đại biểu:</strong><br>
-                        <div class="seat-code">${seatCode}</div>
-                        <small>Vui lòng ghi nhớ mã ghế này</small>
+                        ${seatIcon} <strong>Mã số ghế của đại biểu:</strong><br>
+                        <div class="seat-code ${seatClass}">${seatCode}</div>
                     `, 'success');
                 } else {
                     // Tối ưu hóa: Tìm kiếm email tương tự nhanh hơn
@@ -273,7 +547,7 @@
                     
                     if (similarEmails.length > 0) {
                         errorMsg += `<br><br><strong>🔍 Email tương tự:</strong><br>`;
-                        similarEmails.slice(0, 2).forEach(e => {
+                        similarEmails.forEach(e => {
                             errorMsg += `💡 ${e}<br>`;
                         });
                     }
@@ -288,18 +562,30 @@
             }, 200);
         }
         
-        // Tối ưu hóa: Thuật toán tìm kiếm nhanh hơn
+        // Tối ưu hóa: Thuật toán tìm kiếm email tương tự với điều kiện tối thiểu 2 ký tự đầu trùng khớp
         function findSimilarEmails(searchEmail) {
             const [searchUser, searchDomain] = searchEmail.split('@');
+            
+            // Kiểm tra nếu username có ít nhất 2 ký tự
+            if (!searchUser || searchUser.length < 2) {
+                return [];
+            }
+            
+            const searchPrefix = searchUser.substring(0, 2).toLowerCase();
             
             return Object.keys(SEAT_DATA).filter(email => {
                 const [emailUser, emailDomain] = email.split('@');
                 
-                // Tìm kiếm nhanh: chỉ so sánh username hoặc domain
+                // Kiểm tra 2 ký tự đầu của username phải trùng khớp
+                if (emailUser.length < 2 || emailUser.substring(0, 2).toLowerCase() !== searchPrefix) {
+                    return false;
+                }
+                
+                // Sau khi đã có 2 ký tự đầu trùng khớp, kiểm tra độ tương tự
                 return emailUser.includes(searchUser) || 
                        searchUser.includes(emailUser) ||
-                       (searchDomain === emailDomain);
-            });
+                       (searchDomain && emailDomain && searchDomain === emailDomain);
+            }).slice(0, 3); // Giới hạn tối đa 3 gợi ý
         }
         
         // Tối ưu hóa: Regex đơn giản hơn
