@@ -3,112 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tra cứu mã số ghế ngồi</title>
+    <title>Tra cứu ghế theo Email</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
-            background: linear-gradient(rgba(245, 240, 220, 0.9), rgba(245, 240, 220, 0.9)), 
-                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><pattern id="vintage" patternUnits="userSpaceOnUse" width="100" height="100"><rect width="100" height="100" fill="%23f5f0dc"/><path d="M0 0h100v100H0z" fill="none" stroke="%23ddd" stroke-width="0.5" opacity="0.3"/><circle cx="20" cy="20" r="1" fill="%23d4c5a9" opacity="0.4"/><circle cx="80" cy="30" r="0.5" fill="%23d4c5a9" opacity="0.3"/><circle cx="50" cy="70" r="1.5" fill="%23d4c5a9" opacity="0.2"/><circle cx="10" cy="80" r="0.8" fill="%23d4c5a9" opacity="0.3"/><circle cx="90" cy="15" r="0.3" fill="%23d4c5a9" opacity="0.4"/><path d="M10 50c20-5 40 5 60-10" stroke="%23ddd" stroke-width="0.3" fill="none" opacity="0.2"/><path d="M20 80c15-8 35 3 50-5" stroke="%23ddd" stroke-width="0.2" fill="none" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23vintage)"/></svg>');
-            background-size: 150px 150px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
+            padding: 20px;
         }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(210, 180, 140, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(205, 175, 135, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 50% 20%, rgba(215, 185, 145, 0.08) 0%, transparent 40%);
-            pointer-events: none;
-        }
-        
+
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 
-                0 20px 60px rgba(139, 115, 85, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9);
-            max-width: 500px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 1200px;
             width: 100%;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(139, 115, 85, 0.2);
         }
-        
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #D2691E, #CD853F, #DEB887, #F4A460);
-        }
-        
+
         .header {
-            margin-bottom: 40px;
+            text-align: center;
+            margin-bottom: 30px;
         }
-        h1 {
-            color: rgb(0, 89, 147);
-            margin: 0 0 10px 0;
-            font-size: 32px;
-            font-weight: 700;
-            text-shadow: 1px 1px 3px rgba(139, 115, 85, 0.2);
+
+        .header h1 {
+            color: #7c2d12;
+            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: 600;
         }
-        .subtitle {
-            color: #666;
-            font-size: 16px;
-            margin: 0;
-            font-weight: 400;
+
+        .header p {
+            color: #a16207;
+            font-size: 1.1em;
         }
+
         .search-section {
             margin-bottom: 30px;
         }
-        .form-group {
-            margin-bottom: 25px;
-            text-align: left;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-            font-size: 16px;
-        }
-        .input-container {
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
             position: relative;
         }
+
+        .input-container {
+            flex: 1;
+            position: relative;
+        }
+
         input[type="email"] {
             width: 100%;
-            padding: 18px 100px 18px 20px;
-            border: 2px solid rgba(139, 115, 85, 0.3);
-            border-radius: 12px;
+            padding: 12px 50px 12px 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
             font-size: 16px;
+            transition: border-color 0.3s;
             box-sizing: border-box;
-            transition: all 0.3s ease;
-            background-color: rgba(250, 245, 235, 0.8);
-            font-weight: 400;
         }
+
         input[type="email"]:focus {
-            border-color: #4ECDC4;
             outline: none;
-            background-color: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 20px rgba(78, 205, 196, 0.2);
+            border-color: #dc2626;
         }
+
         .input-actions {
             position: absolute;
             right: 10px;
@@ -116,57 +85,259 @@
             transform: translateY(-50%);
             display: flex;
             gap: 5px;
+            align-items: center;
         }
-        .input-icon {
-            color: #999;
-            font-size: 20px;
-            padding: 5px;
-        }
+
         .clear-btn {
             background: rgba(255, 107, 107, 0.1);
             color: #ff6b6b;
             border: none;
-            border-radius: 8px;
-            padding: 8px 10px;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
             cursor: pointer;
             font-size: 14px;
             transition: all 0.3s ease;
             display: none;
+            align-items: center;
+            justify-content: center;
         }
+
         .clear-btn:hover {
             background: rgba(255, 107, 107, 0.2);
+            transform: scale(1.1);
+        }
+
+        .input-icon {
+            color: #999;
+            font-size: 18px;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-section {
+            margin-bottom: 30px;
+        }
+
+        .seat-info {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #dc2626;
+            margin-bottom: 20px;
+        }
+
+        .seat-info h3 {
+            color: #7c2d12;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .seat-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #fed7aa;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #a16207;
+            font-size: 0.9em;
+        }
+
+        .detail-value {
+            color: #7c2d12;
+            font-size: 1.1em;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .seating-chart {
+            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            border: 1px solid #fed7aa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .chart-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #7c2d12;
+            font-size: 1.2em;
+            font-weight: bold;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        .stage {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin: 0 0 20px 0;
+            border-radius: 8px;
+            width: calc(24 * 38px + 23 * 3px + 30px);
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+            flex-shrink: 0;
+        }
+
+        .rows {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-start;
+            width: calc(24 * 38px + 23 * 3px + 30px);
+            flex-shrink: 0;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            flex-wrap: nowrap;
+        }
+
+        .seat {
+            width: 38px;
+            height: 30px;
+            border: 2px solid #fed7aa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: bold;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            color: #a16207;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .seat.selected {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border-color: #991b1b;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+        }
+
+        .error-message {
+            background: #fecaca;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #dc2626;
+            animation: slideIn 0.5s ease;
+        }
+
+        .email-suggestion {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            border: 1px solid #fed7aa;
+            transition: all 0.3s ease;
+        }
+
+        .email-suggestion:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
+        }
+
+        .email-text {
+            flex: 1;
+            text-align: left;
+            font-size: 14px;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        .copy-btn {
+            background: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            background: rgba(220, 38, 38, 0.2);
             transform: scale(1.05);
         }
-        .search-btn {
-            background: rgb(126, 211, 247);
-            color: rgb(0, 89, 147);
-            padding: 18px 40px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: 600;
-            width: 100%;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(126, 211, 247, 0.3);
+
+        .copy-btn:active {
+            transform: scale(0.95);
         }
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(126, 211, 247, 0.4);
+
+        .suggestions-container {
+            margin-top: 15px;
         }
-        .search-btn:active {
-            transform: translateY(0);
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #dc2626;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
         }
-        .result {
-            margin-top: 25px;
-            padding: 25px;
-            border-radius: 15px;
-            font-size: 18px;
-            font-weight: 600;
-            animation: slideIn 0.5s ease;
-            backdrop-filter: blur(5px);
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
+
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -177,131 +348,92 @@
                 transform: translateY(0);
             }
         }
-        .success {
-            background: linear-gradient(45deg, rgba(212, 237, 218, 0.9), rgba(195, 230, 203, 0.9));
-            color: #155724;
-            border: 2px solid rgba(184, 230, 192, 0.8);
+
+        .hidden {
+            display: none;
         }
-        .error {
-            background: linear-gradient(45deg, rgba(248, 215, 218, 0.9), rgba(245, 198, 203, 0.9));
-            color: #721c24;
-            border: 2px solid rgba(241, 174, 181, 0.8);
-        }
-        .info {
-            background: linear-gradient(45deg, rgba(209, 236, 241, 0.9), rgba(190, 229, 235, 0.9));
-            color: #0c5460;
-            border: 2px solid rgba(166, 213, 219, 0.8);
-        }
-        .warning {
-            background: linear-gradient(45deg, rgba(255, 243, 205, 0.9), rgba(255, 234, 167, 0.9));
-            color: #856404;
-            border: 2px solid rgba(255, 211, 42, 0.8);
-        }
-        .seat-code {
-            font-size: 72px;
-            font-weight: 800;
-            color: rgb(0, 89, 147);
-            margin: 15px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-        .seat-code.vip {
-            color: #d4af37;
-            text-shadow: 2px 2px 4px rgba(212, 175, 55, 0.3);
-        }
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #4ECDC4;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .email-suggestion {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 15px;
-            margin: 5px 0;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 8px;
-            border: 1px solid rgba(139, 115, 85, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .email-suggestion:hover {
-            background: rgba(255, 255, 255, 0.9);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(139, 115, 85, 0.1);
-        }
-        
-        .email-text {
-            flex: 1;
-            text-align: left;
-            font-size: 14px;
-            color: #333;
-            margin-right: 10px;
-        }
-        
-        .copy-btn {
-            background: rgba(78, 205, 196, 0.1);
-            color: #4ECDC4;
-            border: 1px solid rgba(78, 205, 196, 0.3);
-            border-radius: 6px;
-            padding: 6px 12px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-        
-        .copy-btn:hover {
-            background: rgba(78, 205, 196, 0.2);
-            transform: scale(1.05);
-        }
-        
-        .copy-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .suggestions-container {
-            margin-top: 15px;
-        }
-        
-        /* Mobile responsive */
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
+
+        @media (max-width: 1250px) {
             .container {
-                padding: 30px 20px;
+                max-width: 95%;
+                padding: 15px;
             }
-            h1 {
-                font-size: 28px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
             }
-            .seat-code {
-                font-size: 56px;
+            
+            .input-group {
+                flex-direction: column;
             }
-            input[type="email"] {
-                padding: 16px 90px 16px 18px;
-                font-size: 14px;
+            
+            .seat {
+                width: 32px;
+                height: 25px;
+                font-size: 7px;
             }
+
+            .stage {
+                width: calc(24 * 32px + 23 * 3px + 30px);
+            }
+
+            .rows {
+                width: calc(24 * 32px + 23 * 3px + 30px);
+            }
+
+            .seating-chart {
+                padding: 15px;
+                align-items: flex-start;
+            }
+
             .email-suggestion {
                 padding: 8px 12px;
             }
+
             .email-text {
                 font-size: 13px;
             }
+
             .copy-btn {
                 padding: 4px 8px;
                 font-size: 11px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .seat {
+                width: 28px;
+                height: 22px;
+                font-size: 6px;
+            }
+
+            .stage {
+                width: calc(24 * 28px + 23 * 2px + 20px);
+                font-size: 14px;
+            }
+
+            .rows {
+                width: calc(24 * 28px + 23 * 2px + 20px);
+                gap: 4px;
+            }
+
+            .row {
+                gap: 2px;
+            }
+
+            .seating-chart {
+                padding: 10px;
+            }
+
+            /* Điều chỉnh khoảng cách lối đi cho mobile nhỏ */
+            .seat:nth-child(6) {
+                margin-right: 10px !important;
+            }
+            
+            .seat:nth-child(18) {
+                margin-right: 10px !important;
             }
         }
     </style>
@@ -309,336 +441,339 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎫 TRA CỨU MÃ SỐ GHẾ NGỒI</h1>
-            <p class="subtitle">Nhập email để xem mã ghế đại biểu tham dự đại hội</p>
+            <h1>Tra cứu ghế theo Email</h1>
+            <p>Đại biểu nhập email để tìm thông tin ghế và vị trí trong sơ đồ chỗ ngồi</p>
         </div>
-        
+
         <div class="search-section">
-            <div class="form-group">
-                <label for="email">📧 Email của đại biểu:</label>
+            <div class="input-group">
                 <div class="input-container">
-                    <input type="email" id="email" placeholder="Nhập userAD@vietinbank.vn hoặc email công ty con" required autocomplete="email">
+                    <input type="email" id="emailInput" placeholder="Nhập userAD@vietinbank.vn hoặc email công ty con" />
                     <div class="input-actions">
                         <button class="clear-btn" id="clearBtn" onclick="clearEmail()">✕</button>
                         <span class="input-icon">@</span>
                     </div>
                 </div>
+                <button class="search-btn" onclick="searchSeat()" id="searchBtn">Tra cứu</button>
             </div>
-            
-            <button class="search-btn" onclick="lookupSeat()" id="searchBtn">
-                🔍 Tra cứu ngay
-            </button>
         </div>
-        
-        <div id="result"></div>
+
+        <div id="errorMessage" class="error-message hidden"></div>
+
+        <div id="resultSection" class="result-section hidden">
+            <div class="seat-info">
+                <h3>Thông tin ghế của đại biểu:</h3>
+                <div class="seat-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Số ghế</div>
+                        <div class="detail-value" id="seatNumber"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Hàng</div>
+                        <div class="detail-value" id="rowNumber"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="seating-chart">
+            <div class="chart-title">Sơ đồ chỗ ngồi</div>
+            <div class="stage">SÂN KHẤU</div>
+            <div class="rows" id="seatingRows"></div>
+        </div>
     </div>
 
     <script>
-        // 📊 DỮ LIỆU GHẾ NGỒI - DEMO DATA
-        const SEAT_DATA = {
-           "binhtm@vietinbank.vn": "VIP",
-            "cuongtk@vietinbank.vn": "VIP",
-            "trungntm@vietinbank.vn": "VIP",
-            "tan.tv@vietinbank.vn": "VIP",
-            "huannt@vietinbank.vn": "VIP",
-            "dungnv7@vietinbank.vn": "VIP",
-            "haild@vietinbank.vn": "VIP",
-            "dtson@vietinbank.vn": "VIP",
-            "quandv@vietinbank.vn": "VIP",
-            "giangnq@vietinbank.vn": "VIP",
-            "hoaiptt@vietinbank.vn": "VIP",
-            "lethanhtung@vietinbank.vn": "VIP",
-            "hala@vietinbank.vn": "VIP",
-            "hoaln@vietinbank.vn": "VIP",
-            "nguyenducthanh@vietinbank.vn": "VIP",
-            "vannbt@vietinbank.vn": "VIP",
-            "lantcq@vietinbank.vn": "VIP",
-            "hung.nh@vietinbank.vn": "VIP",
-            "thaolt2@vietinbank.vn": "VIP",
-            "phuonglt106@vietinbank.vn": "VIP",
-            "huongdtk@vietinbank.vn": "VIP",
-            "tuyendx@vietinbank.vn": "VIP",
-            "nttung@vietinbank.vn": "VIP",
-            "duclv@vietinbank.vn": "VIP",
-            "ng.a.tuan@vietinbank.vn": "VIP",
-            "lanlp@vietinbank.vn": "VIP",
-            "huonglm@vietinbank.vn": "VIP",
-            "nt.hoa@vietinbank.vn": "VIP",
-            "huongnguyen@vietinbank.vn": "VIP",
-            "vyvt@vietinbank.vn": "VIP",
-            "nghia.dt@vietinbank.vn": "VIP",
-            "quydt@vietinbank.vn": "VIP",
-            "tiendh@vietinbank.vn": "VIP",
-            "vunx@vietinbank.vn": "VIP",
-            "nh.quang@myvbi.vn": "VIP",
-            "hungla@vietinbank.vn": "VIP",
-            "duc.tm@vietinbank.vn": "37",
-            "nmtoan@vietinbank.vn": "38",
-            "thanhptn@vietinbank.vn": "39",
-            "nguyenthanh.hung@vietinbank.vn": "40",
-            "dung.nguyenthai@vietinbank.vn": "41",
-            "thangnt2@vietinbank.vn": "42",
-            "ngandtk@vietinbank.vn": "43",
-            "thaidh@vietinbank.vn": "44",
-            "trangbt@vietinbank.vn": "45",
-            "tt.thuhuyen@vietinbank.vn": "46",
-            "th.nam@vietinbank.vn": "47",
-            "tuctt@vietinbank.vn": "48",
-            "hienhtt@vietinbank.vn": "49",
-            "nguyenthuy.duong@vietinbank.vn": "50",
-            "haqtt@vietinbank.vn": "51",
-            "xuanptt@vietinbank.vn": "52",
-            "binhtq@vietinbank.vn": "53",
-            "hang.phamthi@vietinbank.vn": "54",
-            "thuybtt@vietinbank.vn": "55",
-            "khuepb@vietinbank.vn": "56",
-            "thinhnt@vietinbank.vn": "57",
-            "chauth@vietinbank.vn": "58",
-            "anhnh@vietinbank.vn": "59",
-            "truonghx@vietinbank.vn": "60",
-            "thanhxuannguyen@vietinbank.vn": "61",
-            "quangtd1@vietinbank.vn": "62",
-            "tm.hoang@vietinbank.vn": "63",
-            "phuongnm@vietinbank.vn": "64",
-            "halt@vietinbank.vn": "65",
-            "hant1@vietinbank.vn": "66",
-            "anh.tt@vietinbank.vn": "67",
-            "hiepnsn@vietinbank.vn": "68",
-            "xuanbtt@myvbi.vn": "69",
-            "dungtt@myvbi.vn": "70",
-            "hoaltq@myvbi.vn": "71",
-            "phantiendung@vietinbank.vn": "72",
-            "vinhtp@cts.vn": "73",
-            "luatld@vietinbankamc.vn": "74",
-            "tuongnq@vietinbankleasing.vn": "75",
-            "diep.pth@vietinbankgold.vn": "76",
-            "ducnh@vietinbankcapital.vn": "77",
-            "maittt@vietinbank.vn": "78",
-            "haocv@vietinbank.vn": "79",
-            "ngocpl@vietinbank.vn": "80",
-            "nhung.vtt@vietinbank.vn": "81",
-            "diepln@vietinbank.vn": "82",
-            "trangntv@vietinbank.vn": "83",
-            "yen.lethihai@vietinbank.vn": "84",
-            "duong.nn@vietinbank.vn": "85",
-            "linh.lt@vietinbank.vn": "86",
-            "hiendtt@vietinbank.vn": "87",
-            "tung.nguyenthanh@vietinbank.vn": "88",
-            "pt.thang@vietinbank.vn": "89",
-            "nhanpt@vietinbank.vn": "90",
-            "nguyenthithu.huyen@vietinbank.vn": "91",
-            "longch@vietinbank.vn": "92",
-            "lien.nth@vietinbank.vn": "93",
-            "dtanh@vietinbank.vn": "94",
-            "mai.lt@vietinbank.vn": "95",
-            "haibm@vietinbank.vn": "96",
-            "ntb.hanh@vietinbank.vn": "97",
-            "dqtrung@vietinbank.vn": "98",
-            "linhtt@vietinbank.vn": "99",
-            "nhandth@vietinbank.vn": "100",
-            "tuelv@vietinbank.vn": "101",
-            "sontt@vietinbank.vn": "102",
-            "nd.hung@vietinbank.vn": "103",
-            "dtthang@vietinbank.vn": "104",
-            "quannh6@vietinbank.vn": "105",
-            "daonta@vietinbank.vn": "106",
-            "hue.nguyenthi@vietinbank.vn": "107",
-            "gianglv@vietinbank.vn": "108",
-            "quandm@vietinbank.vn": "109",
-            "giangdh@vietinbank.vn": "110",
-            "thunv2@vietinbank.vn": "111",
-            "phamthi.thuy@vietinbank.vn": "112",
-            "loi.nv@vietinbank.vn": "113",
-            "nguyenthikim.thanh@vietinbank.vn": "114",
-            "tuan.nt@vietinbank.vn": "115",
-            "leht@vietinbank.vn": "116",
-            "tuanna180@vietinbank.vn": "117",
-            "dt.nguyen@vietinbank.vn": "118",
-            "hung.vv@vietinbank.vn": "119",
-            "vuht@vietinbank.vn": "120",
-            "bac.tv@vietinbank.vn": "121",
-            "tuongnb@vietinbank.vn": "122",
-            "nguyen.thuy.hang@vietinbank.vn": "123",
-            "van.dtt@vietinbank.vn": "124",
-            "huy.nd@vietinbank.vn": "125",
-            "haotq@vietinbank.vn": "126",
-            "ng.thithu@vietinbank.vn": "127",
-            "nhquan@vietinbank.vn": "128",
-            "phuong.pv@vietinbank.vn": "129",
-            "ducnd@vietinbank.vn": "130",
-            "ntmphuong@vietinbank.vn": "131",
-            "dovan.phi@vietinbank.vn": "132",
-            "thuanpd@vietinbank.vn": "133",
-            "cannq@vietinbank.vn": "134",
-            "nv.tan@vietinbank.vn": "135",
-            "haipn@vietinbank.vn": "136",
-            "kien.nguyentrung@vietinbank.vn": "137",
-            "ducnv@vietinbank.vn": "138",
-            "duynq@vietinbank.vn": "139",
-            "tho.nh@vietinbank.vn": "140",
-            "nk.hieu@vietinbank.vn": "141",
-            "nguyen.tuyet@vietinbank.vn": "142",
-            "hastt@vietinbank.vn": "143",
-            "truong.nv@vietinbank.vn": "144",
-            "phuong.nguyenviet@vietinbank.vn": "145",
-            "phonghx@vietinbank.vn": "146",
-            "son.tq@vietinbank.vn": "147",
-            "thanvan.hung@vietinbank.vn": "148",
-            "tienpd@vietinbank.vn": "149",
-            "nthihuong@vietinbank.vn": "150",
-            "nguyentuancuong@vietinbank.vn": "151",
-            "dungpa@vietinbank.vn": "152",
-            "quangth@vietinbank.vn": "153",
-            "huyenlb@vietinbank.vn": "154",
-            "n.anhtuan@vietinbank.vn": "155",
-            "phuongnt3@vietinbank.vn": "156",
-            "vinhdm@vietinbank.vn": "157",
-            "nguyenquanghung@vietinbank.vn": "158",
-            "khangnv@vietinbank.vn": "159",
-            "anhnkd@vietinbank.vn": "160",
-            "viet.lt@vietinbank.vn": "161",
-            "tuyen.lh@vietinbank.vn": "162",
-            "lethemanh@vietinbank.vn": "163",
-            "thuynt22@vietinbank.vn": "164",
-            "quyenlx@vietinbank.vn": "165",
-            "linh.nguyenthimy@vietinbank.vn": "166",
-            "ngactb@vietinbank.vn": "167",
-            "anh.tn@vietinbank.vn": "168",
-            "anh.td@vietinbank.vn": "169",
-            "truong.nv2@vietinbank.vn": "170",
-            "nguyenquang.tam@vietinbank.vn": "171",
-            "tienpv@vietinbank.vn": "172",
-            "thiennq@vietinbank.vn": "173",
-            "vietpt@vietinbank.vn": "174",
-            "thuy.do@vietinbank.vn": "175",
-            "sondn@vietinbank.vn": "176",
-            "haidv@vietinbank.vn": "177",
-            "chungdq@vietinbank.vn": "178",
-            "vth.nhung@vietinbank.vn": "179",
-            "duy.nq@vietinbank.vn": "180",
-            "hungnd@vietinbank.vn": "181",
-            "thangdx@vietinbank.vn": "182",
-            "lyhoang.ha@vietinbank.vn": "183",
-            "hung.nguyenhuy@vietinbank.vn": "184",
-            "nampv@vietinbank.vn": "185",
-            "thaomtp@vietinbank.vn": "186",
-            "thinh.td@vietinbank.vn": "187",
-            "thiennv@vietinbank.vn": "188",
-            "levan.dung@vietinbank.vn": "189",
-            "dung.pv@vietinbank.vn": "190",
-            "cuongtxg@vietinbank.vn": "191",
-            "quynhltn@vietinbank.vn": "192",
-            "namth@vietinbank.vn": "193",
-            "thuynguyen@vietinbank.vn": "194",
-            "phucbx@vietinbank.vn": "195",
-            "dongbx@vietinbank.vn": "196",
-            "binh.nguyenvan@vietinbank.vn": "197",
-            "tandm@vietinbank.vn": "198",
-            "kienlk@vietinbank.vn": "199",
-            "dinhn@vietinbank.vn": "200",
-            "thanhtq@vietinbank.vn": "201",
-            "huonglpq@vietinbank.vn": "202",
-            "ttt.thanh@vietinbank.vn": "203",
-            "hadv@vietinbank.vn": "204",
-            "minh.pt@vietinbank.vn": "205",
-            "tuananh.nguyen@vietinbank.vn": "206",
-            "donglt@vietinbank.vn": "207",
-            "hanhttm@vietinbank.vn": "208",
-            "nguyenthi.nga@vietinbank.vn": "209",
-            "vinhnt9@vietinbank.vn": "210",
-            "nhadx@vietinbank.vn": "211",
-            "thinhdq@vietinbank.vn": "212",
-            "hao.ntt@vietinbank.vn": "213",
-            "donglp@vietinbank.vn": "214",
-            "hoang.tung@vietinbank.vn": "215",
-            "quyennqa@vietinbank.vn": "216",
-            "nvtoan@vietinbank.vn": "217",
-            "hthang@vietinbank.vn": "218",
-            "nguyencu@vietinbank.vn": "219",
-            "thuy.dt@vietinbank.vn": "220",
-            "anh.vh@vietinbank.vn": "221",
-            "honghd@vietinbank.vn": "222",
-            "huongbtx@vietinbank.vn": "223",
-            "ngocnn@vietinbank.vn": "224",
-            "minhpc@vietinbank.vn": "225",
-            "minhha@vietinbank.vn": "226",
-            "phuong.dtb@vietinbank.vn": "227",
-            "vietnt@vietinbank.vn": "228",
-            "phucndq@vietinbank.vn": "229",
-            "dung.htk@vietinbank.vn": "230",
-            "chinhtv@vietinbank.vn": "231",
-            "khanhbb@vietinbank.vn": "232",
-            "vu.trung.thanh@vietinbank.vn": "233",
-            "nv.chau@vietinbank.vn": "234",
-            "leptd@vietinbank.vn": "235",
-            "ng.thang@vietinbank.vn": "236",
-            "tung.vt@vietinbank.vn": "237",
-            "trinhbd@vietinbank.vn": "238",
-            "locpt@vietinbank.vn": "239",
-            "khanh.lh@vietinbank.vn": "240",
-            "hung.nguyenthanh@vietinbank.vn": "241",
-            "hauvp@vietinbank.vn": "242",
-            "phuoclt@vietinbank.vn": "243",
-            "trungtm@vietinbank.vn": "244",
-            "kinhbt@vietinbank.vn": "245",
-            "tt.toan@vietinbank.vn": "246",
-            "thuy.tran@vietinbank.vn": "247",
-            "truongnt@vietinbank.vn": "248",
-            "trananhtuanlong@vietinbank.vn": "249",
-            "tungvt@vietinbank.vn": "250",
-            "luatnt@vietinbank.vn": "251",
-            "trung.nh@vietinbank.vn": "252",
-            "nh.phuc@vietinbank.vn": "253",
-            "truong.ln@vietinbank.vn": "254",
-            "anntt2@vietinbank.vn": "255",
-            "khalm@vietinbank.vn": "256",
-            "phamkeanh@vietinbank.vn": "257",
-            "tanmt@vietinbank.vn": "258",
-            "tunguyen@vietinbank.vn": "259",
-            "nm.ha@vietinbank.vn": "260",
-            "habtt@vietinbank.vn": "261",
-            "nghiaht@vietinbank.vn": "262",
-            "tuyenph@vietinbank.vn": "263",
-            "thuptn@vietinbank.vn": "264",
-            "dunglv@vietinbank.vn": "265",
-            "haolv@vietinbank.vn": "266",
-            "hanhdm@vietinbank.vn": "267",
-            "nguyen.thi.haiyen@vietinbank.vn": "268",
-            "hungnk@vietinbank.vn": "269",
-            "quang.tx@vietinbank.vn": "270",
-            "thanh.ptv@vietinbank.vn": "271",
-            "hueptb@vietinbank.vn": "272",
-            "ducva@vietinbank.vn": "273",
-            "thuln@vietinbank.vn": "274",
-            "ph.tuan@vietinbank.vn": "275",
-            "linh.nguyentran@vietinbank.vn": "276",
-            "saubvb@vietinbank.vn": "277",
-            "tuyen.lt@vietinbank.vn": "278",
-            "thukt@vietinbank.vn": "279",
-            "venvh@vietinbank.vn": "280",
-            "tm.tien@vietinbank.vn": "281",
-            "hainm@vietinbank.vn": "282",
-            "lanptn@vietinbank.vn": "283",
-            "binh.duongthanh@vietinbank.vn": "284",
-            "tth.nhung@vietinbank.vn": "285",
-            "vietvq@vietinbank.vn": "286",
-            "letruonggiang@vietinbank.vn": "287",
-            "cannm@vietinbank.vn": "288" 
+        // Dữ liệu mẫu - mapping email với thông tin ghế
+const seatData = {
+    "binhtm@vietinbank.vn": {
+        "seatNumber": "A18",
+        "row": "A",
+        "position": 18
+    },
+    "cuongtk@vietinbank.vn": {
+        "seatNumber": "A11",
+        "row": "A",
+        "position": 11
+    },
+    "trungntm@vietinbank.vn": {
+        "seatNumber": "A19",
+        "row": "A",
+        "position": 19
+    },
+    "tan.tv@vietinbank.vn": {
+        "seatNumber": "A6",
+        "row": "A",
+        "position": 6
+    },
+    "huannt@vietinbank.vn": {
+        "seatNumber": "A10",
+        "row": "A",
+        "position": 10
+    },
+    "dungnv7@vietinbank.vn": {
+        "seatNumber": "A21",
+        "row": "A",
+        "position": 21
+    },
+    "haild@vietinbank.vn": {
+        "seatNumber": "B19",
+        "row": "B",
+        "position": 19
+    },
+    "dtson@vietinbank.vn": {
+        "seatNumber": "A5",
+        "row": "A",
+        "position": 5
+    },
+    "quandv@vietinbank.vn": {
+        "seatNumber": "B18",
+        "row": "B",
+        "position": 18
+    },
+    "giangnq@vietinbank.vn": {
+        "seatNumber": "B6",
+        "row": "B",
+        "position": 6
+    },
+    "hoaiptt@vietinbank.vn": {
+        "seatNumber": "A4",
+        "row": "A",
+        "position": 4
+    },
+    "lethanhtung@vietinbank.vn": {
+        "seatNumber": "A21",
+        "row": "A",
+        "position": 21
+    },
+    "hala@vietinbank.vn": {
+        "seatNumber": "C12",
+        "row": "C",
+        "position": 12
+    },
+    "hoaln@vietinbank.vn": {
+        "seatNumber": "C16",
+        "row": "C",
+        "position": 16
+    },
+    "nguyenducthanh@vietinbank.vn": {
+        "seatNumber": "C14",
+        "row": "C",
+        "position": 14
+    },
+    "vannbt@vietinbank.vn": {
+        "seatNumber": "C17",
+        "row": "C",
+        "position": 17
+    },
+    "lantcq@vietinbank.vn": {
+        "seatNumber": "C15",
+        "row": "C",
+        "position": 15
+    },
+    "hung.nh@vietinbank.vn": {
+        "seatNumber": "C13",
+        "row": "C",
+        "position": 13
+    },
+    "thaolt2@vietinbank.vn": {
+        "seatNumber": "C24",
+        "row": "C",
+        "position": 24
+    },
+    "phuonglt106@vietinbank.vn": {
+        "seatNumber": "C23",
+        "row": "C",
+        "position": 23
+    },
+    "huongdtk@vietinbank.vn": {
+        "seatNumber": "C21",
+        "row": "C",
+        "position": 21
+    },
+    "tuyendx@vietinbank.vn": {
+        "seatNumber": "C22",
+        "row": "C",
+        "position": 22
+    },
+    "nttung@vietinbank.vn": {
+        "seatNumber": "D17",
+        "row": "D",
+        "position": 17
+    },
+    "duclv@vietinbank.vn": {
+        "seatNumber": "D18",
+        "row": "D",
+        "position": 18
+    },
+    "ng.a.tuan@vietinbank.vn": {
+        "seatNumber": "D16",
+        "row": "D",
+        "position": 16
+    },
+    "lanlp@vietinbank.vn": {
+        "seatNumber": "D15",
+        "row": "D",
+        "position": 15
+    },
+    "huonglm@vietinbank.vn": {
+        "seatNumber": "D14",
+        "row": "D",
+        "position": 14
+    },
+    "nh.quang@myvbi.vn": {
+        "seatNumber": "C6",
+        "row": "C",
+        "position": 6
+    },
+    "nt.hoa@vietinbank.vn": {
+        "seatNumber": "D11",
+        "row": "D",
+        "position": 11
+    },
+    "huongnguyen@vietinbank.vn": {
+        "seatNumber": "D12",
+        "row": "D",
+        "position": 12
+    },
+    "vyvt@vietinbank.vn": {
+        "seatNumber": "D10",
+        "row": "D",
+        "position": 10
+    },
+    "nghia.dt@vietinbank.vn": {
+        "seatNumber": "D8",
+        "row": "D",
+        "position": 8
+    },
+    "quydt@vietinbank.vn": {
+        "seatNumber": "D9",
+        "row": "D",
+        "position": 9
+    },
+    "tiendh@vietinbank.vn": {
+        "seatNumber": "D13",
+        "row": "D",
+        "position": 13
+    },
+    "vunx@vietinbank.vn": {
+        "seatNumber": "C5",
+        "row": "C",
+        "position": 5
+    },
+    "hungla@vietinbank.vn": {
+        "seatNumber": "C4",
+        "row": "C",
+        "position": 4
+    },
+    "duc.tm@vietinbank.vn": {
+        "seatNumber": "F19",
+        "row": "F",
+        "position": 19
+    },
+    "nmtoan@vietinbank.vn": {
+        "seatNumber": "C3",
+        "row": "C",
+        "position": 3
+    },
+    "thanhptn@vietinbank.vn": {
+        "seatNumber": "D23",
+        "row": "D",
+        "position": 23
+    },
+    "nguyenthanh.hung@vietinbank.vn": {
+        "seatNumber": "E24",
+        "row": "E",
+        "position": 24
+    },
+    "dung.nguyenthai@vietinbank.vn": {
+        "seatNumber": "E11",
+        "row": "E",
+        "position": 11
+    },
+    "thangnt2@vietinbank.vn": {
+        "seatNumber": "E10",
+        "row": "E",
+        "position": 10
+    },
+    "ngandtk@vietinbank.vn": {
+        "seatNumber": "H19",
+        "row": "H",
+        "position": 19
+    },
+    "thaidh@vietinbank.vn": {
+        "seatNumber": "H20",
+        "row": "H",
+        "position": 20
+    },
+    "trangbt@vietinbank.vn": {
+        "seatNumber": "E18",
+        "row": "E",
+        "position": 18
+    },
+    "tt.thuhuyen@vietinbank.vn": {
+        "seatNumber": "F24",
+        "row": "F",
+        "position": 24
+    },
+    "th.nam@vietinbank.vn": {
+        "seatNumber": "F22",
+        "row": "F",
+        "position": 22
+    }
+};
+
+        // Cấu hình sơ đồ ghế
+        const seatingConfig = {
+            rows: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'],
+            seatsPerRow: 24
         };
-        
+
         let isLoading = false;
 
-        // Tối ưu hóa: Khởi tạo đơn giản
-        const recordCount = Object.keys(SEAT_DATA).length;
-        console.log('📊 Đã tải', recordCount, 'bản ghi từ Excel');
+        // Tạo sơ đồ ghế
+        function createSeatingChart() {
+            const seatingRows = document.getElementById('seatingRows');
+            seatingRows.innerHTML = '';
+
+            seatingConfig.rows.forEach(rowLabel => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
+                
+                for (let i = 1; i <= seatingConfig.seatsPerRow; i++) {
+                    const seatDiv = document.createElement('div');
+                    seatDiv.className = 'seat';
+                    seatDiv.id = `seat-${rowLabel}${i}`;
+                    seatDiv.textContent = `${rowLabel}${i}`;
+                    
+                    // Thêm khoảng cách sau ghế 6 (lối đi trái)
+                    if (i === 6) {
+                        seatDiv.style.marginRight = '15px';
+                    }
+                    // Thêm khoảng cách sau ghế 18 (lối đi phải)
+                    if (i === 18) {
+                        seatDiv.style.marginRight = '15px';
+                    }
+                    
+                    rowDiv.appendChild(seatDiv);
+                }
+
+                // Thêm khoảng cách sau hàng H (lối đi ngang)
+                if (rowLabel === 'H') {
+                    rowDiv.style.marginBottom = '15px';
+                }
+
+                seatingRows.appendChild(rowDiv);
+            });
+        }
 
         // Xử lý hiển thị/ẩn nút clear
         function toggleClearButton() {
-            const emailInput = document.getElementById('email');
+            const emailInput = document.getElementById('emailInput');
             const clearBtn = document.getElementById('clearBtn');
             
             if (emailInput.value.trim()) {
-                clearBtn.style.display = 'block';
+                clearBtn.style.display = 'flex';
             } else {
                 clearBtn.style.display = 'none';
             }
@@ -646,130 +781,101 @@
 
         // Xóa email
         function clearEmail() {
-            const emailInput = document.getElementById('email');
+            const emailInput = document.getElementById('emailInput');
             emailInput.value = '';
             emailInput.focus();
             toggleClearButton();
             
-            // Xóa kết quả tra cứu trước đó
-            document.getElementById('result').innerHTML = '';
-        }
-
-        // Copy email
-        function copyEmail(email) {
-            navigator.clipboard.writeText(email).then(() => {
-                // Điền email vào ô tìm kiếm
-                const emailInput = document.getElementById('email');
-                emailInput.value = email;
-                emailInput.focus();
-                toggleClearButton();
-                
-                // Thông báo ngắn với nút tra cứu ngay
-                showResult(`
-                    📋 <strong>Đã sao chép và điền email thành công!</strong><br>
-                    <div style="margin-top: 15px;">
-                        <button onclick="lookupSeat()" style="
-                            background: rgb(126, 211, 247);
-                            color: rgb(0, 89, 147);
-                            padding: 12px 30px;
-                            border: none;
-                            border-radius: 8px;
-                            cursor: pointer;
-                            font-size: 16px;
-                            font-weight: 600;
-                            transition: all 0.3s ease;
-                            box-shadow: 0 3px 10px rgba(126, 211, 247, 0.3);
-                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(126, 211, 247, 0.4)'" 
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 3px 10px rgba(126, 211, 247, 0.3)'">
-                            🔍 Tra cứu ngay
-                        </button>
-                    </div>
-                `, 'info');
-                
-                // Tự động tra cứu sau 1.5 giây nếu người dùng không làm gì
-                setTimeout(() => {
-                    // Kiểm tra xem email trong input có còn giống email vừa copy không
-                    if (document.getElementById('email').value.trim().toLowerCase() === email.toLowerCase()) {
-                        lookupSeat();
-                    }
-                }, 1500);
-                
-            }).catch(err => {
-                console.error('Không thể copy email:', err);
-                // Fallback: điền trực tiếp vào ô input
-                const emailInput = document.getElementById('email');
-                emailInput.value = email;
-                emailInput.focus();
-                toggleClearButton();
-                
-                showResult(`
-                    📋 <strong>Email đã được điền vào ô tìm kiếm!</strong><br>
-                    <div style="margin-top: 15px;">
-                        <button onclick="lookupSeat()" style="
-                            background: rgb(126, 211, 247);
-                            color: rgb(0, 89, 147);
-                            padding: 12px 30px;
-                            border: none;
-                            border-radius: 8px;
-                            cursor: pointer;
-                            font-size: 16px;
-                            font-weight: 600;
-                            transition: all 0.3s ease;
-                            box-shadow: 0 3px 10px rgba(126, 211, 247, 0.3);
-                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(126, 211, 247, 0.4)'" 
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 3px 10px rgba(126, 211, 247, 0.3)'">
-                            🔍 Tra cứu ngay
-                        </button>
-                    </div>
-                `, 'info');
-                
-                // Tự động tra cứu sau 1.5 giây nếu người dùng không làm gì
-                setTimeout(() => {
-                    // Kiểm tra xem email trong input có còn giống email vừa copy không
-                    if (document.getElementById('email').value.trim().toLowerCase() === email.toLowerCase()) {
-                        lookupSeat();
-                    }
-                }, 1500);
+            // Xóa thông báo lỗi và kết quả tra cứu trước đó
+            document.getElementById('errorMessage').classList.add('hidden');
+            document.getElementById('resultSection').classList.add('hidden');
+            
+            // Reset highlight ghế cũ
+            document.querySelectorAll('.seat.selected').forEach(seat => {
+                seat.classList.remove('selected');
             });
         }
 
-        function lookupSeat() {
+        // Copy email và tự động tìm kiếm
+        function copyEmail(email) {
+            const emailInput = document.getElementById('emailInput');
+            
+            // Điền email vào ô tìm kiếm
+            emailInput.value = email;
+            emailInput.focus();
+            toggleClearButton();
+            
+            // Tự động tra cứu sau 1 giây
+            setTimeout(() => {
+                if (document.getElementById('emailInput').value.trim().toLowerCase() === email.toLowerCase()) {
+                    searchSeat();
+                }
+            }, 1000);
+        }
+
+        // Tìm email tương tự
+        function findSimilarEmails(searchEmail) {
+            const [searchUser, searchDomain] = searchEmail.split('@');
+            
+            if (!searchUser || searchUser.length < 2) {
+                return [];
+            }
+            
+            const searchPrefix = searchUser.substring(0, 2).toLowerCase();
+            
+            return Object.keys(seatData).filter(email => {
+                const [emailUser, emailDomain] = email.split('@');
+                
+                // Kiểm tra 2 ký tự đầu của username phải trùng khớp
+                if (emailUser.length < 2 || emailUser.substring(0, 2).toLowerCase() !== searchPrefix) {
+                    return false;
+                }
+                
+                // Sau khi đã có 2 ký tự đầu trùng khớp, kiểm tra độ tương tự
+                return emailUser.includes(searchUser) || 
+                       searchUser.includes(emailUser) ||
+                       (searchDomain && emailDomain && searchDomain === emailDomain);
+            }).slice(0, 3); // Giới hạn tối đa 3 gợi ý
+        }
+
+        // Tìm kiếm ghế theo email
+        function searchSeat() {
             if (isLoading) return;
             
-            const emailInput = document.getElementById('email');
-            const email = emailInput.value.trim().toLowerCase();
+            const email = document.getElementById('emailInput').value.trim().toLowerCase();
+            const errorMessage = document.getElementById('errorMessage');
+            const resultSection = document.getElementById('resultSection');
             const searchBtn = document.getElementById('searchBtn');
-            
+
+            // Ẩn thông báo lỗi và kết quả cũ
+            errorMessage.classList.add('hidden');
+            resultSection.classList.add('hidden');
+
+            // Reset highlight ghế cũ
+            document.querySelectorAll('.seat.selected').forEach(seat => {
+                seat.classList.remove('selected');
+            });
+
             if (!email) {
-                showResult('⚠️ Vui lòng nhập email của bạn!', 'error');
+                showError('Vui lòng nhập email!');
                 return;
             }
-            
+
             if (!isValidEmail(email)) {
-                showResult('❌ Email không đúng định dạng! Vui lòng kiểm tra lại.', 'error');
+                showError('Email không hợp lệ!');
                 return;
             }
-            
+
             // Hiệu ứng loading
             isLoading = true;
             searchBtn.innerHTML = '<span class="loading"></span>Đang tra cứu...';
             searchBtn.disabled = true;
-            
-            // Tối ưu hóa: Giảm delay từ 500ms xuống 200ms
+
             setTimeout(() => {
-                const seatCode = SEAT_DATA[email];
-                
-                if (seatCode) {
-                    const isVip = seatCode === 'VIP';
-                    const seatClass = isVip ? 'vip' : '';
-                    const seatIcon = isVip ? '👑' : '🎫';
-                    
-                    showResult(`
-                        ${seatIcon} <strong>Mã số ghế của đại biểu:</strong><br>
-                        <div class="seat-code ${seatClass}">${seatCode}</div>
-                    `, 'success');
-                } else {
-                    // Tối ưu hóa: Tìm kiếm email tương tự nhanh hơn
+                // Tìm thông tin ghế
+                const seatInfo = seatData[email];
+                if (!seatInfo) {
+                    // Tìm email tương tự
                     const similarEmails = findSimilarEmails(email);
                     
                     let errorMsg = `❌ <strong>Không tìm thấy email này trong hệ thống!</strong>`;
@@ -788,68 +894,67 @@
                         errorMsg += `</div>`;
                     }
                     
-                    showResult(errorMsg, 'error');
+                    showError(errorMsg);
+                } else {
+                    // Hiển thị thông tin ghế
+                    displaySeatInfo(seatInfo);
+                    
+                    // Highlight ghế trên sơ đồ
+                    highlightSeat(seatInfo.seatNumber);
                 }
-                
+
                 // Reset button
                 isLoading = false;
-                searchBtn.innerHTML = '🔍 Tra cứu ngay';
+                searchBtn.innerHTML = 'Tra cứu';
                 searchBtn.disabled = false;
-            }, 200);
+            }, 500);
         }
-        
-        // Tối ưu hóa: Thuật toán tìm kiếm email tương tự với điều kiện tối thiểu 2 ký tự đầu trùng khớp
-        function findSimilarEmails(searchEmail) {
-            const [searchUser, searchDomain] = searchEmail.split('@');
+
+        // Hiển thị thông tin ghế
+        function displaySeatInfo(seatInfo) {
+            document.getElementById('seatNumber').textContent = seatInfo.seatNumber;
+            document.getElementById('rowNumber').textContent = seatInfo.row;
             
-            // Kiểm tra nếu username có ít nhất 2 ký tự
-            if (!searchUser || searchUser.length < 2) {
-                return [];
+            document.getElementById('resultSection').classList.remove('hidden');
+        }
+
+        // Highlight ghế trên sơ đồ
+        function highlightSeat(seatNumber) {
+            const seatElement = document.getElementById(`seat-${seatNumber}`);
+            if (seatElement) {
+                seatElement.classList.add('selected');
+                
+                // Cuộn đến ghế được chọn
+                seatElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
-            
-            const searchPrefix = searchUser.substring(0, 2).toLowerCase();
-            
-            return Object.keys(SEAT_DATA).filter(email => {
-                const [emailUser, emailDomain] = email.split('@');
-                
-                // Kiểm tra 2 ký tự đầu của username phải trùng khớp
-                if (emailUser.length < 2 || emailUser.substring(0, 2).toLowerCase() !== searchPrefix) {
-                    return false;
-                }
-                
-                // Sau khi đã có 2 ký tự đầu trùng khớp, kiểm tra độ tương tự
-                return emailUser.includes(searchUser) || 
-                       searchUser.includes(emailUser) ||
-                       (searchDomain && emailDomain && searchDomain === emailDomain);
-            }).slice(0, 3); // Giới hạn tối đa 3 gợi ý
         }
-        
-        // Tối ưu hóa: Regex đơn giản hơn
+
+        // Hiển thị thông báo lỗi
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.innerHTML = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        // Validate email
         function isValidEmail(email) {
             return /\S+@\S+\.\S+/.test(email);
         }
-        
-        function showResult(message, type) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = `<div class="result ${type}">${message}</div>`;
-            
-            // Scroll mượt mà
-            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-        
-        // Event listeners tối ưu
-        document.getElementById('email').addEventListener('keypress', function(e) {
+
+        // Event listeners
+        document.getElementById('emailInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                lookupSeat();
+                searchSeat();
             }
         });
-        
+
         // Theo dõi thay đổi input để hiển thị nút clear
-        document.getElementById('email').addEventListener('input', toggleClearButton);
-        
-        // Tối ưu hóa: Khởi tạo nhanh hơn
+        document.getElementById('emailInput').addEventListener('input', toggleClearButton);
+
+        // Khởi tạo sơ đồ ghế khi trang load
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('email').focus();
+            createSeatingChart();
+            document.getElementById('emailInput').focus();
         });
     </script>
 </body>
