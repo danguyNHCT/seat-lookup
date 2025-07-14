@@ -338,6 +338,17 @@
             margin-right: 8px;
         }
 
+        .auto-complete-notice {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-top: 5px;
+            border-left: 3px solid #3b82f6;
+            animation: slideIn 0.3s ease;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -466,7 +477,7 @@
                 ĐẠI HỘI ĐẠI BIỂU ĐẢNG BỘ NHCTVN LẦN THỨ XI,<br>
                 NHIỆM KỲ 2025 - 2030
             </div>
-            <h1>Chương trình tra cứu chỗ ngồi đại biểu tại Đại hội</h1>
+            <h1>Chương trình tra cứu chỗ ngồi đại biểu tham dự Đại hội</h1>
         </div>
 
         <div class="search-section">
@@ -479,6 +490,9 @@
                     </div>
                 </div>
                 <button class="search-btn" onclick="searchSeat()" id="searchBtn">Tra cứu</button>
+            </div>
+            <div id="autoCompleteNotice" class="auto-complete-notice hidden">
+                💡 Gõ ký tự "@" để tự động điền đuôi "vietinbank.vn" và tìm kiếm
             </div>
         </div>
 
@@ -754,6 +768,8 @@ const seatData = {
         };
 
         let isLoading = false;
+        let autoCompleteTimeout;
+        let lastInputValue = '';
 
         // Tạo sơ đồ ghế
         function createSeatingChart() {
@@ -791,6 +807,96 @@ const seatData = {
             });
         }
 
+        // Xử lý auto-complete khi gõ @ và xóa thông minh
+        function handleAutoComplete(inputValue) {
+            const emailInput = document.getElementById('emailInput');
+            const currentPosition = emailInput.selectionStart;
+            
+            // Kiểm tra nếu vừa gõ ký tự @
+            if (inputValue.endsWith('@') && !inputValue.includes('@vietinbank.vn')) {
+                // Tự động điền đuôi
+                const newValue = inputValue + 'vietinbank.vn';
+                emailInput.value = newValue;
+                
+                // Đặt con trỏ sau ký tự @
+                setTimeout(() => {
+                    emailInput.setSelectionRange(currentPosition, currentPosition);
+                }, 0);
+                
+                // Hiển thị thông báo
+                showAutoCompleteNotice();
+                
+                // Tự động tìm kiếm sau 1 giây
+                clearTimeout(autoCompleteTimeout);
+                autoCompleteTimeout = setTimeout(() => {
+                    searchSeat();
+                }, 1000);
+            }
+        }
+
+        // Xử lý xóa thông minh khi người dùng xóa ký tự
+        function handleSmartDelete(inputValue, previousValue) {
+            const emailInput = document.getElementById('emailInput');
+            
+            console.log('Smart delete check:', {
+                current: inputValue,
+                previous: previousValue,
+                isDeleting: inputValue.length < previousValue.length,
+                hadDomain: previousValue.includes('@vietinbank.vn')
+            });
+            
+            // Kiểm tra nếu người dùng đang xóa và trước đó có "@vietinbank.vn"
+            if (previousValue.includes('@vietinbank.vn') && inputValue.length < previousValue.length) {
+                console.log('Deleting from domain detected');
+                
+                // Kiểm tra nếu người dùng xóa ký tự "n" cuối cùng trong "@vietinbank.vn"
+                if (previousValue.endsWith('@vietinbank.vn') && inputValue.endsWith('@vietinbank.v')) {
+                    console.log('Detected deletion of final "n", removing entire domain');
+                    const usernameOnly = inputValue.split('@')[0];
+                    emailInput.value = usernameOnly;
+                    return true;
+                }
+                
+                // Kiểm tra các trường hợp xóa khác trong domain  
+                const partialDomains = [
+                    '@vietinbank.v',
+                    '@vietinbank.',
+                    '@vietinbank',
+                    '@vietinban',
+                    '@vietinba',
+                    '@vietinb',
+                    '@vietin',
+                    '@vieti',
+                    '@viet',
+                    '@vie',
+                    '@vi',
+                    '@v'
+                ];
+                
+                for (let partial of partialDomains) {
+                    if (inputValue.endsWith(partial)) {
+                        console.log('Detected partial domain deletion:', partial);
+                        const usernameOnly = inputValue.split('@')[0];
+                        emailInput.value = usernameOnly;
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+
+        // Hiển thị thông báo auto-complete
+        function showAutoCompleteNotice() {
+            const notice = document.getElementById('autoCompleteNotice');
+            notice.classList.remove('hidden');
+            
+            // Ẩn thông báo sau 3 giây
+            setTimeout(() => {
+                notice.classList.add('hidden');
+            }, 3000);
+        }
+
         // Xử lý hiển thị/ẩn nút clear
         function toggleClearButton() {
             const emailInput = document.getElementById('emailInput');
@@ -807,12 +913,17 @@ const seatData = {
         function clearEmail() {
             const emailInput = document.getElementById('emailInput');
             emailInput.value = '';
+            lastInputValue = ''; // Reset giá trị theo dõi
             emailInput.focus();
             toggleClearButton();
             
             // Xóa thông báo lỗi và kết quả tra cứu trước đó
             document.getElementById('errorMessage').classList.add('hidden');
             document.getElementById('resultSection').classList.add('hidden');
+            document.getElementById('autoCompleteNotice').classList.add('hidden');
+            
+            // Hủy timeout auto-complete
+            clearTimeout(autoCompleteTimeout);
             
             // Reset highlight ghế cũ
             document.querySelectorAll('.seat.selected').forEach(seat => {
@@ -826,6 +937,7 @@ const seatData = {
             
             // Điền email vào ô tìm kiếm
             emailInput.value = email;
+            lastInputValue = email; // Cập nhật giá trị theo dõi
             emailInput.focus();
             toggleClearButton();
             
@@ -874,6 +986,7 @@ const seatData = {
             // Ẩn thông báo lỗi và kết quả cũ
             errorMessage.classList.add('hidden');
             resultSection.classList.add('hidden');
+            document.getElementById('autoCompleteNotice').classList.add('hidden');
 
             // Reset highlight ghế cũ
             document.querySelectorAll('.seat.selected').forEach(seat => {
@@ -972,13 +1085,64 @@ const seatData = {
             }
         });
 
-        // Theo dõi thay đổi input để hiển thị nút clear
-        document.getElementById('emailInput').addEventListener('input', toggleClearButton);
+        // Theo dõi thay đổi input để xử lý auto-complete và hiển thị nút clear
+        document.getElementById('emailInput').addEventListener('input', function(e) {
+            const inputValue = e.target.value;
+            console.log('Input event:', {current: inputValue, previous: lastInputValue});
+            
+            // Xử lý xóa thông minh trước
+            const wasSmartDeleted = handleSmartDelete(inputValue, lastInputValue);
+            
+            if (wasSmartDeleted) {
+                console.log('Smart delete applied, updating lastInputValue to:', e.target.value);
+                lastInputValue = e.target.value; // Lấy giá trị mới sau khi xóa thông minh
+                toggleClearButton();
+                return;
+            }
+            
+            // Xử lý auto-complete bình thường
+            toggleClearButton();
+            handleAutoComplete(inputValue);
+            
+            // Lưu giá trị hiện tại để so sánh lần sau
+            lastInputValue = inputValue;
+        });
+
+        // Sử dụng beforeinput để capture chính xác hơn
+        document.getElementById('emailInput').addEventListener('beforeinput', function(e) {
+            const currentValue = e.target.value;
+            console.log('Before input:', {
+                inputType: e.inputType,
+                currentValue: currentValue,
+                data: e.data
+            });
+            
+            // Chỉ xử lý khi là delete/backspace
+            if (e.inputType === 'deleteContentBackward' || e.inputType === 'deleteContentForward') {
+                lastInputValue = currentValue;
+                console.log('Captured value before delete:', lastInputValue);
+            }
+        });
+
+        // Thêm event listener cho keydown
+        document.getElementById('emailInput').addEventListener('keydown', function(e) {
+            if (e.key !== 'Enter') {
+                clearTimeout(autoCompleteTimeout);
+            }
+        });
 
         // Khởi tạo sơ đồ ghế khi trang load
         document.addEventListener('DOMContentLoaded', function() {
             createSeatingChart();
             document.getElementById('emailInput').focus();
+            
+            // Hiển thị hướng dẫn ban đầu
+            setTimeout(() => {
+                document.getElementById('autoCompleteNotice').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('autoCompleteNotice').classList.add('hidden');
+                }, 5000);
+            }, 1000);
         });
     </script>
 </body>
