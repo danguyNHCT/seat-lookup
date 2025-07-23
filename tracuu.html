@@ -56,6 +56,26 @@
             margin-bottom: 30px;
         }
 
+        .input-tooltip {
+            background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);
+            color: #01579b;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #0277bd;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(2, 119, 189, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-tooltip::before {
+            content: "💡";
+            font-size: 16px;
+        }
+
         .input-group {
             display: flex;
             gap: 10px;
@@ -68,7 +88,7 @@
             position: relative;
         }
 
-        input[type="email"] {
+        input[type="text"] {
             width: 100%;
             padding: 12px 50px 12px 12px;
             border: 2px solid #ddd;
@@ -78,7 +98,7 @@
             box-sizing: border-box;
         }
 
-        input[type="email"]:focus {
+        input[type="text"]:focus {
             outline: none;
             border-color: #dc2626;
         }
@@ -265,6 +285,25 @@
             box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
         }
 
+        /* Kiểu cho khu vực VIP */
+        .seat.vip-area {
+            background: linear-gradient(135deg, #fde047 0%, #facc15 100%);
+            color: #713f12;
+            border-color: #eab308;
+            font-weight: 900;
+            animation: vipGlow 2s ease-in-out infinite alternate;
+            box-shadow: 0 2px 8px rgba(234, 179, 8, 0.4);
+        }
+
+        @keyframes vipGlow {
+            0% {
+                box-shadow: 0 2px 8px rgba(234, 179, 8, 0.4);
+            }
+            100% {
+                box-shadow: 0 4px 16px rgba(234, 179, 8, 0.6);
+            }
+        }
+
         .error-message {
             background: #fecaca;
             color: #991b1b;
@@ -338,17 +377,6 @@
             margin-right: 8px;
         }
 
-        .auto-complete-notice {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            color: #1e40af;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            margin-top: 5px;
-            border-left: 3px solid #3b82f6;
-            animation: slideIn 0.3s ease;
-        }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -388,6 +416,11 @@
             .header h1 {
                 font-size: 1.3em;
             }
+
+            .input-tooltip {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
             
             .input-group {
                 flex-direction: column;
@@ -424,6 +457,12 @@
                 padding: 4px 8px;
                 font-size: 11px;
             }
+
+            .vip-label {
+                left: -40px;
+                font-size: 7px;
+                padding: 3px 6px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -433,6 +472,11 @@
 
             .header h1 {
                 font-size: 1.1em;
+            }
+
+            .input-tooltip {
+                padding: 8px 10px;
+                font-size: 12px;
             }
 
             .seat {
@@ -459,7 +503,6 @@
                 padding: 10px;
             }
 
-            /* Điều chỉnh khoảng cách lối đi cho mobile nhỏ */
             .seat:nth-child(6) {
                 margin-right: 10px !important;
             }
@@ -481,18 +524,17 @@
         </div>
 
         <div class="search-section">
+            <div class="input-tooltip">
+                Đại biểu vui lòng nhập số điện thoại hoặc email để tra cứu chỗ ngồi
+            </div>
             <div class="input-group">
                 <div class="input-container">
-                    <input type="email" id="emailInput" placeholder="Đại biểu nhập email tại đây..." />
+                    <input type="text" id="emailInput" placeholder="Đại biểu nhập số điện thoại hoặc email tại đây..." />
                     <div class="input-actions">
                         <button class="clear-btn" id="clearBtn" onclick="clearEmail()">✕</button>
-                        <span class="input-icon">@</span>
                     </div>
                 </div>
                 <button class="search-btn" onclick="searchSeat()" id="searchBtn">Tra cứu</button>
-            </div>
-            <div id="autoCompleteNotice" class="auto-complete-notice hidden">
-                💡 Gõ ký tự "@" để tự động điền đuôi "vietinbank.vn" và tìm kiếm
             </div>
         </div>
 
@@ -502,6 +544,10 @@
             <div class="seat-info">
                 <h3>Thông tin ghế của đại biểu:</h3>
                 <div class="seat-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Họ và tên</div>
+                        <div class="detail-value" id="fullName"></div>
+                    </div>
                     <div class="detail-item">
                         <div class="detail-label">Số ghế</div>
                         <div class="detail-value" id="seatNumber"></div>
@@ -522,244 +568,89 @@
     </div>
 
     <script>
-        // Dữ liệu mẫu - mapping email với thông tin ghế
-const seatData = {
-    "binhtm@vietinbank.vn": {
-        "seatNumber": "A18",
-        "row": "A",
-        "position": 18
-    },
-    "cuongtk@vietinbank.vn": {
-        "seatNumber": "A11",
-        "row": "A",
-        "position": 11
-    },
-    "trungntm@vietinbank.vn": {
-        "seatNumber": "A19",
-        "row": "A",
-        "position": 19
-    },
-    "tan.tv@vietinbank.vn": {
-        "seatNumber": "A6",
-        "row": "A",
-        "position": 6
-    },
-    "huannt@vietinbank.vn": {
-        "seatNumber": "A10",
-        "row": "A",
-        "position": 10
-    },
-    "dungnv7@vietinbank.vn": {
-        "seatNumber": "A21",
-        "row": "A",
-        "position": 21
-    },
-    "haild@vietinbank.vn": {
-        "seatNumber": "B19",
-        "row": "B",
-        "position": 19
-    },
-    "dtson@vietinbank.vn": {
-        "seatNumber": "A5",
-        "row": "A",
-        "position": 5
-    },
-    "quandv@vietinbank.vn": {
-        "seatNumber": "B18",
-        "row": "B",
-        "position": 18
-    },
-    "giangnq@vietinbank.vn": {
-        "seatNumber": "B6",
-        "row": "B",
-        "position": 6
-    },
-    "hoaiptt@vietinbank.vn": {
-        "seatNumber": "A4",
-        "row": "A",
-        "position": 4
-    },
-    "lethanhtung@vietinbank.vn": {
-        "seatNumber": "A21",
-        "row": "A",
-        "position": 21
-    },
-    "hala@vietinbank.vn": {
-        "seatNumber": "C12",
-        "row": "C",
-        "position": 12
-    },
-    "hoaln@vietinbank.vn": {
-        "seatNumber": "C16",
-        "row": "C",
-        "position": 16
-    },
-    "nguyenducthanh@vietinbank.vn": {
-        "seatNumber": "C14",
-        "row": "C",
-        "position": 14
-    },
-    "vannbt@vietinbank.vn": {
-        "seatNumber": "C17",
-        "row": "C",
-        "position": 17
-    },
-    "lantcq@vietinbank.vn": {
-        "seatNumber": "C15",
-        "row": "C",
-        "position": 15
-    },
-    "hung.nh@vietinbank.vn": {
-        "seatNumber": "C13",
-        "row": "C",
-        "position": 13
-    },
-    "thaolt2@vietinbank.vn": {
-        "seatNumber": "C24",
-        "row": "C",
-        "position": 24
-    },
-    "phuonglt106@vietinbank.vn": {
-        "seatNumber": "C23",
-        "row": "C",
-        "position": 23
-    },
-    "huongdtk@vietinbank.vn": {
-        "seatNumber": "C21",
-        "row": "C",
-        "position": 21
-    },
-    "tuyendx@vietinbank.vn": {
-        "seatNumber": "C22",
-        "row": "C",
-        "position": 22
-    },
-    "nttung@vietinbank.vn": {
-        "seatNumber": "D17",
-        "row": "D",
-        "position": 17
-    },
-    "duclv@vietinbank.vn": {
-        "seatNumber": "D18",
-        "row": "D",
-        "position": 18
-    },
-    "ng.a.tuan@vietinbank.vn": {
-        "seatNumber": "D16",
-        "row": "D",
-        "position": 16
-    },
-    "lanlp@vietinbank.vn": {
-        "seatNumber": "D15",
-        "row": "D",
-        "position": 15
-    },
-    "huonglm@vietinbank.vn": {
-        "seatNumber": "D14",
-        "row": "D",
-        "position": 14
-    },
-    "nh.quang@myvbi.vn": {
-        "seatNumber": "C6",
-        "row": "C",
-        "position": 6
-    },
-    "nt.hoa@vietinbank.vn": {
-        "seatNumber": "D11",
-        "row": "D",
-        "position": 11
-    },
-    "huongnguyen@vietinbank.vn": {
-        "seatNumber": "D12",
-        "row": "D",
-        "position": 12
-    },
-    "vyvt@vietinbank.vn": {
-        "seatNumber": "D10",
-        "row": "D",
-        "position": 10
-    },
-    "nghia.dt@vietinbank.vn": {
-        "seatNumber": "D8",
-        "row": "D",
-        "position": 8
-    },
-    "quydt@vietinbank.vn": {
-        "seatNumber": "D9",
-        "row": "D",
-        "position": 9
-    },
-    "tiendh@vietinbank.vn": {
-        "seatNumber": "D13",
-        "row": "D",
-        "position": 13
-    },
-    "vunx@vietinbank.vn": {
-        "seatNumber": "C5",
-        "row": "C",
-        "position": 5
-    },
-    "hungla@vietinbank.vn": {
-        "seatNumber": "C4",
-        "row": "C",
-        "position": 4
-    },
-    "duc.tm@vietinbank.vn": {
-        "seatNumber": "F19",
-        "row": "F",
-        "position": 19
-    },
-    "nmtoan@vietinbank.vn": {
-        "seatNumber": "C3",
-        "row": "C",
-        "position": 3
-    },
-    "thanhptn@vietinbank.vn": {
-        "seatNumber": "D23",
-        "row": "D",
-        "position": 23
-    },
-    "nguyenthanh.hung@vietinbank.vn": {
-        "seatNumber": "E24",
-        "row": "E",
-        "position": 24
-    },
-    "dung.nguyenthai@vietinbank.vn": {
-        "seatNumber": "E11",
-        "row": "E",
-        "position": 11
-    },
-    "thangnt2@vietinbank.vn": {
-        "seatNumber": "E10",
-        "row": "E",
-        "position": 10
-    },
-    "ngandtk@vietinbank.vn": {
-        "seatNumber": "H19",
-        "row": "H",
-        "position": 19
-    },
-    "thaidh@vietinbank.vn": {
-        "seatNumber": "H20",
-        "row": "H",
-        "position": 20
-    },
-    "trangbt@vietinbank.vn": {
-        "seatNumber": "E18",
-        "row": "E",
-        "position": 18
-    },
-    "tt.thuhuyen@vietinbank.vn": {
-        "seatNumber": "F24",
-        "row": "F",
-        "position": 24
-    },
-    "th.nam@vietinbank.vn": {
-        "seatNumber": "F22",
-        "row": "F",
-        "position": 22
-    }
-};
+        // Dữ liệu mẫu - mapping email/phone với thông tin ghế (bỏ trường supplement)
+        const seatData = {
+            "binhtm@vietinbank.vn": {
+                "email": "binhtm@vietinbank.vn",
+                "phone": "0987654321",
+                "fullName": "Trần Minh Bình",
+                "seatNumber": "A18",
+                "row": "A",
+                "position": 18
+            },
+            "0987654321": {
+                "email": "binhtm@vietinbank.vn",
+                "phone": "0987654321",
+                "fullName": "Trần Minh Bình",
+                "seatNumber": "A18",
+                "row": "A",
+                "position": 18
+            },
+            "nh.quang@myvbi.vn": {
+                "email": "nh.quang@myvbi.vn",
+                "phone": "0912345678",
+                "fullName": "Nguyễn Hoàng Quang",
+                "seatNumber": "C6",
+                "row": "C",
+                "position": 6
+            },
+            "0912345678": {
+                "email": "nh.quang@myvbi.vn",
+                "phone": "0912345678",
+                "fullName": "Nguyễn Hoàng Quang",
+                "seatNumber": "C6",
+                "row": "C",
+                "position": 6
+            },
+            "xuanbtt@myvbi.vn": {
+                "email": "xuanbtt@myvbi.vn",
+                "phone": "0923456789",
+                "fullName": "Bùi Thị Thu Xuân",
+                "seatNumber": "B19",
+                "row": "B",
+                "position": 19
+            },
+            "0923456789": {
+                "email": "xuanbtt@myvbi.vn",
+                "phone": "0923456789",
+                "fullName": "Bùi Thị Thu Xuân",
+                "seatNumber": "B19",
+                "row": "B",
+                "position": 19
+            },
+            "vinhtp@cts.vn": {
+                "email": "vinhtp@cts.vn",
+                "phone": "0934567890",
+                "fullName": "Trần Phúc Vinh",
+                "seatNumber": "A5",
+                "row": "A",
+                "position": 5
+            },
+            "0934567890": {
+                "email": "vinhtp@cts.vn",
+                "phone": "0934567890",
+                "fullName": "Trần Phúc Vinh",
+                "seatNumber": "A5",
+                "row": "A",
+                "position": 5
+            },
+            "luatld@vietinbankamc.vn": {
+                "email": "luatld@vietinbankamc.vn",
+                "phone": "0945678901",
+                "fullName": "Lê Đức Luật",
+                "seatNumber": "A10",
+                "row": "A",
+                "position": 10
+            },
+            "0945678901": {
+                "email": "luatld@vietinbankamc.vn",
+                "phone": "0945678901",
+                "fullName": "Lê Đức Luật",
+                "seatNumber": "A10",
+                "row": "A",
+                "position": 10
+            }
+        };
 
         // Cấu hình sơ đồ ghế
         const seatingConfig = {
@@ -770,6 +661,8 @@ const seatData = {
         let isLoading = false;
         let autoCompleteTimeout;
         let lastInputValue = '';
+        let isAutoCompleting = false;
+        let phoneSearchTimeout; // Thêm timeout cho tự động tìm kiếm số điện thoại
 
         // Tạo sơ đồ ghế
         function createSeatingChart() {
@@ -812,25 +705,71 @@ const seatData = {
             const emailInput = document.getElementById('emailInput');
             const currentPosition = emailInput.selectionStart;
             
-            // Kiểm tra nếu vừa gõ ký tự @
-            if (inputValue.endsWith('@') && !inputValue.includes('@vietinbank.vn')) {
-                // Tự động điền đuôi
-                const newValue = inputValue + 'vietinbank.vn';
-                emailInput.value = newValue;
+            // Kiểm tra nếu vừa gõ ký tự @ (chỉ áp dụng cho email)  
+            if (inputValue.endsWith('@') && !inputValue.match(/^\d/)) {
+                let newValue = inputValue;
                 
-                // Đặt con trỏ sau ký tự @
-                setTimeout(() => {
-                    emailInput.setSelectionRange(currentPosition, currentPosition);
-                }, 0);
+                // Kiểm tra các trường hợp đặc biệt cần domain khác
+                const specialCases = {
+                    'nh.quang@': 'nh.quang@myvbi.vn',
+                    'xuanbtt@': 'xuanbtt@myvbi.vn',
+                    'dungtt@': 'dungtt@myvbi.vn',
+                    'hoaltq@': 'hoaltq@myvbi.vn',
+                    'vinhtp@': 'vinhtp@cts.vn',
+                    'luatld@': 'luatld@vietinbankamc.vn',
+                    'tuongnq@': 'tuongnq@vietinbankleasing.vn',
+                    'diep.pth@': 'diep.pth@vietinbankgold.vn',
+                    'ducnh@': 'ducnh@vietinbankcapital.vn'
+                };
                 
-                // Hiển thị thông báo
-                showAutoCompleteNotice();
+                // Kiểm tra nếu input khớp với một trong các trường hợp đặc biệt
+                if (specialCases[inputValue]) {
+                    newValue = specialCases[inputValue];
+                } else {
+                    // Trường hợp mặc định: thêm @vietinbank.vn
+                    newValue = inputValue + 'vietinbank.vn';
+                }
                 
-                // Tự động tìm kiếm sau 1 giây
-                clearTimeout(autoCompleteTimeout);
-                autoCompleteTimeout = setTimeout(() => {
-                    searchSeat();
-                }, 1000);
+                // Chỉ auto-complete nếu chưa có domain đầy đủ
+                if (inputValue !== newValue) {
+                    // Bắt đầu quá trình auto-complete - chặn input
+                    isAutoCompleting = true;
+                    emailInput.disabled = true;
+                    emailInput.style.opacity = '0.7';
+                    emailInput.style.cursor = 'wait';
+                    
+                    emailInput.value = newValue;
+                    
+                    // Đặt con trỏ sau ký tự @
+                    setTimeout(() => {
+                        emailInput.setSelectionRange(currentPosition, currentPosition);
+                    }, 0);
+                    
+                    // Tự động tìm kiếm sau 1 giây
+                    clearTimeout(autoCompleteTimeout);
+                    autoCompleteTimeout = setTimeout(() => {
+                        searchSeat();
+                    }, 1000);
+                }
+            }
+        }
+
+        // Xử lý tự động tìm kiếm khi nhập số điện thoại
+        function handlePhoneAutoSearch(inputValue) {
+            // Xóa timeout cũ nếu có
+            clearTimeout(phoneSearchTimeout);
+            
+            // Kiểm tra nếu input là số điện thoại và có đủ 10 chữ số
+            const isPhone = /^\d+$/.test(inputValue);
+            if (isPhone && inputValue.length === 10) {
+                // Tự động tìm kiếm sau 800ms để tránh tìm kiếm quá nhanh
+                phoneSearchTimeout = setTimeout(() => {
+                    // Kiểm tra lại giá trị input để đảm bảo vẫn là 10 chữ số
+                    const currentValue = document.getElementById('emailInput').value.trim();
+                    if (currentValue === inputValue && /^\d{10}$/.test(currentValue)) {
+                        searchSeat();
+                    }
+                }, 800);
             }
         }
 
@@ -838,47 +777,44 @@ const seatData = {
         function handleSmartDelete(inputValue, previousValue) {
             const emailInput = document.getElementById('emailInput');
             
-            console.log('Smart delete check:', {
-                current: inputValue,
-                previous: previousValue,
-                isDeleting: inputValue.length < previousValue.length,
-                hadDomain: previousValue.includes('@vietinbank.vn')
-            });
-            
-            // Kiểm tra nếu người dùng đang xóa và trước đó có "@vietinbank.vn"
-            if (previousValue.includes('@vietinbank.vn') && inputValue.length < previousValue.length) {
-                console.log('Deleting from domain detected');
+            // Kiểm tra nếu người dùng đang xóa và trước đó có domain
+            if (previousValue.includes('@') && inputValue.length < previousValue.length) {
                 
-                // Kiểm tra nếu người dùng xóa ký tự "n" cuối cùng trong "@vietinbank.vn"
-                if (previousValue.endsWith('@vietinbank.vn') && inputValue.endsWith('@vietinbank.v')) {
-                    console.log('Detected deletion of final "n", removing entire domain');
-                    const usernameOnly = inputValue.split('@')[0];
-                    emailInput.value = usernameOnly;
-                    return true;
-                }
-                
-                // Kiểm tra các trường hợp xóa khác trong domain  
-                const partialDomains = [
-                    '@vietinbank.v',
-                    '@vietinbank.',
-                    '@vietinbank',
-                    '@vietinban',
-                    '@vietinba',
-                    '@vietinb',
-                    '@vietin',
-                    '@vieti',
-                    '@viet',
-                    '@vie',
-                    '@vi',
-                    '@v'
+                // Danh sách các domain để kiểm tra
+                const domains = [
+                    '@vietinbank.vn',
+                    '@myvbi.vn', 
+                    '@cts.vn',
+                    '@vietinbankamc.vn',
+                    '@vietinbankleasing.vn',
+                    '@vietinbankgold.vn',
+                    '@vietinbankcapital.vn'
                 ];
                 
-                for (let partial of partialDomains) {
-                    if (inputValue.endsWith(partial)) {
-                        console.log('Detected partial domain deletion:', partial);
-                        const usernameOnly = inputValue.split('@')[0];
-                        emailInput.value = usernameOnly;
-                        return true;
+                // Kiểm tra từng domain
+                for (let domain of domains) {
+                    if (previousValue.includes(domain)) {
+                        // Tạo danh sách các partial domain để kiểm tra
+                        const partialDomains = [];
+                        for (let i = domain.length - 1; i >= 1; i--) {
+                            partialDomains.push(domain.substring(0, i));
+                        }
+                        
+                        // Kiểm tra nếu người dùng xóa ký tự cuối của domain
+                        if (previousValue.endsWith(domain) && inputValue.endsWith(domain.slice(0, -1))) {
+                            const usernameOnly = inputValue.split('@')[0];
+                            emailInput.value = usernameOnly;
+                            return true;
+                        }
+                        
+                        // Kiểm tra các trường hợp xóa khác trong domain
+                        for (let partial of partialDomains) {
+                            if (inputValue.endsWith(partial)) {
+                                const usernameOnly = inputValue.split('@')[0];
+                                emailInput.value = usernameOnly;
+                                return true;
+                            }
+                        }
                     }
                 }
             }
@@ -886,15 +822,13 @@ const seatData = {
             return false;
         }
 
-        // Hiển thị thông báo auto-complete
-        function showAutoCompleteNotice() {
-            const notice = document.getElementById('autoCompleteNotice');
-            notice.classList.remove('hidden');
-            
-            // Ẩn thông báo sau 3 giây
-            setTimeout(() => {
-                notice.classList.add('hidden');
-            }, 3000);
+        // Mở khóa input sau khi hoàn thành auto-complete
+        function unlockInput() {
+            const emailInput = document.getElementById('emailInput');
+            isAutoCompleting = false;
+            emailInput.disabled = false;
+            emailInput.style.opacity = '1';
+            emailInput.style.cursor = 'text';
         }
 
         // Xử lý hiển thị/ẩn nút clear
@@ -913,72 +847,159 @@ const seatData = {
         function clearEmail() {
             const emailInput = document.getElementById('emailInput');
             emailInput.value = '';
-            lastInputValue = ''; // Reset giá trị theo dõi
+            lastInputValue = '';
             emailInput.focus();
             toggleClearButton();
+            
+            // Mở khóa input nếu đang bị khóa
+            unlockInput();
             
             // Xóa thông báo lỗi và kết quả tra cứu trước đó
             document.getElementById('errorMessage').classList.add('hidden');
             document.getElementById('resultSection').classList.add('hidden');
-            document.getElementById('autoCompleteNotice').classList.add('hidden');
             
-            // Hủy timeout auto-complete
+            // Hủy timeout auto-complete và phone search
             clearTimeout(autoCompleteTimeout);
+            clearTimeout(phoneSearchTimeout);
             
-            // Reset highlight ghế cũ
-            document.querySelectorAll('.seat.selected').forEach(seat => {
-                seat.classList.remove('selected');
-            });
+            // Reset highlight ghế cũ và VIP area
+            resetHighlight();
         }
 
-        // Copy email và tự động tìm kiếm
-        function copyEmail(email) {
+        // Copy email/phone và tự động tìm kiếm
+        function copyEmail(input) {
             const emailInput = document.getElementById('emailInput');
             
-            // Điền email vào ô tìm kiếm
-            emailInput.value = email;
-            lastInputValue = email; // Cập nhật giá trị theo dõi
+            // Mở khóa input trước khi copy
+            unlockInput();
+            
+            // Điền input vào ô tìm kiếm
+            emailInput.value = input;
+            lastInputValue = input;
             emailInput.focus();
             toggleClearButton();
             
             // Tự động tra cứu sau 1 giây
             setTimeout(() => {
-                if (document.getElementById('emailInput').value.trim().toLowerCase() === email.toLowerCase()) {
+                if (document.getElementById('emailInput').value.trim().toLowerCase() === input.toLowerCase()) {
                     searchSeat();
                 }
             }, 1000);
         }
 
-        // Tìm email tương tự
-        function findSimilarEmails(searchEmail) {
-            const [searchUser, searchDomain] = searchEmail.split('@');
+        // Tính độ tương tự giữa hai chuỗi (Levenshtein distance)
+        function calculateSimilarity(str1, str2) {
+            const len1 = str1.length;
+            const len2 = str2.length;
+            const matrix = [];
+
+            for (let i = 0; i <= len1; i++) {
+                matrix[i] = [i];
+            }
+
+            for (let j = 0; j <= len2; j++) {
+                matrix[0][j] = j;
+            }
+
+            for (let i = 1; i <= len1; i++) {
+                for (let j = 1; j <= len2; j++) {
+                    if (str1.charAt(i - 1) === str2.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+
+            const distance = matrix[len1][len2];
+            const maxLen = Math.max(len1, len2);
+            return (maxLen - distance) / maxLen; // Trả về điểm tương tự từ 0-1
+        }
+
+        // Tìm email/phone tương tự - CHỈ ÁP DỤNG CHO EMAIL
+        function findSimilarEmails(searchInput) {
+            // Kiểm tra xem input là email hay số điện thoại
+            const isPhone = /^\d/.test(searchInput);
             
+            // CHỈ GỢI Ý CHO EMAIL, KHÔNG GỢI Ý CHO SỐ ĐIỆN THOẠI
+            if (isPhone) {
+                return []; // Không gợi ý cho số điện thoại
+            }
+            
+            // Xử lý gợi ý cho email
+            const parts = searchInput.split('@');
+            const searchUser = parts[0].toLowerCase();
+            
+            // Phải có ít nhất 2 ký tự để gợi ý
             if (!searchUser || searchUser.length < 2) {
                 return [];
             }
             
-            const searchPrefix = searchUser.substring(0, 2).toLowerCase();
+            const searchPrefix = searchUser.substring(0, 2);
             
-            return Object.keys(seatData).filter(email => {
-                const [emailUser, emailDomain] = email.split('@');
+            // Lọc các email có 2 ký tự đầu trùng khớp
+            const candidateEmails = Object.keys(seatData).filter(email => {
+                if (/^\d/.test(email)) return false; // Bỏ qua số điện thoại
+                
+                const emailParts = email.split('@');
+                const emailUser = emailParts[0].toLowerCase();
                 
                 // Kiểm tra 2 ký tự đầu của username phải trùng khớp
-                if (emailUser.length < 2 || emailUser.substring(0, 2).toLowerCase() !== searchPrefix) {
-                    return false;
-                }
-                
-                // Sau khi đã có 2 ký tự đầu trùng khớp, kiểm tra độ tương tự
-                return emailUser.includes(searchUser) || 
-                       searchUser.includes(emailUser) ||
-                       (searchDomain && emailDomain && searchDomain === emailDomain);
-            }).slice(0, 3); // Giới hạn tối đa 3 gợi ý
+                return emailUser.length >= 2 && emailUser.substring(0, 2) === searchPrefix;
+            });
+            
+            // Tính điểm tương tự cho từng email
+            const emailsWithSimilarity = candidateEmails.map(email => {
+                const emailUser = email.split('@')[0].toLowerCase();
+                const similarity = calculateSimilarity(searchUser, emailUser);
+                return { email, similarity };
+            });
+            
+            // Sắp xếp theo độ tương tự (cao nhất lên đầu) và giới hạn 3 email
+            const sortedEmails = emailsWithSimilarity
+                .sort((a, b) => b.similarity - a.similarity)
+                .slice(0, 3)
+                .map(item => item.email);
+            
+            return sortedEmails;
         }
 
-        // Tìm kiếm ghế theo email
+        // Reset highlight ghế và VIP area
+        function resetHighlight() {
+            document.querySelectorAll('.seat.selected').forEach(seat => {
+                seat.classList.remove('selected');
+            });
+            document.querySelectorAll('.seat.vip-area').forEach(seat => {
+                seat.classList.remove('vip-area');
+            });
+        }
+
+        // Highlight khu vực VIP theo hàng cụ thể
+        function highlightVIPRow(row) {
+            // Highlight tất cả ghế trong hàng được chỉ định
+            for (let i = 1; i <= seatingConfig.seatsPerRow; i++) {
+                const seatElement = document.getElementById(`seat-${row}${i}`);
+                if (seatElement) {
+                    seatElement.classList.add('vip-area');
+                }
+            }
+
+            // Cuộn đến hàng được chỉ định
+            const firstSeat = document.getElementById(`seat-${row}1`);
+            if (firstSeat) {
+                firstSeat.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Tìm kiếm ghế theo email hoặc số điện thoại
         function searchSeat() {
             if (isLoading) return;
             
-            const email = document.getElementById('emailInput').value.trim().toLowerCase();
+            const input = document.getElementById('emailInput').value.trim().toLowerCase();
             const errorMessage = document.getElementById('errorMessage');
             const resultSection = document.getElementById('resultSection');
             const searchBtn = document.getElementById('searchBtn');
@@ -986,20 +1007,21 @@ const seatData = {
             // Ẩn thông báo lỗi và kết quả cũ
             errorMessage.classList.add('hidden');
             resultSection.classList.add('hidden');
-            document.getElementById('autoCompleteNotice').classList.add('hidden');
 
-            // Reset highlight ghế cũ
-            document.querySelectorAll('.seat.selected').forEach(seat => {
-                seat.classList.remove('selected');
-            });
+            // Reset highlight ghế cũ và VIP area
+            resetHighlight();
 
-            if (!email) {
-                showError('Vui lòng nhập email!');
+            if (!input) {
+                showError('Vui lòng nhập email hoặc số điện thoại!');
+                unlockInput();
                 return;
             }
 
-            if (!isValidEmail(email)) {
-                showError('Email không hợp lệ!');
+            // Kiểm tra định dạng input
+            const isPhone = /^\d/.test(input);
+            if (!isPhone && !isValidEmail(input)) {
+                showError('Email hoặc số điện thoại không hợp lệ!');
+                unlockInput();
                 return;
             }
 
@@ -1010,52 +1032,74 @@ const seatData = {
 
             setTimeout(() => {
                 // Tìm thông tin ghế
-                const seatInfo = seatData[email];
+                const seatInfo = seatData[input];
                 if (!seatInfo) {
-                    // Tìm email tương tự
-                    const similarEmails = findSimilarEmails(email);
-                    
-                    let errorMsg = `❌ <strong>Không tìm thấy email này trong hệ thống!</strong>`;
-                    
-                    if (similarEmails.length > 0) {
-                        errorMsg += `<br><br><strong>🔍 Email tương tự:</strong>`;
-                        errorMsg += `<div class="suggestions-container">`;
-                        similarEmails.forEach(e => {
-                            errorMsg += `
-                                <div class="email-suggestion">
-                                    <div class="email-text">💡 ${e}</div>
-                                    <button class="copy-btn" onclick="copyEmail('${e}')">📋 Copy</button>
-                                </div>
-                            `;
-                        });
-                        errorMsg += `</div>`;
+                    // CHỈ gợi ý email nếu input là email
+                    if (!isPhone) {
+                        const similarEmails = findSimilarEmails(input);
+                        
+                        let errorMsg = `❌ <strong>Không tìm thấy email này trong hệ thống!</strong>`;
+                        
+                        if (similarEmails.length > 0) {
+                            errorMsg += `<br><br><strong>🔍 Email gợi ý:</strong>`;
+                            errorMsg += `<div class="suggestions-container">`;
+                            similarEmails.forEach(email => {
+                                errorMsg += `
+                                    <div class="email-suggestion">
+                                        <div class="email-text">💡 ${email}</div>
+                                        <button class="copy-btn" onclick="copyEmail('${email}')">📋 Copy</button>
+                                    </div>
+                                `;
+                            });
+                            errorMsg += `</div>`;
+                        }
+                        
+                        showError(errorMsg);
+                    } else {
+                        // Không gợi ý cho số điện thoại
+                        showError(`❌ <strong>Không tìm thấy số điện thoại này trong hệ thống!</strong>`);
                     }
-                    
-                    showError(errorMsg);
                 } else {
                     // Hiển thị thông tin ghế
                     displaySeatInfo(seatInfo);
                     
-                    // Highlight ghế trên sơ đồ
-                    highlightSeat(seatInfo.seatNumber);
+                    // Kiểm tra nếu là ghế VIP (hàng A hoặc B) thì highlight hàng tương ứng
+                    if (seatInfo.row === 'A' || seatInfo.row === 'B') {
+                        highlightVIPRow(seatInfo.row);
+                    } else {
+                        // Highlight ghế thường trên sơ đồ
+                        highlightSeat(seatInfo.seatNumber);
+                    }
                 }
 
-                // Reset button
+                // Reset button và mở khóa input
                 isLoading = false;
                 searchBtn.innerHTML = 'Tra cứu';
                 searchBtn.disabled = false;
+                unlockInput();
             }, 500);
         }
 
-        // Hiển thị thông tin ghế
+        // Hiển thị thông tin ghế (bỏ trường supplement)
         function displaySeatInfo(seatInfo) {
-            document.getElementById('seatNumber').textContent = seatInfo.seatNumber;
+            // Hiển thị họ tên
+            document.getElementById('fullName').textContent = seatInfo.fullName;
+            
+            // Kiểm tra nếu ghế thuộc hàng A hoặc B thì hiển thị "VIP" thay vì số ghế cụ thể
+            if (seatInfo.row === 'A' || seatInfo.row === 'B') {
+                document.getElementById('seatNumber').textContent = 'VIP';
+            } else {
+                document.getElementById('seatNumber').textContent = seatInfo.seatNumber;
+            }
+            
+            // Hiển thị hàng
             document.getElementById('rowNumber').textContent = seatInfo.row;
             
+            // Hiển thị kết quả
             document.getElementById('resultSection').classList.remove('hidden');
         }
 
-        // Highlight ghế trên sơ đồ
+        // Highlight ghế thường trên sơ đồ
         function highlightSeat(seatNumber) {
             const seatElement = document.getElementById(`seat-${seatNumber}`);
             if (seatElement) {
@@ -1073,9 +1117,14 @@ const seatData = {
             errorMessage.classList.remove('hidden');
         }
 
-        // Validate email
-        function isValidEmail(email) {
-            return /\S+@\S+\.\S+/.test(email);
+        // Validate email hoặc số điện thoại
+        function isValidEmail(input) {
+            // Nếu là số điện thoại (bắt đầu bằng số)
+            if (/^\d/.test(input)) {
+                return /^0\d{9,10}$/.test(input); // Số điện thoại VN: 10-11 số, bắt đầu bằng 0
+            }
+            // Nếu là email
+            return /\S+@\S+\.\S+/.test(input);
         }
 
         // Event listeners
@@ -1085,24 +1134,31 @@ const seatData = {
             }
         });
 
-        // Theo dõi thay đổi input để xử lý auto-complete và hiển thị nút clear
+        // Theo dõi thay đổi input để xử lý auto-complete, hiển thị nút clear và tự động tìm kiếm số điện thoại
         document.getElementById('emailInput').addEventListener('input', function(e) {
+            // Chặn input nếu đang trong quá trình auto-complete
+            if (isAutoCompleting) {
+                e.preventDefault();
+                return false;
+            }
+            
             const inputValue = e.target.value;
-            console.log('Input event:', {current: inputValue, previous: lastInputValue});
             
             // Xử lý xóa thông minh trước
             const wasSmartDeleted = handleSmartDelete(inputValue, lastInputValue);
             
             if (wasSmartDeleted) {
-                console.log('Smart delete applied, updating lastInputValue to:', e.target.value);
-                lastInputValue = e.target.value; // Lấy giá trị mới sau khi xóa thông minh
+                lastInputValue = e.target.value;
                 toggleClearButton();
                 return;
             }
             
-            // Xử lý auto-complete bình thường
+            // Xử lý auto-complete bình thường cho email
             toggleClearButton();
             handleAutoComplete(inputValue);
+            
+            // THÊM: Xử lý tự động tìm kiếm cho số điện thoại 10 chữ số
+            handlePhoneAutoSearch(inputValue);
             
             // Lưu giá trị hiện tại để so sánh lần sau
             lastInputValue = inputValue;
@@ -1111,23 +1167,27 @@ const seatData = {
         // Sử dụng beforeinput để capture chính xác hơn
         document.getElementById('emailInput').addEventListener('beforeinput', function(e) {
             const currentValue = e.target.value;
-            console.log('Before input:', {
-                inputType: e.inputType,
-                currentValue: currentValue,
-                data: e.data
-            });
             
             // Chỉ xử lý khi là delete/backspace
             if (e.inputType === 'deleteContentBackward' || e.inputType === 'deleteContentForward') {
                 lastInputValue = currentValue;
-                console.log('Captured value before delete:', lastInputValue);
             }
         });
 
         // Thêm event listener cho keydown
         document.getElementById('emailInput').addEventListener('keydown', function(e) {
+            // Chặn tất cả phím khi đang auto-complete, trừ một số phím đặc biệt
+            if (isAutoCompleting) {
+                const allowedKeys = ['Tab', 'Escape', 'F5'];
+                if (!allowedKeys.includes(e.key)) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+            
             if (e.key !== 'Enter') {
                 clearTimeout(autoCompleteTimeout);
+                clearTimeout(phoneSearchTimeout); // Thêm: Xóa timeout tìm kiếm số điện thoại khi gõ phím khác
             }
         });
 
@@ -1135,14 +1195,6 @@ const seatData = {
         document.addEventListener('DOMContentLoaded', function() {
             createSeatingChart();
             document.getElementById('emailInput').focus();
-            
-            // Hiển thị hướng dẫn ban đầu
-            setTimeout(() => {
-                document.getElementById('autoCompleteNotice').classList.remove('hidden');
-                setTimeout(() => {
-                    document.getElementById('autoCompleteNotice').classList.add('hidden');
-                }, 5000);
-            }, 1000);
         });
     </script>
 </body>
