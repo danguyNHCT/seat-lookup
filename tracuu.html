@@ -700,16 +700,14 @@
             });
         }
 
-        // Xử lý auto-complete khi gõ @ và xóa thông minh
+        // Cải thiện hàm xử lý auto-complete với logic rõ ràng hơn
         function handleAutoComplete(inputValue) {
             const emailInput = document.getElementById('emailInput');
             const currentPosition = emailInput.selectionStart;
             
             // Kiểm tra nếu vừa gõ ký tự @ (chỉ áp dụng cho email)  
             if (inputValue.endsWith('@') && !inputValue.match(/^\d/)) {
-                let newValue = inputValue;
-                
-                // Kiểm tra các trường hợp đặc biệt cần domain khác
+                // Định nghĩa rõ ràng các trường hợp đặc biệt với domain khác
                 const specialCases = {
                     'nh.quang@': 'nh.quang@myvbi.vn',
                     'xuanbtt@': 'xuanbtt@myvbi.vn',
@@ -718,38 +716,52 @@
                     'vinhtp@': 'vinhtp@cts.vn',
                     'luatld@': 'luatld@vietinbankamc.vn',
                     'tuongnq@': 'tuongnq@vietinbankleasing.vn',
+                    'haimanh@': 'haimanh@vietinbankleasing.vn',			
                     'diep.pth@': 'diep.pth@vietinbankgold.vn',
                     'ducnh@': 'ducnh@vietinbankcapital.vn'
                 };
                 
-                // Kiểm tra nếu input khớp với một trong các trường hợp đặc biệt
-                if (specialCases[inputValue]) {
-                    newValue = specialCases[inputValue];
-                } else {
-                    // Trường hợp mặc định: thêm @vietinbank.vn
+                let newValue = inputValue;
+                
+                // Kiểm tra nghiêm ngặt từng trường hợp đặc biệt
+                const hasSpecialCase = Object.keys(specialCases).some(prefix => {
+                    if (inputValue === prefix) {
+                        newValue = specialCases[prefix];
+                        return true;
+                    }
+                    return false;
+                });
+                
+                // Nếu KHÔNG có trong special cases, mới dùng domain mặc định
+                if (!hasSpecialCase) {
                     newValue = inputValue + 'vietinbank.vn';
                 }
                 
                 // Chỉ auto-complete nếu chưa có domain đầy đủ
                 if (inputValue !== newValue) {
+                    console.log(`Auto-complete: ${inputValue} -> ${newValue}`); // Debug log
+                    
                     // Bắt đầu quá trình auto-complete - chặn input
                     isAutoCompleting = true;
                     emailInput.disabled = true;
                     emailInput.style.opacity = '0.7';
                     emailInput.style.cursor = 'wait';
                     
-                    emailInput.value = newValue;
-                    
-                    // Đặt con trỏ sau ký tự @
-                    setTimeout(() => {
-                        emailInput.setSelectionRange(currentPosition, currentPosition);
-                    }, 0);
-                    
-                    // Tự động tìm kiếm sau 1 giây
-                    clearTimeout(autoCompleteTimeout);
-                    autoCompleteTimeout = setTimeout(() => {
-                        searchSeat();
-                    }, 1000);
+                    // Sử dụng requestAnimationFrame để đảm bảo update DOM
+                    requestAnimationFrame(() => {
+                        emailInput.value = newValue;
+                        
+                        // Đặt con trỏ sau ký tự @
+                        setTimeout(() => {
+                            emailInput.setSelectionRange(currentPosition, currentPosition);
+                        }, 10);
+                        
+                        // Tự động tìm kiếm sau 1 giây
+                        clearTimeout(autoCompleteTimeout);
+                        autoCompleteTimeout = setTimeout(() => {
+                            searchSeat();
+                        }, 1000);
+                    });
                 }
             }
         }
@@ -762,14 +774,14 @@
             // Kiểm tra nếu input là số điện thoại và có đủ 10 chữ số
             const isPhone = /^\d+$/.test(inputValue);
             if (isPhone && inputValue.length === 10) {
-                // Tự động tìm kiếm sau 800ms để tránh tìm kiếm quá nhanh
+                // Tự động tìm kiếm sau 500ms để tránh tìm kiếm quá nhanh
                 phoneSearchTimeout = setTimeout(() => {
                     // Kiểm tra lại giá trị input để đảm bảo vẫn là 10 chữ số
                     const currentValue = document.getElementById('emailInput').value.trim();
                     if (currentValue === inputValue && /^\d{10}$/.test(currentValue)) {
                         searchSeat();
                     }
-                }, 800);
+                }, 500);
             }
         }
 
@@ -1127,19 +1139,43 @@
             return /\S+@\S+\.\S+/.test(input);
         }
 
-        // Event listeners
+        // Event listeners được cải thiện cho mobile
         document.getElementById('emailInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 searchSeat();
             }
         });
 
-        // Theo dõi thay đổi input để xử lý auto-complete, hiển thị nút clear và tự động tìm kiếm số điện thoại
+        // Sử dụng compositionend để xử lý tốt hơn với bàn phím ảo trên mobile
+        let isComposing = false;
+        
+        document.getElementById('emailInput').addEventListener('compositionstart', function() {
+            isComposing = true;
+        });
+        
+        document.getElementById('emailInput').addEventListener('compositionend', function() {
+            isComposing = false;
+            // Xử lý auto-complete sau khi hoàn thành nhập liệu
+            const inputValue = this.value;
+            setTimeout(() => {
+                if (!isComposing) {
+                    handleAutoComplete(inputValue);
+                    handlePhoneAutoSearch(inputValue);
+                }
+            }, 100);
+        });
+
+        // Theo dõi thay đổi input với xử lý tốt hơn cho mobile
         document.getElementById('emailInput').addEventListener('input', function(e) {
             // Chặn input nếu đang trong quá trình auto-complete
             if (isAutoCompleting) {
                 e.preventDefault();
                 return false;
+            }
+            
+            // Bỏ qua nếu đang compose (IME input)
+            if (isComposing) {
+                return;
             }
             
             const inputValue = e.target.value;
@@ -1153,12 +1189,16 @@
                 return;
             }
             
-            // Xử lý auto-complete bình thường cho email
+            // Xử lý auto-complete và tự động tìm kiếm
             toggleClearButton();
-            handleAutoComplete(inputValue);
             
-            // THÊM: Xử lý tự động tìm kiếm cho số điện thoại 10 chữ số
-            handlePhoneAutoSearch(inputValue);
+            // Delay một chút để tránh xung đột với composition events
+            setTimeout(() => {
+                if (!isComposing && !isAutoCompleting) {
+                    handleAutoComplete(inputValue);
+                    handlePhoneAutoSearch(inputValue);
+                }
+            }, 50);
             
             // Lưu giá trị hiện tại để so sánh lần sau
             lastInputValue = inputValue;
@@ -1174,7 +1214,7 @@
             }
         });
 
-        // Thêm event listener cho keydown
+        // Thêm event listener cho keydown với xử lý tốt hơn
         document.getElementById('emailInput').addEventListener('keydown', function(e) {
             // Chặn tất cả phím khi đang auto-complete, trừ một số phím đặc biệt
             if (isAutoCompleting) {
@@ -1187,7 +1227,7 @@
             
             if (e.key !== 'Enter') {
                 clearTimeout(autoCompleteTimeout);
-                clearTimeout(phoneSearchTimeout); // Thêm: Xóa timeout tìm kiếm số điện thoại khi gõ phím khác
+                clearTimeout(phoneSearchTimeout);
             }
         });
 
