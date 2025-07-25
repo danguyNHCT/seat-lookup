@@ -362,6 +362,26 @@
             display: none;
         }
 
+        .processing-info {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: #0c4a6e;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 3px solid #0284c7;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .processing-info::before {
+            content: "⚙️";
+            font-size: 14px;
+        }
+
         @keyframes vipGlow {
             0% { box-shadow: 0 2px 8px rgba(234, 179, 8, 0.4); }
             100% { box-shadow: 0 4px 16px rgba(234, 179, 8, 0.6); }
@@ -373,7 +393,7 @@
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -465,19 +485,15 @@
     </div>
 
     <script>
-        // ==================== OPTIMIZED DATA STRUCTURES ====================
-        
-        // Tách dữ liệu thành các cấu trúc tối ưu
+        // ==================== DATA STRUCTURES ====================
         const delegates = new Map();
         const phoneIndex = new Map();
         const usernameIndex = new Map();
-        const usernameList = []; // Chỉ lưu usernames để tối ưu tìm kiếm tương tự
+        const usernameList = [];
         
-        // ========== THAY THẾ TOÀN BỘ HÀM NÀY BẰNG DỮ LIỆU THẬT ==========
         function initializeDelegateData() {
-            // 🔥 THAY THẾ MẢNG NÀY BẰNG DỮ LIỆU 300 ĐẠI BIỂU THẬT
             const realDelegates = [
-  {
+                {
     "id": 1,
     "username": "binhtm",
     "phone": "0913588832",
@@ -3123,8 +3139,7 @@
     "row": "B",
     "position": 5
   }
-];
-            // 🔧 PHẦN XỬ LÝ INDEX (GIỮ NGUYÊN)
+            ];
             realDelegates.forEach(delegate => {
                 delegates.set(delegate.id, delegate);
                 phoneIndex.set(delegate.phone, delegate.id);
@@ -3133,61 +3148,75 @@
             });
         }
 
-        // ==================== OPTIMIZED SEARCH FUNCTIONS ====================
-        
-        // Tìm kiếm tối ưu bằng Map O(1)
+        // ==================== INPUT PROCESSING ====================
+        function processSearchInput(input) {
+            let processedInput = input.trim();
+            let processingNote = "";
+            
+            // Xử lý số điện thoại có space (chạy ngầm, không hiển thị thông báo)
+            if (/^\d/.test(processedInput) || /\d/.test(processedInput)) {
+                const spaceCount = (processedInput.match(/\s/g) || []).length;
+                
+                if (spaceCount > 0) {
+                    processedInput = processedInput.replace(/\s+/g, '');
+                    // Không tạo processingNote cho số điện thoại
+                }
+            }
+            // Xử lý email đầy đủ (chạy ngầm, không hiển thị thông báo)
+            else if (processedInput.includes('@')) {
+                const atIndex = processedInput.indexOf('@');
+                processedInput = processedInput.substring(0, atIndex);
+                // Không tạo processingNote cho trường hợp email
+            }
+            
+            return { processedInput, processingNote };
+        }
+
+        function showProcessingInfo(message) {
+            // Hàm này không còn sử dụng, giữ lại để tránh lỗi
+        }
+
+        // ==================== SEARCH FUNCTIONS ====================
         function findDelegate(searchKey) {
             const lowerKey = searchKey.toLowerCase();
             
-            // Tìm theo phone
             if (/^\d/.test(searchKey)) {
                 const delegateId = phoneIndex.get(searchKey);
                 return delegateId ? delegates.get(delegateId) : null;
             }
             
-            // Tìm theo username
             const delegateId = usernameIndex.get(lowerKey);
             return delegateId ? delegates.get(delegateId) : null;
         }
 
-        // Tối ưu tìm kiếm tương tự với binary search và prefix matching
         function findSimilarUsernames(searchInput) {
             const searchLower = searchInput.toLowerCase();
-            const searchLen = searchLower.length;
+            if (searchLower.length < 2) return [];
             
-            if (searchLen < 2) return [];
-            
-            // Tìm prefix match trước (nhanh hơn)
             const prefixMatches = usernameList.filter(username => 
                 username.toLowerCase().startsWith(searchLower.slice(0, 2))
             );
             
             if (prefixMatches.length === 0) return [];
             
-            // Tính similarity chỉ cho prefix matches
-            const results = prefixMatches
+            return prefixMatches
                 .map(username => ({
                     username,
                     similarity: calculateSimilarity(searchLower, username.toLowerCase())
                 }))
-                .filter(item => item.similarity > 0.4) // Lọc similarity thấp
+                .filter(item => item.similarity > 0.4)
                 .sort((a, b) => b.similarity - a.similarity)
                 .slice(0, 3)
                 .map(item => item.username);
-            
-            return results;
         }
 
-        // Tối ưu hàm tính similarity với early termination
         function calculateSimilarity(str1, str2) {
             const len1 = str1.length;
             const len2 = str2.length;
             const maxLen = Math.max(len1, len2);
             
-            // Early termination cho độ dài quá khác biệt
             if (Math.abs(len1 - len2) > maxLen * 0.5) return 0;
             
-            // Simplified Levenshtein với early termination
             const matrix = Array(len1 + 1).fill().map(() => Array(len2 + 1).fill(0));
             
             for (let i = 0; i <= len1; i++) matrix[i][0] = i;
@@ -3207,11 +3236,9 @@
             return (maxLen - matrix[len1][len2]) / maxLen;
         }
 
-        // ==================== OPTIMIZED DOM OPERATIONS ====================
-        
+        // ==================== UI FUNCTIONS ====================
         let seatingChartCreated = false;
         
-        // Lazy loading cho seating chart
         function createSeatingChart() {
             if (seatingChartCreated) return;
             
@@ -3245,40 +3272,34 @@
             seatingChartCreated = true;
         }
 
-        // Cache DOM elements
-        const domCache = {};
-        function getCachedElement(id) {
-            if (!domCache[id]) {
-                domCache[id] = document.getElementById(id);
-            }
-            return domCache[id];
-        }
-
-        // ==================== OPTIMIZED EVENT HANDLERS ====================
-        
-        let searchTimeout;
         let isLoading = false;
         
         function searchSeat() {
             if (isLoading) return;
             
-            const input = getCachedElement('searchInput').value.trim();
-            const errorMessage = getCachedElement('errorMessage');
-            const resultSection = getCachedElement('resultSection');
-            const searchBtn = getCachedElement('searchBtn');
+            const originalInput = document.getElementById('searchInput').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            const resultSection = document.getElementById('resultSection');
+            const searchBtn = document.getElementById('searchBtn');
 
-            // Reset UI
             errorMessage.classList.add('hidden');
             resultSection.classList.add('hidden');
+            showProcessingInfo('');
             resetHighlight();
 
-            if (!input) {
+            if (!originalInput) {
                 showError('Vui lòng nhập username email hoặc số điện thoại!');
                 return;
             }
 
-            const isPhone = /^\d/.test(input);
-            if (!isPhone && !isValidUsername(input)) {
+            const { processedInput, processingNote } = processSearchInput(originalInput);
+            
+            if (processingNote) {
+                showProcessingInfo(processingNote);
+            }
+
+            const isPhone = /^\d/.test(processedInput);
+            if (!isPhone && !isValidUsername(processedInput)) {
                 showError('Username email hoặc số điện thoại không hợp lệ!');
                 return;
             }
@@ -3287,12 +3308,11 @@
             searchBtn.innerHTML = '<span class="loading"></span>Đang tra cứu...';
             searchBtn.disabled = true;
 
-            // Tìm kiếm ngay lập tức (đã tối ưu O(1))
             setTimeout(() => {
-                const delegate = findDelegate(input);
+                const delegate = findDelegate(processedInput);
                 
                 if (!delegate) {
-                    handleSearchNotFound(input, isPhone);
+                    handleSearchNotFound(processedInput, isPhone, processingNote);
                 } else {
                     displaySeatInfo(delegate);
                     highlightSeatOrVIP(delegate);
@@ -3301,12 +3321,12 @@
                 isLoading = false;
                 searchBtn.innerHTML = 'Tra cứu';
                 searchBtn.disabled = false;
-            }, 100); // Giảm delay từ 500ms xuống 100ms
+            }, 100);
         }
 
-        function handleSearchNotFound(input, isPhone) {
+        function handleSearchNotFound(processedInput, isPhone, processingNote) {
             if (!isPhone) {
-                const similarUsernames = findSimilarUsernames(input);
+                const similarUsernames = findSimilarUsernames(processedInput);
                 let errorMsg = `❌ <strong>Không tìm thấy username này trong hệ thống!</strong>`;
                 
                 if (similarUsernames.length > 0) {
@@ -3324,15 +3344,16 @@
                 }
                 showError(errorMsg);
             } else {
-                showError(`❌ <strong>Không tìm thấy số điện thoại này trong hệ thống!</strong>`);
+                let errorMsg = `❌ <strong>Không tìm thấy số điện thoại này trong hệ thống!</strong>`;
+                showError(errorMsg);
             }
         }
 
         function displaySeatInfo(delegate) {
-            getCachedElement('fullName').textContent = delegate.fullName;
-            getCachedElement('seatNumber').textContent = (delegate.row === 'A' || delegate.row === 'B') ? 'VIP' : delegate.seatNumber;
-            getCachedElement('rowNumber').textContent = delegate.row;
-            getCachedElement('resultSection').classList.remove('hidden');
+            document.getElementById('fullName').textContent = delegate.fullName;
+            document.getElementById('seatNumber').textContent = (delegate.row === 'A' || delegate.row === 'B') ? 'VIP' : delegate.seatNumber;
+            document.getElementById('rowNumber').textContent = delegate.row;
+            document.getElementById('resultSection').classList.remove('hidden');
         }
 
         function highlightSeatOrVIP(delegate) {
@@ -3345,10 +3366,7 @@
             }
         }
 
-        // ==================== OTHER OPTIMIZED FUNCTIONS ====================
-        
         function resetHighlight() {
-            // Sử dụng querySelectorAll với cache và batch operations
             const selectedSeats = document.querySelectorAll('.seat.selected, .seat.vip-area');
             selectedSeats.forEach(seat => {
                 seat.classList.remove('selected', 'vip-area');
@@ -3357,7 +3375,6 @@
 
         function highlightVIPRow(row) {
             const seatsPerRow = 24;
-            const fragment = document.createDocumentFragment();
             
             for (let i = 1; i <= seatsPerRow; i++) {
                 const seatElement = document.getElementById(`seat-${row}${i}`);
@@ -3366,7 +3383,6 @@
                 }
             }
 
-            // Smooth scroll với intersection observer nếu cần
             const firstSeat = document.getElementById(`seat-${row}1`);
             if (firstSeat) {
                 firstSeat.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -3382,7 +3398,7 @@
         }
 
         function showError(message) {
-            const errorMessage = getCachedElement('errorMessage');
+            const errorMessage = document.getElementById('errorMessage');
             errorMessage.innerHTML = message;
             errorMessage.classList.remove('hidden');
         }
@@ -3395,42 +3411,39 @@
         }
 
         function toggleClearButton() {
-            const searchInput = getCachedElement('searchInput');
-            const clearBtn = getCachedElement('clearBtn');
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearBtn');
             
             clearBtn.style.display = searchInput.value.trim() ? 'flex' : 'none';
         }
 
         function clearInput() {
-            const searchInput = getCachedElement('searchInput');
+            const searchInput = document.getElementById('searchInput');
             searchInput.value = '';
             searchInput.focus();
             toggleClearButton();
             
-            getCachedElement('errorMessage').classList.add('hidden');
-            getCachedElement('resultSection').classList.add('hidden');
+            document.getElementById('errorMessage').classList.add('hidden');
+            document.getElementById('resultSection').classList.add('hidden');
+            showProcessingInfo('');
             resetHighlight();
         }
 
         function copyInput(input) {
-            const searchInput = getCachedElement('searchInput');
+            const searchInput = document.getElementById('searchInput');
             
             searchInput.value = input;
             searchInput.focus();
             toggleClearButton();
             
-            // Tự động search ngay lập tức
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                if (getCachedElement('searchInput').value.trim().toLowerCase() === input.toLowerCase()) {
+            setTimeout(() => {
+                if (document.getElementById('searchInput').value.trim().toLowerCase() === input.toLowerCase()) {
                     searchSeat();
                 }
-            }, 300); // Giảm từ 1000ms xuống 300ms
+            }, 300);
         }
 
-        // ==================== OPTIMIZED EVENT LISTENERS ====================
-        
-        // Throttle input events để tối ưu performance
+        // ==================== EVENT LISTENERS ====================
         function throttle(func, delay) {
             let timeoutId;
             let lastExecTime = 0;
@@ -3453,20 +3466,10 @@
         const throttledToggleClear = throttle(toggleClearButton, 100);
 
         // ==================== INITIALIZATION ====================
-        
         document.addEventListener('DOMContentLoaded', function() {
-            // Khởi tạo dữ liệu
             initializeDelegateData();
             
-            // Cache các element thường dùng
-            getCachedElement('searchInput');
-            getCachedElement('clearBtn');
-            getCachedElement('searchBtn');
-            getCachedElement('errorMessage');
-            getCachedElement('resultSection');
-            
-            // Event listeners với optimizations
-            const searchInput = getCachedElement('searchInput');
+            const searchInput = document.getElementById('searchInput');
             
             searchInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -3476,11 +3479,8 @@
             });
 
             searchInput.addEventListener('input', throttledToggleClear);
-            
-            // Focus vào input
             searchInput.focus();
             
-            // Lazy load seating chart khi cần
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -3493,21 +3493,6 @@
             const seatingChart = document.querySelector('.seating-chart');
             observer.observe(seatingChart);
         });
-
-        // ==================== PERFORMANCE MONITORING ====================
-        
-        // Optional: Monitor performance in development
-        if (typeof performance !== 'undefined' && performance.mark) {
-            function measureSearchPerformance() {
-                performance.mark('search-start');
-                return () => {
-                    performance.mark('search-end');
-                    performance.measure('search-duration', 'search-start', 'search-end');
-                    const measure = performance.getEntriesByName('search-duration')[0];
-                    console.log(`Search completed in ${measure.duration.toFixed(2)}ms`);
-                };
-            }
-        }
     </script>
 </body>
 </html>
