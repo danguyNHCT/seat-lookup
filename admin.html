@@ -126,10 +126,19 @@
             border-left: 4px solid #dc2626;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: transform 0.3s;
+            position: relative;
         }
 
         .stat-card:hover {
             transform: translateY(-2px);
+        }
+
+        .stat-card.mobile {
+            border-left-color: #10b981;
+        }
+
+        .stat-card.desktop {
+            border-left-color: #3b82f6;
         }
 
         .stat-label {
@@ -146,6 +155,14 @@
             font-weight: bold;
             color: #dc2626;
             margin-bottom: 5px;
+        }
+
+        .stat-card.mobile .stat-value {
+            color: #10b981;
+        }
+
+        .stat-card.desktop .stat-value {
+            color: #3b82f6;
         }
 
         .stat-desc {
@@ -430,10 +447,32 @@
             z-index: 9999;
             max-width: 400px;
             display: none;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .debug-panel.active {
             display: block;
+        }
+
+        .debug-section {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .debug-title {
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .debug-value {
+            font-family: monospace;
+            font-size: 12px;
+            color: #64748b;
         }
 
         @keyframes spin {
@@ -472,6 +511,13 @@
             .logs-table td {
                 padding: 8px;
             }
+
+            .debug-panel {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
         }
     </style>
 </head>
@@ -504,15 +550,15 @@
                         <div class="stat-value" id="totalSearches">0</div>
                         <div class="stat-desc">Từ khi bắt đầu ghi nhận</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Tra cứu Mobile</div>
+                    <div class="stat-card mobile">
+                        <div class="stat-label">Tra cứu Mobile 📱</div>
                         <div class="stat-value" id="mobileSearches">0</div>
-                        <div class="stat-desc">📱 Từ điện thoại</div>
+                        <div class="stat-desc">Từ điện thoại di động</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Tra cứu Desktop</div>
+                    <div class="stat-card desktop">
+                        <div class="stat-label">Tra cứu Desktop 💻</div>
                         <div class="stat-value" id="desktopSearches">0</div>
-                        <div class="stat-desc">💻 Từ máy tính</div>
+                        <div class="stat-desc">Từ máy tính</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Tỷ lệ tra cứu</div>
@@ -522,7 +568,7 @@
                 </div>
 
                 <div class="chart-container">
-                    <div class="chart-title">📊 Biểu đồ tra cứu theo thời gian</div>
+                    <div class="chart-title">📊 Biểu đồ tra cứu theo thời gian (Mobile vs Desktop)</div>
                     <canvas id="searchChart" width="800" height="300"></canvas>
                 </div>
 
@@ -534,7 +580,7 @@
                                 <span id="refreshIcon">🔄</span> Làm mới
                             </button>
                             <button class="debug-btn" onclick="toggleDebugPanel()">
-                                📱 Debug
+                                📱 Debug Mobile
                             </button>
                             <a href="index.html" class="export-btn blue" target="_blank">
                                 🔗 Trang chính
@@ -638,7 +684,10 @@
     <div id="debugPanel" class="debug-panel">
         <h4 style="color: #dc2626; margin-bottom: 15px;">📱 Mobile vs Desktop Debug</h4>
         <div id="debugContent"></div>
-        <button onclick="toggleDebugPanel()" style="margin-top: 15px; padding: 8px 16px; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer;">Đóng</button>
+        <div style="margin-top: 15px; text-align: center;">
+            <button onclick="toggleDebugPanel()" style="padding: 8px 16px; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">Đóng</button>
+            <button onclick="refreshDebugInfo()" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer;">Refresh</button>
+        </div>
     </div>
 
     <script>
@@ -702,7 +751,7 @@
             }
             
             // Create CSV content
-            let csvContent = "STT,Thời gian,Từ khóa tìm kiếm,Thiết bị,Tìm thấy,Họ tên,Username,Số điện thoại,Số ghế,Hàng\n";
+            let csvContent = "STT,Thời gian,Thiết bị,Từ khóa tìm kiếm,Tìm thấy,Họ tên,Username,Số điện thoại,Số ghế,Hàng\n";
             
             logs.forEach((log, index) => {
                 const time = new Date(log.timestamp).toLocaleString('vi-VN');
@@ -714,7 +763,7 @@
                 const seat = log.found ? log.delegate.seatNumber : '';
                 const row = log.found ? log.delegate.row : '';
                 
-                csvContent += `${index + 1},"${time}","${log.searchTerm}","${device}","${found}","${name}","${username}","${phone}","${seat}","${row}"\n`;
+                csvContent += `${index + 1},"${time}","${device}","${log.searchTerm}","${found}","${name}","${username}","${phone}","${seat}","${row}"\n`;
             });
             
             // Create and download file
@@ -761,6 +810,10 @@
                 loadDebugInfo();
                 panel.classList.add('active');
             }
+        };
+
+        window.refreshDebugInfo = function() {
+            loadDebugInfo();
         };
 
         // ==================== DATA MANAGEMENT ====================
@@ -1014,24 +1067,65 @@
             const logs = getSearchLogs();
             const stats = calculateStats();
             
+            const mobileLogs = logs.filter(log => log.device === 'mobile');
+            const desktopLogs = logs.filter(log => log.device === 'desktop' || !log.device);
+            const unknownLogs = logs.filter(log => !log.device);
+            
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const todayLogs = logs.filter(log => log.timestamp.startsWith(today));
+            const todayMobile = todayLogs.filter(log => log.device === 'mobile');
+            const todayDesktop = todayLogs.filter(log => log.device === 'desktop' || !log.device);
+            
             const debugContent = document.getElementById('debugContent');
             debugContent.innerHTML = `
-                <div style="margin-bottom: 15px;">
-                    <strong>📊 Tổng quan:</strong><br>
-                    • Tổng logs: ${stats.totalSearches}<br>
-                    • 📱 Mobile: ${stats.mobileSearches}<br>
-                    • 💻 Desktop: ${stats.desktopSearches}
+                <div class="debug-section">
+                    <div class="debug-title">📊 Tổng quan logs:</div>
+                    <div class="debug-value">
+                        • Tổng logs: ${stats.totalSearches}<br>
+                        • 📱 Mobile: ${stats.mobileSearches}<br>
+                        • 💻 Desktop: ${stats.desktopSearches}<br>
+                        • ❓ Unknown device: ${unknownLogs.length}
+                    </div>
                 </div>
-                <div style="margin-bottom: 15px;">
-                    <strong>🔍 Logs gần nhất:</strong><br>
-                    ${logs.slice(0, 3).map(log => 
-                        `• ${log.device || 'desktop'}: ${log.searchTerm} (${log.found ? '✅' : '❌'})`
-                    ).join('<br>')}
+                
+                <div class="debug-section">
+                    <div class="debug-title">📅 Hôm nay (${today}):</div>
+                    <div class="debug-value">
+                        • Tổng: ${todayLogs.length}<br>
+                        • 📱 Mobile: ${todayMobile.length}<br>
+                        • 💻 Desktop: ${todayDesktop.length}
+                    </div>
                 </div>
-                <div>
-                    <strong>⚙️ Debug actions:</strong><br>
-                    <button onclick="testMobileLogging()" style="margin: 5px; padding: 5px 10px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer;">Test Mobile Log</button>
-                    <button onclick="clearAllLogs()" style="margin: 5px; padding: 5px 10px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer;">Clear All</button>
+                
+                <div class="debug-section">
+                    <div class="debug-title">🔍 Logs gần nhất (5):</div>
+                    <div class="debug-value">
+                        ${logs.slice(0, 5).map((log, i) => 
+                            `${i+1}. ${log.device || '❓'}: ${log.searchTerm} (${log.found ? '✅' : '❌'})<br>`
+                        ).join('')}
+                    </div>
+                </div>
+                
+                <div class="debug-section">
+                    <div class="debug-title">📱 Mobile logs gần nhất (3):</div>
+                    <div class="debug-value">
+                        ${mobileLogs.length > 0 ? 
+                            mobileLogs.slice(0, 3).map((log, i) => 
+                                `${i+1}. ${log.searchTerm} - ${new Date(log.timestamp).toLocaleTimeString('vi-VN')}<br>`
+                            ).join('') 
+                            : '<em style="color: #ef4444;">Không có mobile logs!</em>'
+                        }
+                    </div>
+                </div>
+                
+                <div class="debug-section">
+                    <div class="debug-title">⚙️ Debug actions:</div>
+                    <div style="margin-top: 10px;">
+                        <button onclick="createTestMobileLog()" style="margin: 5px; padding: 5px 10px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Tạo Test Mobile Log</button>
+                        <button onclick="createTestDesktopLog()" style="margin: 5px; padding: 5px 10px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Tạo Test Desktop Log</button>
+                        <button onclick="showDetailedLogs()" style="margin: 5px; padding: 5px 10px; background: #f59e0b; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Chi tiết Logs</button>
+                    </div>
                 </div>
             `;
         }
@@ -1093,7 +1187,7 @@
             logs.forEach(log => {
                 const date = log.timestamp.split('T')[0];
                 if (dayGroups.hasOwnProperty(date)) {
-                    const device = log.device || 'desktop';
+                    const device = log.device === 'mobile' ? 'mobile' : 'desktop';
                     dayGroups[date][device]++;
                     dayGroups[date].total++;
                 }
@@ -1146,6 +1240,26 @@
                     ctx.font = 'bold 12px Arial';
                     ctx.textAlign = 'center';
                     ctx.fillText(totalCount.toString(), x + width / 2, mobileY - 5);
+                }
+                
+                // Draw mobile count if > 0
+                if (mobileCount > 0) {
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 10px Arial';
+                    const mobileTextY = mobileY + mobileHeight / 2 + 3;
+                    if (mobileHeight > 15) {
+                        ctx.fillText(mobileCount.toString(), x + width / 2, mobileTextY);
+                    }
+                }
+                
+                // Draw desktop count if > 0
+                if (desktopCount > 0) {
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 10px Arial';
+                    const desktopTextY = desktopY + desktopHeight / 2 + 3;
+                    if (desktopHeight > 15) {
+                        ctx.fillText(desktopCount.toString(), x + width / 2, desktopTextY);
+                    }
                 }
                 
                 // Draw date label
@@ -1282,9 +1396,9 @@
         }
         
         // ==================== DEBUG FUNCTIONS ====================
-        window.testMobileLogging = function() {
+        window.createTestMobileLog = function() {
             const testLog = {
-                id: Date.now() + '_test',
+                id: Date.now() + '_test_mobile',
                 timestamp: new Date().toISOString(),
                 searchTerm: 'TEST_MOBILE_' + Date.now(),
                 found: true,
@@ -1305,6 +1419,42 @@
             alert('✅ Đã tạo test mobile log!');
             loadDashboard();
             loadDebugInfo();
+        };
+
+        window.createTestDesktopLog = function() {
+            const testLog = {
+                id: Date.now() + '_test_desktop',
+                timestamp: new Date().toISOString(),
+                searchTerm: 'TEST_DESKTOP_' + Date.now(),
+                found: true,
+                device: 'desktop',
+                delegate: {
+                    fullName: 'Test Desktop User',
+                    seatNumber: 'B2',
+                    row: 'B',
+                    username: 'testdesktop',
+                    phone: '0888888888'
+                }
+            };
+            
+            const logs = getSearchLogs();
+            logs.unshift(testLog);
+            saveSearchLogs(logs);
+            
+            alert('✅ Đã tạo test desktop log!');
+            loadDashboard();
+            loadDebugInfo();
+        };
+
+        window.showDetailedLogs = function() {
+            const logs = getSearchLogs();
+            console.log('📋 === CHI TIẾT TẤT CẢ LOGS ===');
+            console.table(logs.slice(0, 20));
+            
+            const mobileCount = logs.filter(log => log.device === 'mobile').length;
+            const desktopCount = logs.filter(log => log.device === 'desktop' || !log.device).length;
+            
+            alert(`📊 Chi tiết logs:\n• Tổng: ${logs.length}\n• Mobile: ${mobileCount}\n• Desktop: ${desktopCount}\n\nXem Console để thấy chi tiết 20 logs gần nhất`);
         };
         
         window.clearAllLogs = function() {
@@ -1372,6 +1522,10 @@
             setTimeout(() => {
                 const stats = calculateStats();
                 console.log(`📊 Current stats: Total: ${stats.totalSearches}, Mobile: ${stats.mobileSearches}, Desktop: ${stats.desktopSearches}`);
+                
+                if (stats.totalSearches > 0 && stats.mobileSearches === 0) {
+                    console.warn('⚠️ CÓ LOGS NHƯNG KHÔNG CÓ MOBILE LOGS - Kiểm tra trang tra cứu!');
+                }
             }, 2000);
         });
         
