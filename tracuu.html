@@ -231,7 +231,7 @@
             color: white;
             text-align: center;
             padding: 10px;
-            margin: 0 0 20px 0;
+            margin: 0 0 40px 0;
             border-radius: 8px;
             width: calc(24 * 38px + 23 * 3px + 30px);
             font-weight: bold;
@@ -382,31 +382,62 @@
             font-size: 14px;
         }
 
-        /* Admin Button Styles */
-        .admin-button {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            padding: 12px 20px;
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: none;
+        .lotus-row {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            flex-wrap: nowrap;
+            margin-bottom: 15px;
+            height: 20px;
         }
 
-        .admin-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
-            color: white;
-            text-decoration: none;
+        .lotus-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 20px;
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            border: 1px solid #f9a8d4;
+            border-radius: 10px;
+            color: #be185d;
+            font-size: 10px;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(190, 24, 93, 0.2);
+            animation: lotusGlow 3s ease-in-out infinite alternate;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lotus-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin: 0 4px;
+            position: relative;
+        }
+
+        .lotus-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #be185d;
+            filter: drop-shadow(0 1px 2px rgba(190, 24, 93, 0.3));
+            animation: lotusFloat 4s ease-in-out infinite alternate;
+        }
+
+        .lotus-segment:nth-child(1) {
+            width: calc(6 * 38px + 5 * 3px);
+            margin-right: 15px;
+        }
+
+        .lotus-segment:nth-child(2) {
+            width: calc(12 * 38px + 11 * 3px);
+            margin-right: 15px;
+        }
+
+        .lotus-segment:nth-child(3) {
+            width: calc(6 * 38px + 5 * 3px);
         }
 
         @keyframes vipGlow {
@@ -441,7 +472,6 @@
             .username-suggestion { padding: 8px 12px; }
             .username-text { font-size: 13px; }
             .copy-btn { padding: 4px 8px; font-size: 11px; }
-            .admin-button { top: 10px; right: 10px; padding: 8px 12px; font-size: 12px; }
         }
 
         @media (max-width: 480px) {
@@ -526,18 +556,18 @@
     "username": "binhtm",
     "phone": "0913588832",
     "fullName": "Trần Minh Bình",
-    "seatNumber": "A18",
+    "seatNumber": "A17",
     "row": "A",
-    "position": 18
+    "position": 17
   },
   {
     "id": 2,
     "username": "cuongtk",
     "phone": "0913260131",
     "fullName": "Trần Kiên Cường",
-    "seatNumber": "A6",
+    "seatNumber": "A1",
     "row": "A",
-    "position": 6
+    "position": 1
   },
   {
     "id": 3,
@@ -553,27 +583,27 @@
     "username": "tan.tv",
     "phone": "0912171372",
     "fullName": "Trần Văn Tần",
-    "seatNumber": "A3",
-    "row": "A",
-    "position": 3
+    "seatNumber": "B7",
+    "row": "B",
+    "position": 7
   },
   {
     "id": 5,
     "username": "huannt",
     "phone": "0913538811",
     "fullName": "Nguyễn Thế Huân",
-    "seatNumber": "A4",
-    "row": "A",
-    "position": 4
+    "seatNumber": "B6",
+    "row": "B",
+    "position": 6
   },
   {
     "id": 6,
     "username": "dungnv7",
     "phone": "0935588888",
     "fullName": "Nguyễn Việt Dũng",
-    "seatNumber": "A23",
-    "row": "A",
-    "position": 23
+    "seatNumber": "B19",
+    "row": "B",
+    "position": 19
   },
   {
     "id": 7,
@@ -589,9 +619,9 @@
     "username": "dtson",
     "phone": "0908687868",
     "fullName": "Đỗ Thanh Sơn",
-    "seatNumber": "B6",
+    "seatNumber": "B5",
     "row": "B",
-    "position": 6
+    "position": 5
   },
   {
     "id": 9,
@@ -607,81 +637,81 @@
     "username": "giangnq",
     "phone": "0913297191",
     "fullName": "Nguyễn Quốc Giang",
-    "seatNumber": "B8",
+    "seatNumber": "B1",
     "row": "B",
-    "position": 8
+    "position": 1
   },
   {
     "id": 11,
     "username": "hoaiptt",
     "phone": "0912323239",
     "fullName": "Phạm Thị Thanh Hoài",
-    "seatNumber": "B9",
+    "seatNumber": "B2",
     "row": "B",
-    "position": 9
+    "position": 2
   },
   {
     "id": 12,
     "username": "lethanhtung",
     "phone": "0904107810",
     "fullName": "Lê Thanh Tùng",
-    "seatNumber": "B10",
+    "seatNumber": "B3",
     "row": "B",
-    "position": 10
+    "position": 3
   },
   {
     "id": 13,
     "username": "hala",
     "phone": "0904021866",
     "fullName": "Lê Anh Hà",
-    "seatNumber": "C11",
+    "seatNumber": "C13",
     "row": "C",
-    "position": 11
+    "position": 13
   },
   {
     "id": 14,
     "username": "hoaln",
     "phone": "0913312827",
     "fullName": "Lê Như Hoa",
-    "seatNumber": "C15",
+    "seatNumber": "C17",
     "row": "C",
-    "position": 15
+    "position": 17
   },
   {
     "id": 15,
     "username": "nguyenducthanh",
     "phone": "0913201274",
     "fullName": "Nguyễn Đức Thành",
-    "seatNumber": "C13",
+    "seatNumber": "C15",
     "row": "C",
-    "position": 13
+    "position": 15
   },
   {
     "id": 16,
     "username": "vannbt",
     "phone": "0913153027",
     "fullName": "Nguyễn Bảo Thanh Vân",
-    "seatNumber": "C16",
+    "seatNumber": "C18",
     "row": "C",
-    "position": 16
+    "position": 18
   },
   {
     "id": 17,
     "username": "lantcq",
     "phone": "0982512513",
     "fullName": "Trần Công Quỳnh Lân",
-    "seatNumber": "C14",
+    "seatNumber": "C16",
     "row": "C",
-    "position": 14
+    "position": 16
   },
   {
     "id": 18,
     "username": "hung.nh",
     "phone": "0904252732",
     "fullName": "Nguyễn Hải Hưng",
-    "seatNumber": "C12",
+    "seatNumber": "C14",
     "row": "C",
-    "position": 12
+    "position": 14
   },
   {
     "id": 19,
@@ -724,27 +754,27 @@
     "username": "nttung",
     "phone": "0989899268",
     "fullName": "Nguyễn Thanh Tùng",
-    "seatNumber": "D17",
-    "row": "D",
-    "position": 17
+    "seatNumber": "C8",
+    "row": "C",
+    "position": 8
   },
   {
     "id": 24,
     "username": "duclv",
     "phone": "0967596666",
     "fullName": "Lê Việt Đức",
-    "seatNumber": "D18",
-    "row": "D",
-    "position": 18
+    "seatNumber": "C7",
+    "row": "C",
+    "position": 7
   },
   {
     "id": 25,
     "username": "ng.a.tuan",
     "phone": "0903421636",
     "fullName": "Nguyễn Anh Tuấn",
-    "seatNumber": "D16",
-    "row": "D",
-    "position": 16
+    "seatNumber": "C9",
+    "row": "C",
+    "position": 9
   },
   {
     "id": 26,
@@ -769,9 +799,9 @@
     "username": "nh.quang",
     "phone": "0912000656",
     "fullName": "Nguyễn Huy Quang",
-    "seatNumber": "C8",
+    "seatNumber": "C10",
     "row": "C",
-    "position": 8
+    "position": 10
   },
   {
     "id": 29,
@@ -796,9 +826,9 @@
     "username": "vyvt",
     "phone": "0913580004",
     "fullName": "Vũ Trung Vỹ",
-    "seatNumber": "C9",
+    "seatNumber": "C11",
     "row": "C",
-    "position": 9
+    "position": 11
   },
   {
     "id": 32,
@@ -832,9 +862,9 @@
     "username": "vunx",
     "phone": "0913937136",
     "fullName": "Nguyễn Xuân Vũ",
-    "seatNumber": "C10",
+    "seatNumber": "C12",
     "row": "C",
-    "position": 10
+    "position": 12
   },
   {
     "id": 36,
@@ -859,8 +889,8 @@
     "username": "nmtoan",
     "phone": "0912288272",
     "fullName": "Nguyễn Mạnh Toàn",
-    "seatNumber": "C7",
-    "row": "C",
+    "seatNumber": "D7",
+    "row": "D",
     "position": 7
   },
   {
@@ -886,18 +916,18 @@
     "username": "dung.nguyenthai",
     "phone": "0982334136",
     "fullName": "Nguyễn Thái Dung",
-    "seatNumber": "E2",
+    "seatNumber": "E8",
     "row": "E",
-    "position": 2
+    "position": 8
   },
   {
     "id": 42,
     "username": "thangnt2",
     "phone": "0946821909",
     "fullName": "Nguyễn Thị Thắng",
-    "seatNumber": "E1",
+    "seatNumber": "E9",
     "row": "E",
-    "position": 1
+    "position": 9
   },
   {
     "id": 43,
@@ -931,54 +961,54 @@
     "username": "tt.thuhuyen",
     "phone": "0987401022",
     "fullName": "Trần Thị Thu Huyền",
-    "seatNumber": "E18",
+    "seatNumber": "E7",
     "row": "E",
-    "position": 18
+    "position": 7
   },
   {
     "id": 47,
     "username": "th.nam",
     "phone": "0936931979",
     "fullName": "Trần Hoài Nam",
-    "seatNumber": "E17",
+    "seatNumber": "E18",
     "row": "E",
-    "position": 17
+    "position": 18
   },
   {
     "id": 48,
     "username": "hai.nguyentuan",
     "phone": "0904324555",
     "fullName": "Nguyễn Tuấn Hải",
-    "seatNumber": "E16",
+    "seatNumber": "E17",
     "row": "E",
-    "position": 16
+    "position": 17
   },
   {
     "id": 49,
     "username": "hienhtt",
     "phone": "0936154525",
     "fullName": "Hồ Thị Thu Hiền",
-    "seatNumber": "D20",
+    "seatNumber": "D22",
     "row": "D",
-    "position": 20
+    "position": 22
   },
   {
     "id": 50,
     "username": "nguyenthuy.duong",
     "phone": "0903480919",
     "fullName": "Nguyễn Thùy Dương",
-    "seatNumber": "E15",
+    "seatNumber": "E16",
     "row": "E",
-    "position": 15
+    "position": 16
   },
   {
     "id": 51,
     "username": "haqtt",
     "phone": "0961675599",
     "fullName": "Quách Thị Thúy Hà",
-    "seatNumber": "E14",
+    "seatNumber": "E15",
     "row": "E",
-    "position": 14
+    "position": 15
   },
   {
     "id": 52,
@@ -1003,18 +1033,18 @@
     "username": "thunv2",
     "phone": "0907746688",
     "fullName": "Nguyễn Văn Thụ",
-    "seatNumber": "E7",
-    "row": "E",
-    "position": 7
+    "seatNumber": "D18",
+    "row": "D",
+    "position": 18
   },
   {
     "id": 55,
     "username": "thuybtt",
     "phone": "0989308517",
     "fullName": "Bùi Thị Thanh Thúy",
-    "seatNumber": "E8",
-    "row": "E",
-    "position": 8
+    "seatNumber": "D17",
+    "row": "D",
+    "position": 17
   },
   {
     "id": 56,
@@ -1039,9 +1069,9 @@
     "username": "thinhnt",
     "phone": "0912150802",
     "fullName": "Nguyễn Thế Thịnh",
-    "seatNumber": "D7",
+    "seatNumber": "D16",
     "row": "D",
-    "position": 7
+    "position": 16
   },
   {
     "id": 59,
@@ -1066,72 +1096,72 @@
     "username": "truonghx",
     "phone": "0915357777",
     "fullName": "Hà Xuân Trường",
-    "seatNumber": "D21",
+    "seatNumber": "D23",
     "row": "D",
-    "position": 21
+    "position": 23
   },
   {
     "id": 62,
     "username": "thanhxuannguyen",
     "phone": "0902754799",
     "fullName": "Nguyễn Thành Xuân",
-    "seatNumber": "D22",
+    "seatNumber": "D20",
     "row": "D",
-    "position": 22
+    "position": 20
   },
   {
     "id": 63,
     "username": "quangtd1",
     "phone": "0968233377",
     "fullName": "Trịnh Đức Quang",
-    "seatNumber": "D23",
+    "seatNumber": "D21",
     "row": "D",
-    "position": 23
+    "position": 21
   },
   {
     "id": 64,
     "username": "tm.hoang",
     "phone": "0913946611",
     "fullName": "Trương Minh Hoàng",
-    "seatNumber": "E9",
+    "seatNumber": "E10",
     "row": "E",
-    "position": 9
+    "position": 10
   },
   {
     "id": 65,
     "username": "halt",
     "phone": "0989665122",
     "fullName": "Lê Thanh Hà",
-    "seatNumber": "E10",
+    "seatNumber": "E11",
     "row": "E",
-    "position": 10
+    "position": 11
   },
   {
     "id": 66,
     "username": "phuongnm",
     "phone": "0989337736",
     "fullName": "Nguyễn Minh Phương",
-    "seatNumber": "E11",
+    "seatNumber": "E12",
     "row": "E",
-    "position": 11
+    "position": 12
   },
   {
     "id": 67,
     "username": "anh.tt",
     "phone": "0912009867",
     "fullName": "Trương Thúy Anh",
-    "seatNumber": "E12",
+    "seatNumber": "E13",
     "row": "E",
-    "position": 12
+    "position": 13
   },
   {
     "id": 68,
     "username": "hant1",
     "phone": "0904599279",
     "fullName": "Nguyễn Thu Hà",
-    "seatNumber": "E13",
+    "seatNumber": "E14",
     "row": "E",
-    "position": 13
+    "position": 14
   },
   {
     "id": 69,
@@ -1174,8 +1204,8 @@
     "username": "phantiendung",
     "phone": "0906178688",
     "fullName": "Phan Tiến Dũng",
-    "seatNumber": "C1",
-    "row": "C",
+    "seatNumber": "E1",
+    "row": "E",
     "position": 1
   },
   {
@@ -1192,44 +1222,44 @@
     "username": "luatld",
     "phone": "0913366722",
     "fullName": "Lê Đình Luật",
-    "seatNumber": "C5",
+    "seatNumber": "C4",
     "row": "C",
-    "position": 5
+    "position": 4
   },
   {
     "id": 76,
     "username": "tuongnq",
     "phone": "0983020898",
     "fullName": "Ngô Quốc Tưởng",
-    "seatNumber": "C3",
+    "seatNumber": "C2",
     "row": "C",
-    "position": 3
+    "position": 2
   },
   {
     "id": 77,
     "username": "diep.pth",
     "phone": "0901055858",
     "fullName": "Phan Thị Hồng Điệp",
-    "seatNumber": "C6",
+    "seatNumber": "C5",
     "row": "C",
-    "position": 6
+    "position": 5
   },
   {
     "id": 78,
     "username": "ducnh",
     "phone": "0903450005",
     "fullName": "Nguyễn Hồng Đức",
-    "seatNumber": "C4",
+    "seatNumber": "C3",
     "row": "C",
-    "position": 4
+    "position": 3
   },
   {
     "id": 79,
     "username": "maittt",
     "phone": "0915668588",
     "fullName": "Trần Thị Tuyết Mai",
-    "seatNumber": "C2",
-    "row": "C",
+    "seatNumber": "E2",
+    "row": "E",
     "position": 2
   },
   {
@@ -3118,257 +3148,62 @@
     "username": "anhnv19",
     "phone": "0903458089",
     "fullName": "Nguyễn Vân Anh",
-    "seatNumber": "A2",
-    "row": "A",
-    "position": 2
+    "seatNumber": "B4",
+    "row": "B",
+    "position": 4
   },
   {
     "id": 290,
     "username": "hadtv",
     "phone": "0913095308",
     "fullName": "Đặng Thị Việt Hà",
-    "seatNumber": "B14",
+    "seatNumber": "B11",
     "row": "B",
-    "position": 14
+    "position": 11
   },
   {
     "id": 291,
     "username": "duongcq",
     "phone": "0988082258",
     "fullName": "Cát Quang Dương",
-    "seatNumber": "B11",
+    "seatNumber": "B8",
     "row": "B",
-    "position": 11
+    "position": 8
   },
   {
     "id": 292,
     "username": "bac.nguyenthi",
     "phone": "0913270712",
     "fullName": "Nguyễn Thị Bắc",
-    "seatNumber": "B12",
+    "seatNumber": "B9",
     "row": "B",
-    "position": 12
+    "position": 9
   },
   {
     "id": 293,
     "username": "bui.nhu.y",
     "phone": "0912012230",
     "fullName": "Bùi Như Ý",
-    "seatNumber": "B13",
+    "seatNumber": "B10",
     "row": "B",
-    "position": 13
+    "position": 10
   },
   {
     "id": 294,
     "username": "haimanh",
     "phone": "0913522899",
     "fullName": "Hoàng Mạnh Hải",
-    "seatNumber": "B5",
-    "row": "B",
-    "position": 5
+    "seatNumber": "C6",
+    "row": "C",
+    "position": 6
   }
             ];
-            realDelegates.forEach(delegate => {
+             realDelegates.forEach(delegate => {
                 delegates.set(delegate.id, delegate);
                 phoneIndex.set(delegate.phone, delegate.id);
                 usernameIndex.set(delegate.username.toLowerCase(), delegate.id);
                 usernameList.push(delegate.username);
             });
-        }
-
-        // ==================== LOGGING SYSTEM ====================
-        function logSearchActivity(searchTerm, delegate, found = true) {
-            try {
-                const STORAGE_KEY = 'seatSearchLogs';
-                
-                // Lấy logs hiện có
-                const existingLogs = localStorage.getItem(STORAGE_KEY);
-                const logs = existingLogs ? JSON.parse(existingLogs) : [];
-                
-                // Tạo log entry mới
-                const logEntry = {
-                    id: Date.now() + Math.random(),
-                    timestamp: new Date().toISOString(),
-                    searchTerm: searchTerm,
-                    found: found,
-                    delegate: found ? {
-                        fullName: delegate.fullName,
-                        seatNumber: delegate.seatNumber,
-                        row: delegate.row,
-                        username: delegate.username,
-                        phone: delegate.phone
-                    } : null,
-                    userAgent: navigator.userAgent.substring(0, 100), // Rút gọn để tiết kiệm dung lượng
-                    sessionId: getOrCreateSessionId(),
-                    pageUrl: window.location.href
-                };
-                
-                // Thêm vào đầu danh sách
-                logs.unshift(logEntry);
-                
-                // Giới hạn số lượng logs (tối đa 1000 records)
-                if (logs.length > 1000) {
-                    logs.splice(1000);
-                }
-                
-                // Lưu lại
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
-                
-                console.log('✅ Đã ghi nhận log tra cứu:', {
-                    term: logEntry.searchTerm,
-                    found: logEntry.found,
-                    time: new Date(logEntry.timestamp).toLocaleString('vi-VN')
-                });
-                
-                // Cập nhật thống kê tổng quan
-                updateGeneralStats();
-                
-            } catch (error) {
-                console.error('❌ Lỗi ghi log:', error);
-            }
-        }
-
-        // Tạo session ID duy nhất cho mỗi phiên làm việc
-        function getOrCreateSessionId() {
-            let sessionId = sessionStorage.getItem('searchSessionId');
-            if (!sessionId) {
-                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                sessionStorage.setItem('searchSessionId', sessionId);
-            }
-            return sessionId;
-        }
-
-        // Cập nhật thống kê tổng quan
-        function updateGeneralStats() {
-            try {
-                const STATS_KEY = 'generalStats';
-                const stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
-                
-                const today = new Date().toISOString().split('T')[0];
-                const hour = new Date().getHours();
-                
-                // Cập nhật stats
-                stats.totalSearches = (stats.totalSearches || 0) + 1;
-                stats.lastActivity = new Date().toISOString();
-                
-                // Stats theo ngày
-                if (!stats.dailyStats) stats.dailyStats = {};
-                stats.dailyStats[today] = (stats.dailyStats[today] || 0) + 1;
-                
-                // Stats theo giờ
-                if (!stats.hourlyStats) stats.hourlyStats = {};
-                stats.hourlyStats[hour] = (stats.hourlyStats[hour] || 0) + 1;
-                
-                // Lưu lại
-                localStorage.setItem(STATS_KEY, JSON.stringify(stats));
-                
-            } catch (error) {
-                console.error('Error updating stats:', error);
-            }
-        }
-
-        // Theo dõi lượt truy cập trang
-        function trackPageView() {
-            try {
-                const PAGE_STATS_KEY = 'pageViewStats';
-                const stats = JSON.parse(localStorage.getItem(PAGE_STATS_KEY) || '{}');
-                
-                const today = new Date().toISOString().split('T')[0];
-                const currentTime = new Date().toISOString();
-                
-                // Cập nhật stats
-                stats.totalViews = (stats.totalViews || 0) + 1;
-                stats.lastVisit = currentTime;
-                stats.firstVisit = stats.firstVisit || currentTime;
-                
-                // Views theo ngày
-                if (!stats.dailyViews) stats.dailyViews = {};
-                stats.dailyViews[today] = (stats.dailyViews[today] || 0) + 1;
-                
-                // Thông tin session
-                if (!stats.sessions) stats.sessions = [];
-                const sessionId = getOrCreateSessionId();
-                
-                // Kiểm tra xem session này đã được ghi nhận chưa
-                if (!stats.sessions.includes(sessionId)) {
-                    stats.sessions.push(sessionId);
-                    
-                    // Giới hạn lưu trữ 100 sessions gần nhất
-                    if (stats.sessions.length > 100) {
-                        stats.sessions.splice(0, stats.sessions.length - 100);
-                    }
-                }
-                
-                localStorage.setItem(PAGE_STATS_KEY, JSON.stringify(stats));
-                
-            } catch (error) {
-                console.error('Error tracking page view:', error);
-            }
-        }
-
-        // Admin access system
-        function initAdminSystem() {
-            // Kiểm tra admin access
-            const isAdmin = localStorage.getItem('isAdmin') === 'true' || 
-                           new URLSearchParams(window.location.search).get('admin') === 'true';
-            
-            if (isAdmin) {
-                createAdminButton();
-            }
-            
-            // Hotkey để mở admin (Ctrl + Shift + A)
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
-                    e.preventDefault();
-                    requestAdminAccess();
-                }
-            });
-        }
-
-        function requestAdminAccess() {
-            const adminCode = prompt('🔐 Nhập mã truy cập quản trị:');
-            if (adminCode === 'DAIHOI2025' || adminCode === 'admin') {
-                localStorage.setItem('isAdmin', 'true');
-                alert('✅ Đã cấp quyền quản trị!');
-                createAdminButton();
-            } else if (adminCode !== null) {
-                alert('❌ Mã không đúng!');
-            }
-        }
-
-        function createAdminButton() {
-            // Kiểm tra xem button đã tồn tại chưa
-            if (document.getElementById('adminButton')) return;
-            
-            const adminBtn = document.createElement('a');
-            adminBtn.id = 'adminButton';
-            adminBtn.className = 'admin-button';
-            adminBtn.innerHTML = '🔧 Quản trị';
-            adminBtn.href = 'admin.html';
-            adminBtn.target = '_blank';
-            adminBtn.style.display = 'block';
-            
-            document.body.appendChild(adminBtn);
-        }
-
-        // Làm sạch dữ liệu cũ tự động
-        function cleanOldData() {
-            try {
-                const logs = JSON.parse(localStorage.getItem('seatSearchLogs') || '[]');
-                const oneMonthAgo = new Date();
-                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-                
-                const filteredLogs = logs.filter(log => 
-                    new Date(log.timestamp) > oneMonthAgo
-                );
-                
-                if (filteredLogs.length !== logs.length) {
-                    localStorage.setItem('seatSearchLogs', JSON.stringify(filteredLogs));
-                    console.log(`🧹 Đã tự động xóa ${logs.length - filteredLogs.length} log cũ hơn 1 tháng`);
-                }
-            } catch (error) {
-                console.error('Error cleaning old data:', error);
-            }
         }
 
         // ==================== INPUT PROCESSING ====================
@@ -3481,19 +3316,54 @@
                 const rowDiv = document.createElement('div');
                 rowDiv.className = 'row';
                 
-                for (let i = 1; i <= seatsPerRow; i++) {
-                    const seatDiv = document.createElement('div');
-                    seatDiv.className = 'seat';
-                    seatDiv.id = `seat-${rowLabel}${i}`;
-                    seatDiv.textContent = `${rowLabel}${i}`;
+                if (rowLabel === 'A') {
+                    // Hàng A đặc biệt: bỏ ghế A7, A12, A13, A18 và đánh số lại
+                    const removedPositions = [7, 12, 13, 18];
+                    let newSeatNumber = 1;
                     
-                    if (i === 6) seatDiv.style.marginRight = '15px';
-                    if (i === 18) seatDiv.style.marginRight = '15px';
-                    
-                    rowDiv.appendChild(seatDiv);
+                    for (let i = 1; i <= seatsPerRow; i++) {
+                        if (!removedPositions.includes(i)) {
+                            const seatDiv = document.createElement('div');
+                            seatDiv.className = 'seat';
+                            seatDiv.id = `seat-${rowLabel}${newSeatNumber}`;
+                            seatDiv.textContent = `${rowLabel}${newSeatNumber}`;
+                            
+                            if (i === 6) seatDiv.style.marginRight = '15px';
+                            if (i === 18) seatDiv.style.marginRight = '15px';
+                            
+                            rowDiv.appendChild(seatDiv);
+                            newSeatNumber++;
+                        } else {
+                            // Tạo ghế ẩn để giữ nguyên khoảng cách
+                            const emptyDiv = document.createElement('div');
+                            emptyDiv.className = 'seat';
+                            emptyDiv.style.visibility = 'hidden';
+                            emptyDiv.style.pointerEvents = 'none';
+                            
+                            if (i === 6) emptyDiv.style.marginRight = '15px';
+                            if (i === 18) emptyDiv.style.marginRight = '15px';
+                            
+                            rowDiv.appendChild(emptyDiv);
+                        }
+                    }
+                } else {
+                    // Các hàng khác giữ nguyên
+                    for (let i = 1; i <= seatsPerRow; i++) {
+                        const seatDiv = document.createElement('div');
+                        seatDiv.className = 'seat';
+                        seatDiv.id = `seat-${rowLabel}${i}`;
+                        seatDiv.textContent = `${rowLabel}${i}`;
+                        
+                        if (i === 6) seatDiv.style.marginRight = '15px';
+                        if (i === 18) seatDiv.style.marginRight = '15px';
+                        
+                        rowDiv.appendChild(seatDiv);
+                    }
                 }
                 
-                if (rowLabel === 'H') rowDiv.style.marginBottom = '15px';
+                // Tạo khoảng cách 9px giữa hàng A và hàng B, và khoảng cách thường giữa hàng F và hàng G
+                if (rowLabel === 'A') rowDiv.style.marginBottom = '9px';
+                if (rowLabel === 'F') rowDiv.style.marginBottom = '15px';
                 fragment.appendChild(rowDiv);
             });
             
@@ -3541,12 +3411,8 @@
                 const delegate = findDelegate(processedInput);
                 
                 if (!delegate) {
-                    // Ghi log tra cứu thất bại
-                    logSearchActivity(processedInput, null, false);
                     handleSearchNotFound(processedInput, isPhone, processingNote);
                 } else {
-                    // Ghi log tra cứu thành công
-                    logSearchActivity(processedInput, delegate, true);
                     displaySeatInfo(delegate);
                     highlightSeatOrVIP(delegate);
                 }
@@ -3607,12 +3473,23 @@
         }
 
         function highlightVIPRow(row) {
-            const seatsPerRow = 24;
-            
-            for (let i = 1; i <= seatsPerRow; i++) {
-                const seatElement = document.getElementById(`seat-${row}${i}`);
-                if (seatElement) {
-                    seatElement.classList.add('vip-area');
+            if (row === 'A') {
+                // Hàng A có 20 ghế sau khi bỏ 4 ghế
+                const totalSeatsInRowA = 20;
+                for (let i = 1; i <= totalSeatsInRowA; i++) {
+                    const seatElement = document.getElementById(`seat-${row}${i}`);
+                    if (seatElement) {
+                        seatElement.classList.add('vip-area');
+                    }
+                }
+            } else {
+                // Hàng B vẫn có 24 ghế
+                const seatsPerRow = 24;
+                for (let i = 1; i <= seatsPerRow; i++) {
+                    const seatElement = document.getElementById(`seat-${row}${i}`);
+                    if (seatElement) {
+                        seatElement.classList.add('vip-area');
+                    }
                 }
             }
 
@@ -3698,37 +3575,6 @@
 
         const throttledToggleClear = throttle(toggleClearButton, 100);
 
-        // ==================== UTILITY FUNCTIONS ====================
-        // Các hàm tiện ích cho admin tool
-
-        window.exportSearchData = function() {
-            return {
-                logs: JSON.parse(localStorage.getItem('seatSearchLogs') || '[]'),
-                stats: JSON.parse(localStorage.getItem('generalStats') || '{}'),
-                pageStats: JSON.parse(localStorage.getItem('pageViewStats') || '{}'),
-                exportTime: new Date().toISOString()
-            };
-        };
-
-        window.clearAllSearchData = function() {
-            const confirm = window.confirm('⚠️ Bạn có chắc muốn xóa toàn bộ dữ liệu tra cứu?');
-            if (confirm) {
-                localStorage.removeItem('seatSearchLogs');
-                localStorage.removeItem('generalStats');
-                localStorage.removeItem('pageViewStats');
-                console.log('✅ Đã xóa toàn bộ dữ liệu tra cứu');
-                return true;
-            }
-            return false;
-        };
-
-        // Debug function để kiểm tra logs
-        window.debugLogs = function() {
-            const logs = JSON.parse(localStorage.getItem('seatSearchLogs') || '[]');
-            console.table(logs.slice(0, 10)); // Hiển thị 10 logs gần nhất
-            return logs;
-        };
-
         // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', function() {
             initializeDelegateData();
@@ -3756,23 +3602,6 @@
             
             const seatingChart = document.querySelector('.seating-chart');
             observer.observe(seatingChart);
-
-            // Khởi tạo logging system
-            trackPageView();
-            initAdminSystem();
-            
-            // Clean old data sau 5 giây
-            setTimeout(cleanOldData, 5000);
-            
-            // Thông báo system đã sẵn sàng
-            console.log('🔍 Hệ thống tra cứu ghế với logging đã khởi tạo');
-            console.log('🔧 Nhấn Ctrl+Shift+A để truy cập quản trị');
-            
-            // Hiển thị thống kê (chỉ trong console)
-            const stats = JSON.parse(localStorage.getItem('generalStats') || '{}');
-            if (stats.totalSearches > 0) {
-                console.log(`📊 Tổng lượt tra cứu: ${stats.totalSearches}`);
-            }
         });
     </script>
 </body>
