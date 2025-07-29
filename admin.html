@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản trị hệ thống tra cứu ghế</title>
+    <title>Admin - Tra cứu thông tin đại biểu theo ghế</title>
     <style>
         * {
             margin: 0;
@@ -13,466 +13,427 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #7ed3f7 0%, #5fb3d4 100%);
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
         }
 
-        .admin-container {
-            max-width: 1400px;
-            margin: 0 auto;
+        .container {
             background: white;
+            padding: 30px;
             border-radius: 15px;
-            overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 1200px;
+            width: 100%;
         }
 
         .header {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            color: white;
-            padding: 25px;
             text-align: center;
-        }
-
-        .header h1 {
-            font-size: 1.8em;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1em;
-        }
-
-        .header .nav-info {
-            margin-top: 10px;
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .header .nav-info a {
-            color: white;
-            text-decoration: underline;
-        }
-
-        .admin-nav {
-            background: #f8fafc;
-            padding: 20px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .nav-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-btn.active {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-        }
-
-        .nav-btn:not(.active) {
-            background: white;
-            color: #64748b;
-            border: 2px solid #e2e8f0;
-        }
-
-        .nav-btn:not(.active):hover {
-            border-color: #dc2626;
-            color: #dc2626;
-            transform: translateY(-1px);
-        }
-
-        .content {
-            padding: 30px;
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
             margin-bottom: 30px;
         }
 
-        .stat-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            padding: 25px;
-            border-radius: 12px;
-            border-left: 4px solid #dc2626;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+        .header .event-title {
+            color: #005993;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            font-weight: 700;
+            line-height: 1.3;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .header h1 {
+            color: #005993;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .search-section {
+            margin-bottom: 30px;
+        }
+
+        .input-tooltip {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #f59e0b;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(245, 158, 11, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-tooltip::before {
+            content: "🔍";
+            font-size: 16px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
             position: relative;
         }
 
-        .stat-card:hover {
-            transform: translateY(-2px);
+        .input-container {
+            flex: 1;
+            position: relative;
         }
 
-        .stat-card.mobile {
-            border-left-color: #10b981;
-        }
-
-        .stat-card.desktop {
-            border-left-color: #3b82f6;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #64748b;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 2.2em;
-            font-weight: bold;
-            color: #dc2626;
-            margin-bottom: 5px;
-        }
-
-        .stat-card.mobile .stat-value {
-            color: #10b981;
-        }
-
-        .stat-card.desktop .stat-value {
-            color: #3b82f6;
-        }
-
-        .stat-desc {
-            font-size: 13px;
-            color: #94a3b8;
-        }
-
-        .logs-container {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
-        }
-
-        .logs-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .logs-title {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #1e293b;
-        }
-
-        .logs-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .filter-input {
-            padding: 8px 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 14px;
-            min-width: 200px;
-        }
-
-        .filter-input:focus {
-            outline: none;
-            border-color: #dc2626;
-        }
-
-        .export-btn, .reset-btn, .debug-btn {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .export-btn {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-            color: white;
-        }
-
-        .export-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
-            color: white;
-            text-decoration: none;
-        }
-
-        .export-btn.blue {
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-        }
-
-        .export-btn.blue:hover {
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
-        }
-
-        .debug-btn {
-            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-            color: white;
-        }
-
-        .debug-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-        }
-
-        .reset-btn {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            color: white;
-        }
-
-        .reset-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-        }
-
-        .logs-table {
+        input[type="text"] {
             width: 100%;
-            border-collapse: collapse;
-            background: white;
+            padding: 12px 50px 12px 12px;
+            border: 2px solid #ddd;
             border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
         }
 
-        .logs-table th {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            color: white;
-            padding: 15px 12px;
-            text-align: left;
-            font-weight: 600;
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #005993;
+        }
+
+        .input-actions {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .clear-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
             font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .logs-table td {
-            padding: 12px;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 14px;
-        }
-
-        .logs-table tr:hover {
-            background: #f8fafc;
-        }
-
-        .search-term {
-            font-family: 'Courier New', monospace;
-            background: #f1f5f9;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 13px;
-        }
-
-        .seat-badge {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            color: #92400e;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .vip-badge {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .device-badge {
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .device-mobile {
-            background: #10b981;
-            color: white;
-        }
-
-        .device-desktop {
-            background: #3b82f6;
-            color: white;
-        }
-
-        .timestamp {
-            color: #64748b;
-            font-size: 13px;
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #64748b;
-            font-style: italic;
-        }
-
-        .chart-container {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        .chart-title {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #1e293b;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .reset-confirmation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
         }
 
-        .reset-modal {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        .clear-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            transform: scale(1.1);
         }
 
-        .reset-modal h3 {
-            color: #dc2626;
+        .search-btn {
+            background: linear-gradient(135deg, #005993 0%, #004a7a 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(135deg, #004a7a 0%, #003a61 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 89, 147, 0.3);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-section {
+            margin-bottom: 30px;
+        }
+
+        .delegate-info {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #005993;
+            margin-bottom: 20px;
+        }
+
+        .delegate-info h3 {
+            color: #005993;
             margin-bottom: 15px;
-            font-size: 1.3em;
+            font-weight: 600;
         }
 
-        .reset-modal p {
-            color: #64748b;
-            margin-bottom: 25px;
-            line-height: 1.5;
+        .delegate-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
-        .reset-modal-buttons {
+        .detail-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #93c5fd;
+            transition: all 0.3s ease;
+        }
+
+        .detail-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 89, 147, 0.2);
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #005993;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #1e3a8a;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .phone-link {
+            color: #1e3a8a;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .phone-link:hover {
+            color: #005993;
+            background: rgba(0, 89, 147, 0.1);
+            transform: scale(1.02);
+        }
+
+        .phone-link::after {
+            content: "📞";
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        .seat-highlight {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 3px solid #f59e0b;
+            font-size: 14px;
+            color: #92400e;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .seat-highlight::before {
+            content: "📍";
+            font-size: 16px;
+        }
+
+        .seating-chart {
+            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            border: 1px solid #fed7aa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .chart-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #7c2d12;
+            font-size: 1.2em;
+            font-weight: bold;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        .chart-instruction {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #005993;
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-left: 3px solid #005993;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: calc(24 * 38px + 23 * 3px + 30px);
+        }
+
+        .chart-instruction::before {
+            content: "👆";
+            font-size: 14px;
+        }
+
+        .stage {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin: 0 0 40px 0;
+            border-radius: 8px;
+            width: calc(24 * 38px + 23 * 3px + 30px);
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+            flex-shrink: 0;
+        }
+
+        .rows {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-start;
+            width: calc(24 * 38px + 23 * 3px + 30px);
+            flex-shrink: 0;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            flex-wrap: nowrap;
+        }
+
+        .seat {
+            width: 38px;
+            height: 30px;
+            border: 2px solid #fed7aa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            color: #a16207;
+            flex-shrink: 0;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        .seat:hover {
+            background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
+            transform: scale(1.05);
+            border-color: #f59e0b;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+
+        .seat.selected {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border-color: #991b1b;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+        }
+
+        .seat.vip-area {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            color: #a16207;
+            border-color: #fed7aa;
+            font-weight: bold;
+        }
+
+        .seat.vip-area.selected {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+            color: white !important;
+            border-color: #991b1b !important;
+            transform: scale(1.1) !important;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4) !important;
+        }
+
+        .error-message {
+            background: #fecaca;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #dc2626;
+            animation: slideIn 0.5s ease;
+        }
+
+        .legend {
             display: flex;
             gap: 15px;
             justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
         }
 
-        .confirm-btn, .cancel-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: #7c2d12;
         }
 
-        .confirm-btn {
-            background: #dc2626;
-            color: white;
+        .legend-color {
+            width: 20px;
+            height: 15px;
+            border-radius: 3px;
+            border: 1px solid #fed7aa;
         }
 
-        .cancel-btn {
-            background: #e5e7eb;
-            color: #6b7280;
+        .legend-color.selected {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
         }
 
-        .refresh-indicator {
+        .loading {
             display: inline-block;
             width: 16px;
             height: 16px;
             border: 2px solid #f3f3f3;
-            border-top: 2px solid #dc2626;
+            border-top: 2px solid #005993;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-right: 8px;
         }
 
-        .debug-panel {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 9999;
-            max-width: 400px;
+        .hidden {
             display: none;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .debug-panel.active {
-            display: block;
-        }
-
-        .debug-section {
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #f8fafc;
-            border-radius: 6px;
-            border-left: 3px solid #3b82f6;
-        }
-
-        .debug-title {
-            font-weight: bold;
-            color: #1e293b;
-            margin-bottom: 8px;
-        }
-
-        .debug-value {
-            font-family: monospace;
-            font-size: 12px;
-            color: #64748b;
         }
 
         @keyframes spin {
@@ -480,1068 +441,393 @@
             100% { transform: rotate(360deg); }
         }
 
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1250px) {
+            .container { max-width: 95%; padding: 15px; }
+        }
+
         @media (max-width: 768px) {
-            .admin-container {
-                margin: 0;
-                border-radius: 0;
-            }
-            
-            .content {
-                padding: 20px;
-            }
+            .container { padding: 20px; }
+            .header .event-title { font-size: 1.2em; }
+            .header h1 { font-size: 1.3em; }
+            .input-tooltip { padding: 10px 12px; font-size: 13px; }
+            .input-group { flex-direction: column; }
+            .seat { width: 32px; height: 25px; font-size: 9px; }
+            .stage { width: calc(24 * 32px + 23 * 3px + 30px); }
+            .rows { width: calc(24 * 32px + 23 * 3px + 30px); }
+            .chart-instruction { width: calc(24 * 32px + 23 * 3px + 30px); }
+            .seating-chart { padding: 15px; align-items: flex-start; }
+            .legend { justify-content: flex-start; }
+        }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .logs-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .filter-input {
-                min-width: auto;
-            }
-
-            .logs-table {
-                font-size: 12px;
-            }
-
-            .logs-table th,
-            .logs-table td {
-                padding: 8px;
-            }
-
-            .debug-panel {
-                top: 10px;
-                right: 10px;
-                left: 10px;
-                max-width: none;
-            }
+        @media (max-width: 480px) {
+            .header .event-title { font-size: 1em; }
+            .header h1 { font-size: 1.1em; }
+            .input-tooltip { padding: 8px 10px; font-size: 12px; }
+            .seat { width: 28px; height: 22px; font-size: 8px; }
+            .stage { width: calc(24 * 28px + 23 * 2px + 20px); font-size: 14px; }
+            .rows { width: calc(24 * 28px + 23 * 2px + 20px); gap: 4px; }
+            .chart-instruction { width: calc(24 * 28px + 23 * 2px + 20px); }
+            .row { gap: 2px; }
+            .seating-chart { padding: 10px; }
+            .seat:nth-child(6) { margin-right: 10px !important; }
+            .seat:nth-child(18) { margin-right: 10px !important; }
         }
     </style>
 </head>
 <body>
-    <div class="admin-container">
+    <div class="container">
         <div class="header">
-            <h1>🔧 Công cụ quản trị hệ thống tra cứu ghế</h1>
-            <p>Theo dõi và quản lý hoạt động tra cứu chỗ ngồi đại biểu</p>
-            <div class="nav-info">
-                <span id="lastUpdate">Cập nhật: --</span> | 
-                <a href="index.html" target="_blank">← Quay lại trang tra cứu</a>
+            <div class="admin-badge">🔐 ADMIN PANEL</div>
+            <div class="event-title">
+                ĐẠI HỘI ĐẠI BIỂU ĐẢNG BỘ NHCTVN LẦN THỨ XI,<br>
+                NHIỆM KỲ 2025 - 2030
+            </div>
+            <h1>Hệ thống tra cứu thông tin đại biểu</h1>
+        </div>
+
+        <div class="search-section">
+            <div class="input-tooltip">
+                Nhập mã số ghế (VD: A1, B15, C23) hoặc click trực tiếp vào ghế trong sơ đồ
+            </div>
+            <div class="input-group">
+                <div class="input-container">
+                    <input type="text" id="searchInput" placeholder="nhập mã số ghế tại đây..." />
+                    <div class="input-actions">
+                        <button class="clear-btn" id="clearBtn" onclick="clearInput()">✕</button>
+                    </div>
+                </div>
+                <button class="search-btn" onclick="searchBySeat()" id="searchBtn">Tra cứu</button>
             </div>
         </div>
 
-        <div class="admin-nav">
-            <div class="nav-buttons">
-                <button class="nav-btn active" onclick="showSection('dashboard')">Dashboard</button>
-                <button class="nav-btn" onclick="showSection('logs')">Lịch sử tra cứu</button>
-                <button class="nav-btn" onclick="showSection('reports')">Báo cáo thống kê</button>
-                <button class="nav-btn" onclick="showSection('settings')">Cài đặt</button>
+        <div id="errorMessage" class="error-message hidden"></div>
+
+        <div id="resultSection" class="result-section hidden">
+            <div class="delegate-info">
+                <h3>Thông tin đại biểu:</h3>
+                <div class="delegate-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Họ và tên</div>
+                        <div class="detail-value" id="fullName"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Chức danh</div>
+                        <div class="detail-value" id="position"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Số điện thoại</div>
+                        <div class="detail-value" id="phoneNumber"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Số ghế</div>
+                        <div class="detail-value" id="seatNumber"></div>
+                    </div>
+                </div>
+                <div class="seat-highlight" id="seatHighlight"></div>
             </div>
         </div>
 
-        <div class="content">
-            <!-- Dashboard Section -->
-            <div id="dashboard" class="section active">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Tổng lượt tra cứu</div>
-                        <div class="stat-value" id="totalSearches">0</div>
-                        <div class="stat-desc">Từ khi bắt đầu ghi nhận</div>
-                    </div>
-                    <div class="stat-card mobile">
-                        <div class="stat-label">Tra cứu Mobile 📱</div>
-                        <div class="stat-value" id="mobileSearches">0</div>
-                        <div class="stat-desc">Từ điện thoại di động</div>
-                    </div>
-                    <div class="stat-card desktop">
-                        <div class="stat-label">Tra cứu Desktop 💻</div>
-                        <div class="stat-value" id="desktopSearches">0</div>
-                        <div class="stat-desc">Từ máy tính</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Tỷ lệ tra cứu</div>
-                        <div class="stat-value" id="searchRate">0%</div>
-                        <div class="stat-desc">Trên tổng số ghế</div>
-                    </div>
-                </div>
-
-                <div class="chart-container">
-                    <div class="chart-title">📊 Biểu đồ tra cứu theo thời gian (Mobile vs Desktop)</div>
-                    <canvas id="searchChart" width="800" height="300"></canvas>
-                </div>
-
-                <div class="logs-container">
-                    <div class="logs-header">
-                        <div class="logs-title">🕒 Hoạt động gần đây</div>
-                        <div class="logs-controls">
-                            <button class="export-btn" onclick="refreshDashboard()">
-                                <span id="refreshIcon">🔄</span> Làm mới
-                            </button>
-                            <button class="debug-btn" onclick="toggleDebugPanel()">
-                                📱 Debug Mobile
-                            </button>
-                            <a href="index.html" class="export-btn blue" target="_blank">
-                                🔗 Trang chính
-                            </a>
-                        </div>
-                    </div>
-                    <div id="recentLogs"></div>
+        <div class="seating-chart">
+            <div class="chart-title">Sơ đồ chỗ ngồi - Click để xem thông tin</div>
+            <div class="chart-instruction">
+                Click vào bất kỳ ghế nào để xem thông tin chi tiết của đại biểu
+            </div>
+            <div class="stage">SÂN KHẤU</div>
+            <div class="rows" id="seatingRows"></div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color selected"></div>
+                    <span>Ghế đã chọn</span>
                 </div>
             </div>
-
-            <!-- Logs Section -->
-            <div id="logs" class="section">
-                <div class="logs-container">
-                    <div class="logs-header">
-                        <div class="logs-title">📋 Lịch sử tra cứu chi tiết</div>
-                        <div class="logs-controls">
-                            <input type="text" class="filter-input" id="logFilter" placeholder="Tìm kiếm theo tên, username, ghế...">
-                            <button class="export-btn" onclick="exportLogs()">📥 Xuất Excel</button>
-                        </div>
-                    </div>
-                    <div id="logsTableContainer"></div>
-                </div>
-            </div>
-
-            <!-- Reports Section -->
-            <div id="reports" class="section">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Ghế VIP tra cứu</div>
-                        <div class="stat-value" id="vipSearches">0</div>
-                        <div class="stat-desc">Hàng A và B</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Ghế thường tra cứu</div>
-                        <div class="stat-value" id="normalSearches">0</div>
-                        <div class="stat-desc">Hàng C đến N</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Giờ cao điểm</div>
-                        <div class="stat-value" id="peakHour">--</div>
-                        <div class="stat-desc">Thời gian tra cứu nhiều nhất</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Tra cứu thành công</div>
-                        <div class="stat-value" id="successRate">0%</div>
-                        <div class="stat-desc">Tỷ lệ tìm thấy kết quả</div>
-                    </div>
-                </div>
-
-                <div class="chart-container">
-                    <div class="chart-title">📈 Thống kê tra cứu theo hàng ghế</div>
-                    <canvas id="rowChart" width="800" height="400"></canvas>
-                </div>
-            </div>
-
-            <!-- Settings Section -->
-            <div id="settings" class="section">
-                <div class="logs-container">
-                    <div class="logs-header">
-                        <div class="logs-title">⚙️ Cài đặt hệ thống</div>
-                    </div>
-                    <div style="text-align: center; padding: 20px;">
-                        <h3 style="color: #dc2626; margin-bottom: 15px;">Reset dữ liệu tra cứu</h3>
-                        <p style="color: #64748b; margin-bottom: 25px; line-height: 1.6;">
-                            Xóa toàn bộ lịch sử tra cứu đã ghi nhận và bắt đầu thu thập dữ liệu mới.<br>
-                            <strong>Lưu ý:</strong> Hành động này không thể hoàn tác!
-                        </p>
-                        <div style="background: #fef2f2; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #dc2626;">
-                            <div style="font-weight: bold; color: #dc2626; margin-bottom: 10px;">
-                                Thời gian reset gần nhất: <span id="lastResetTime">Chưa có</span>
-                            </div>
-                            <div style="color: #991b1b; font-size: 14px;">
-                                Tổng số bản ghi hiện tại: <span id="currentRecords">0</span> lượt tra cứu
-                            </div>
-                        </div>
-                        <button class="reset-btn" onclick="showResetConfirmation()">
-                            🗑️ Reset dữ liệu tra cứu
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Reset Confirmation Modal -->
-    <div id="resetConfirmation" class="reset-confirmation">
-        <div class="reset-modal">
-            <h3>⚠️ Xác nhận reset dữ liệu</h3>
-            <p>
-                Bạn có chắc chắn muốn xóa toàn bộ <strong id="confirmRecordCount">0</strong> bản ghi tra cứu?<br>
-                Hành động này không thể hoàn tác!
-            </p>
-            <div class="reset-modal-buttons">
-                <button class="cancel-btn" onclick="hideResetConfirmation()">Hủy bỏ</button>
-                <button class="confirm-btn" onclick="confirmReset()">Xác nhận Reset</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Debug Panel -->
-    <div id="debugPanel" class="debug-panel">
-        <h4 style="color: #dc2626; margin-bottom: 15px;">📱 Mobile vs Desktop Debug</h4>
-        <div id="debugContent"></div>
-        <div style="margin-top: 15px; text-align: center;">
-            <button onclick="toggleDebugPanel()" style="padding: 8px 16px; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">Đóng</button>
-            <button onclick="refreshDebugInfo()" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer;">Refresh</button>
         </div>
     </div>
 
     <script>
-        // ==================== GLOBAL FUNCTION DECLARATIONS ====================
-        
-        window.showSection = function(sectionName) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all nav buttons
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(sectionName).classList.add('active');
-            
-            // Add active class to clicked button
-            const clickedButton = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
-            if (clickedButton) {
-                clickedButton.classList.add('active');
-            }
-            
-            // Load section-specific data
-            switch(sectionName) {
-                case 'dashboard':
-                    loadDashboard();
-                    break;
-                case 'logs':
-                    loadLogs();
-                    break;
-                case 'reports':
-                    loadReports();
-                    break;
-                case 'settings':
-                    loadSettings();
-                    break;
-            }
-        };
+        // Global variables
+        let delegates = new Map();
+        let seatIndex = new Map();
+        let seatingChartCreated = false;
+        let isLoading = false;
 
-        window.refreshDashboard = function() {
-            const icon = document.getElementById('refreshIcon');
-            if (icon) {
-                icon.innerHTML = '<span class="refresh-indicator"></span>';
-                
-                setTimeout(() => {
-                    loadDashboard();
-                    updateLastUpdateTime();
-                    icon.innerHTML = '🔄';
-                }, 1000);
-            }
-        };
-
-        window.exportLogs = function() {
-            const logs = getSearchLogs();
-            if (logs.length === 0) {
-                alert('Không có dữ liệu để xuất!');
-                return;
-            }
-            
-            // Create CSV content
-            let csvContent = "STT,Thời gian,Thiết bị,Từ khóa tìm kiếm,Tìm thấy,Họ tên,Username,Số điện thoại,Số ghế,Hàng\n";
-            
-            logs.forEach((log, index) => {
-                const time = new Date(log.timestamp).toLocaleString('vi-VN');
-                const device = log.device || 'desktop';
-                const found = log.found ? 'Có' : 'Không';
-                const name = log.found ? log.delegate.fullName : '';
-                const username = log.found ? log.delegate.username : '';
-                const phone = log.found ? log.delegate.phone : '';
-                const seat = log.found ? log.delegate.seatNumber : '';
-                const row = log.found ? log.delegate.row : '';
-                
-                csvContent += `${index + 1},"${time}","${device}","${log.searchTerm}","${found}","${name}","${username}","${phone}","${seat}","${row}"\n`;
-            });
-            
-            // Create and download file
-            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            
-            link.setAttribute('href', url);
-            link.setAttribute('download', `lich_su_tra_cuu_${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        };
-
-        window.showResetConfirmation = function() {
-            const stats = calculateStats();
-            document.getElementById('confirmRecordCount').textContent = stats.totalSearches;
-            document.getElementById('resetConfirmation').style.display = 'flex';
-        };
-        
-        window.hideResetConfirmation = function() {
-            document.getElementById('resetConfirmation').style.display = 'none';
-        };
-        
-        window.confirmReset = function() {
-            resetAllLogs();
-            window.hideResetConfirmation();
-            
-            // Refresh all displays
-            loadDashboard();
-            loadSettings();
-            updateLastUpdateTime();
-            
-            alert('✅ Đã reset thành công! Hệ thống sẽ bắt đầu ghi nhận dữ liệu mới.');
-        };
-
-        window.toggleDebugPanel = function() {
-            const panel = document.getElementById('debugPanel');
-            if (panel.classList.contains('active')) {
-                panel.classList.remove('active');
-            } else {
-                loadDebugInfo();
-                panel.classList.add('active');
-            }
-        };
-
-        window.refreshDebugInfo = function() {
-            loadDebugInfo();
-        };
-
-        // ==================== DATA MANAGEMENT ====================
-        const STORAGE_KEY = 'seatSearchLogs';
-        const RESET_TIME_KEY = 'lastResetTime';
-        
-        function getSearchLogs() {
-            try {
-                const logs = localStorage.getItem(STORAGE_KEY);
-                return logs ? JSON.parse(logs) : [];
-            } catch (error) {
-                console.error('Error reading logs:', error);
-                return [];
-            }
-        }
-        
-        function saveSearchLogs(logs) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
-        }
-        
-        function addSearchLog(searchTerm, delegate, found = true) {
-            const logs = getSearchLogs();
-            const logEntry = {
-                id: Date.now() + Math.random(),
-                timestamp: new Date().toISOString(),
-                searchTerm: searchTerm,
-                found: found,
-                device: 'desktop', // Default to desktop for admin-created logs
-                delegate: found ? {
-                    fullName: delegate.fullName,
-                    seatNumber: delegate.seatNumber,
-                    row: delegate.row,
-                    username: delegate.username,
-                    phone: delegate.phone
-                } : null
-            };
-            
-            logs.unshift(logEntry);
-            saveSearchLogs(logs);
-            return logEntry;
-        }
-        
-        function getLastResetTime() {
-            return localStorage.getItem(RESET_TIME_KEY);
-        }
-        
-        function setLastResetTime() {
-            const now = new Date().toISOString();
-            localStorage.setItem(RESET_TIME_KEY, now);
-            return now;
-        }
-        
-        function resetAllLogs() {
-            localStorage.removeItem(STORAGE_KEY);
-            localStorage.removeItem('generalStats');
-            localStorage.removeItem('pageViewStats');
-            setLastResetTime();
-        }
-
-        // ==================== ANALYTICS ====================
-        function calculateStats() {
-            const logs = getSearchLogs();
-            const now = new Date();
-            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            
-            const totalSearches = logs.length;
-            const successfulSearches = logs.filter(log => log.found);
-            const todaySearches = logs.filter(log => new Date(log.timestamp) >= todayStart);
-            
-            // Mobile vs Desktop
-            const mobileSearches = logs.filter(log => log.device === 'mobile').length;
-            const desktopSearches = logs.filter(log => log.device === 'desktop' || !log.device).length;
-            
-            const uniqueSeats = new Set();
-            let vipSearches = 0;
-            let normalSearches = 0;
-            
-            successfulSearches.forEach(log => {
-                if (log.delegate) {
-                    uniqueSeats.add(log.delegate.seatNumber);
-                    if (log.delegate.row === 'A' || log.delegate.row === 'B') {
-                        vipSearches++;
-                    } else {
-                        normalSearches++;
-                    }
+        // Sample data
+        function initializeDelegateData() {
+            const realDelegates = [
+                { 
+                    id: 1, 
+                    seatNumber: "A17",
+                    fullName: "Trần Minh Bình", 
+                    position: "Ủy viên BCH Đảng bộ Chính phủ, Bí thư Đảng ủy, Chủ tịch Hội đồng Quản trị NHCTVN",
+                    phone: "0913588832",
+                    row: "A", 
+                    seatPosition: 17 
+                },
+                { 
+                    id: 2, 
+                    seatNumber: "A1",
+                    fullName: "Trần Kiên Cường", 
+                    position: "Phó Bí thư Thường trực Đảng ủy NHCTVN",
+                    phone: "0913260131",
+                    row: "A", 
+                    seatPosition: 1 
+                },
+                { 
+                    id: 3, 
+                    seatNumber: "A19",
+                    fullName: "Nguyễn Trần Mạnh Trung", 
+                    position: "Phó Bí thư Đảng ủy, Thành viên Hội đồng Quản trị kiêm Tổng Giám đốc NHCTVN",
+                    phone: "0983832109",
+                    row: "A", 
+                    seatPosition: 19 
                 }
+            ];
+
+            // Save to maps
+            realDelegates.forEach(delegate => {
+                delegates.set(delegate.id, delegate);
+                seatIndex.set(delegate.seatNumber.toLowerCase(), delegate);
             });
-            
-            const totalSeats = 14 * 24; // 14 rows × 24 seats
-            const searchRate = totalSearches > 0 ? ((uniqueSeats.size / totalSeats) * 100).toFixed(1) : 0;
-            const successRate = totalSearches > 0 ? ((successfulSearches.length / totalSearches) * 100).toFixed(1) : 0;
-            
-            // Calculate peak hour
-            const hourCounts = {};
-            logs.forEach(log => {
-                const hour = new Date(log.timestamp).getHours();
-                hourCounts[hour] = (hourCounts[hour] || 0) + 1;
-            });
-            
-            const peakHour = Object.keys(hourCounts).length > 0 
-                ? Object.keys(hourCounts).reduce((a, b) => hourCounts[a] > hourCounts[b] ? a : b)
-                : null;
-            
-            return {
-                totalSearches,
-                mobileSearches,
-                desktopSearches,
-                uniqueSeats: uniqueSeats.size,
-                todaySearches: todaySearches.length,
-                searchRate,
-                vipSearches,
-                normalSearches,
-                successRate,
-                peakHour: peakHour ? `${peakHour}:00` : '--'
-            };
         }
 
-        // ==================== UI FUNCTIONS ====================
-        function loadDashboard() {
-            const stats = calculateStats();
+        // Create seating chart
+        function createSeatingChart() {
+            if (seatingChartCreated) return;
             
-            const totalSearchesEl = document.getElementById('totalSearches');
-            const mobileSearchesEl = document.getElementById('mobileSearches');
-            const desktopSearchesEl = document.getElementById('desktopSearches');
-            const searchRateEl = document.getElementById('searchRate');
-            
-            if (totalSearchesEl) totalSearchesEl.textContent = stats.totalSearches;
-            if (mobileSearchesEl) mobileSearchesEl.textContent = stats.mobileSearches;
-            if (desktopSearchesEl) desktopSearchesEl.textContent = stats.desktopSearches;
-            if (searchRateEl) searchRateEl.textContent = stats.searchRate + '%';
-            
-            loadRecentLogs();
-            drawSearchChart();
-        }
-        
-        function loadRecentLogs() {
-            const logs = getSearchLogs().slice(0, 10);
-            const container = document.getElementById('recentLogs');
-            
-            if (logs.length === 0) {
-                container.innerHTML = '<div class="no-data">Chưa có hoạt động tra cứu nào được ghi nhận</div>';
-                return;
-            }
-            
-            let html = '<table class="logs-table"><thead><tr>';
-            html += '<th>Thời gian</th><th>Thiết bị</th><th>Từ khóa tìm kiếm</th><th>Kết quả</th><th>Ghế</th>';
-            html += '</tr></thead><tbody>';
-            
-            logs.forEach(log => {
-                const time = new Date(log.timestamp).toLocaleString('vi-VN');
-                const device = log.device || 'desktop';
-                const deviceBadge = device === 'mobile' 
-                    ? '<span class="device-badge device-mobile">📱 Mobile</span>'
-                    : '<span class="device-badge device-desktop">💻 Desktop</span>';
-                const result = log.found ? log.delegate.fullName : 'Không tìm thấy';
-                const seat = log.found 
-                    ? (log.delegate.row === 'A' || log.delegate.row === 'B' 
-                        ? '<span class="vip-badge">VIP ' + log.delegate.row + '</span>' 
-                        : '<span class="seat-badge">' + log.delegate.seatNumber + '</span>')
-                    : '--';
-                
-                html += `<tr>
-                    <td class="timestamp">${time}</td>
-                    <td>${deviceBadge}</td>
-                    <td><span class="search-term">${log.searchTerm}</span></td>
-                    <td>${result}</td>
-                    <td>${seat}</td>
-                </tr>`;
-            });
-            
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
-        
-        function loadLogs() {
-            const logs = getSearchLogs();
-            const container = document.getElementById('logsTableContainer');
-            
-            if (logs.length === 0) {
-                container.innerHTML = '<div class="no-data">Chưa có dữ liệu tra cứu nào được ghi nhận</div>';
-                return;
-            }
-            
-            let html = '<table class="logs-table" id="fullLogsTable"><thead><tr>';
-            html += '<th>STT</th><th>Thời gian</th><th>Thiết bị</th><th>Từ khóa</th><th>Họ tên</th><th>Username</th><th>SĐT</th><th>Ghế</th><th>Hàng</th>';
-            html += '</tr></thead><tbody>';
-            
-            logs.forEach((log, index) => {
-                const time = new Date(log.timestamp).toLocaleString('vi-VN');
-                const device = log.device || 'desktop';
-                const deviceBadge = device === 'mobile' 
-                    ? '<span class="device-badge device-mobile">📱</span>'
-                    : '<span class="device-badge device-desktop">💻</span>';
-                const name = log.found ? log.delegate.fullName : '--';
-                const username = log.found ? log.delegate.username : '--';
-                const phone = log.found ? log.delegate.phone : '--';
-                const seat = log.found ? log.delegate.seatNumber : '--';
-                const row = log.found ? log.delegate.row : '--';
-                
-                html += `<tr>
-                    <td>${index + 1}</td>
-                    <td class="timestamp">${time}</td>
-                    <td>${deviceBadge}</td>
-                    <td><span class="search-term">${log.searchTerm}</span></td>
-                    <td>${name}</td>
-                    <td>${username}</td>
-                    <td>${phone}</td>
-                    <td>${seat}</td>
-                    <td>${row}</td>
-                </tr>`;
-            });
-            
-            html += '</tbody></table>';
-            container.innerHTML = html;
-            
-            setupLogFilter();
-        }
-        
-        function loadReports() {
-            const stats = calculateStats();
-            
-            const vipSearchesEl = document.getElementById('vipSearches');
-            const normalSearchesEl = document.getElementById('normalSearches');
-            const peakHourEl = document.getElementById('peakHour');
-            const successRateEl = document.getElementById('successRate');
-            
-            if (vipSearchesEl) vipSearchesEl.textContent = stats.vipSearches;
-            if (normalSearchesEl) normalSearchesEl.textContent = stats.normalSearches;
-            if (peakHourEl) peakHourEl.textContent = stats.peakHour;
-            if (successRateEl) successRateEl.textContent = stats.successRate + '%';
-            
-            drawRowChart();
-        }
-        
-        function loadSettings() {
-            const stats = calculateStats();
-            const lastReset = getLastResetTime();
-            
-            const currentRecordsEl = document.getElementById('currentRecords');
-            const lastResetTimeEl = document.getElementById('lastResetTime');
-            
-            if (currentRecordsEl) currentRecordsEl.textContent = stats.totalSearches;
-            if (lastResetTimeEl) {
-                lastResetTimeEl.textContent = lastReset 
-                    ? new Date(lastReset).toLocaleString('vi-VN')
-                    : 'Chưa có';
-            }
-        }
-        
-        function loadDebugInfo() {
-            const logs = getSearchLogs();
-            const stats = calculateStats();
-            
-            const mobileLogs = logs.filter(log => log.device === 'mobile');
-            const desktopLogs = logs.filter(log => log.device === 'desktop' || !log.device);
-            const unknownLogs = logs.filter(log => !log.device);
-            
-            const now = new Date();
-            const today = now.toISOString().split('T')[0];
-            const todayLogs = logs.filter(log => log.timestamp.startsWith(today));
-            const todayMobile = todayLogs.filter(log => log.device === 'mobile');
-            const todayDesktop = todayLogs.filter(log => log.device === 'desktop' || !log.device);
-            
-            const debugContent = document.getElementById('debugContent');
-            debugContent.innerHTML = `
-                <div class="debug-section">
-                    <div class="debug-title">📊 Tổng quan logs:</div>
-                    <div class="debug-value">
-                        • Tổng logs: ${stats.totalSearches}<br>
-                        • 📱 Mobile: ${stats.mobileSearches}<br>
-                        • 💻 Desktop: ${stats.desktopSearches}<br>
-                        • ❓ Unknown device: ${unknownLogs.length}
-                    </div>
-                </div>
-                
-                <div class="debug-section">
-                    <div class="debug-title">📅 Hôm nay (${today}):</div>
-                    <div class="debug-value">
-                        • Tổng: ${todayLogs.length}<br>
-                        • 📱 Mobile: ${todayMobile.length}<br>
-                        • 💻 Desktop: ${todayDesktop.length}
-                    </div>
-                </div>
-                
-                <div class="debug-section">
-                    <div class="debug-title">🔍 Logs gần nhất (5):</div>
-                    <div class="debug-value">
-                        ${logs.slice(0, 5).map((log, i) => 
-                            `${i+1}. ${log.device || '❓'}: ${log.searchTerm} (${log.found ? '✅' : '❌'})<br>`
-                        ).join('')}
-                    </div>
-                </div>
-                
-                <div class="debug-section">
-                    <div class="debug-title">📱 Mobile logs gần nhất (3):</div>
-                    <div class="debug-value">
-                        ${mobileLogs.length > 0 ? 
-                            mobileLogs.slice(0, 3).map((log, i) => 
-                                `${i+1}. ${log.searchTerm} - ${new Date(log.timestamp).toLocaleTimeString('vi-VN')}<br>`
-                            ).join('') 
-                            : '<em style="color: #ef4444;">Không có mobile logs!</em>'
-                        }
-                    </div>
-                </div>
-                
-                <div class="debug-section">
-                    <div class="debug-title">⚙️ Debug actions:</div>
-                    <div style="margin-top: 10px;">
-                        <button onclick="createTestMobileLog()" style="margin: 5px; padding: 5px 10px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Tạo Test Mobile Log</button>
-                        <button onclick="createTestDesktopLog()" style="margin: 5px; padding: 5px 10px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Tạo Test Desktop Log</button>
-                        <button onclick="showDetailedLogs()" style="margin: 5px; padding: 5px 10px; background: #f59e0b; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Chi tiết Logs</button>
-                    </div>
-                </div>
-            `;
-        }
-        
-        function setupLogFilter() {
-            const filterInput = document.getElementById('logFilter');
-            const table = document.getElementById('fullLogsTable');
-            
-            if (!table) return;
-            
-            filterInput.addEventListener('input', function() {
-                const filterValue = this.value.toLowerCase();
-                const rows = table.getElementsByTagName('tr');
-                
-                for (let i = 1; i < rows.length; i++) {
-                    const row = rows[i];
-                    const text = row.textContent.toLowerCase();
-                    row.style.display = text.includes(filterValue) ? '' : 'none';
-                }
-            });
-        }
-        
-        function updateLastUpdateTime() {
-            const lastUpdateEl = document.getElementById('lastUpdate');
-            if (lastUpdateEl) {
-                lastUpdateEl.textContent = 'Cập nhật: ' + new Date().toLocaleTimeString('vi-VN');
-            }
-        }
-        
-        // ==================== CHART FUNCTIONS ====================
-        function drawSearchChart() {
-            const canvas = document.getElementById('searchChart');
-            const ctx = canvas.getContext('2d');
-            const logs = getSearchLogs();
-            
-            // Clear canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            if (logs.length === 0) {
-                ctx.fillStyle = '#64748b';
-                ctx.font = '16px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('Chưa có dữ liệu để hiển thị', canvas.width / 2, canvas.height / 2);
-                return;
-            }
-            
-            // Group logs by day and device
-            const dayGroups = {};
-            const now = new Date();
-            
-            // Initialize last 7 days
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date(now);
-                date.setDate(date.getDate() - i);
-                const dateStr = date.toISOString().split('T')[0];
-                dayGroups[dateStr] = { mobile: 0, desktop: 0, total: 0 };
-            }
-            
-            logs.forEach(log => {
-                const date = log.timestamp.split('T')[0];
-                if (dayGroups.hasOwnProperty(date)) {
-                    const device = log.device === 'mobile' ? 'mobile' : 'desktop';
-                    dayGroups[date][device]++;
-                    dayGroups[date].total++;
-                }
-            });
-            
-            const dates = Object.keys(dayGroups);
-            const mobileCounts = dates.map(date => dayGroups[date].mobile);
-            const desktopCounts = dates.map(date => dayGroups[date].desktop);
-            const maxCount = Math.max(...dates.map(date => dayGroups[date].total)) || 1;
-            
-            // Chart dimensions
-            const padding = 60;
-            const chartWidth = canvas.width - padding * 2;
-            const chartHeight = canvas.height - padding * 2;
-            const barWidth = chartWidth / dates.length;
-            
-            // Draw axes
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(padding, padding);
-            ctx.lineTo(padding, canvas.height - padding);
-            ctx.lineTo(canvas.width - padding, canvas.height - padding);
-            ctx.stroke();
-            
-            // Draw stacked bars
-            dates.forEach((date, index) => {
-                const mobileCount = mobileCounts[index];
-                const desktopCount = desktopCounts[index];
-                const totalCount = mobileCount + desktopCount;
-                
-                const x = padding + index * barWidth + barWidth * 0.1;
-                const width = barWidth * 0.8;
-                
-                // Desktop bar (bottom)
-                const desktopHeight = (desktopCount / maxCount) * chartHeight;
-                const desktopY = canvas.height - padding - desktopHeight;
-                ctx.fillStyle = '#3b82f6';
-                ctx.fillRect(x, desktopY, width, desktopHeight);
-                
-                // Mobile bar (top)
-                const mobileHeight = (mobileCount / maxCount) * chartHeight;
-                const mobileY = desktopY - mobileHeight;
-                ctx.fillStyle = '#10b981';
-                ctx.fillRect(x, mobileY, width, mobileHeight);
-                
-                // Draw total count on top
-                if (totalCount > 0) {
-                    ctx.fillStyle = '#1e293b';
-                    ctx.font = 'bold 12px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(totalCount.toString(), x + width / 2, mobileY - 5);
-                }
-                
-                // Draw mobile count if > 0
-                if (mobileCount > 0) {
-                    ctx.fillStyle = 'white';
-                    ctx.font = 'bold 10px Arial';
-                    const mobileTextY = mobileY + mobileHeight / 2 + 3;
-                    if (mobileHeight > 15) {
-                        ctx.fillText(mobileCount.toString(), x + width / 2, mobileTextY);
-                    }
-                }
-                
-                // Draw desktop count if > 0
-                if (desktopCount > 0) {
-                    ctx.fillStyle = 'white';
-                    ctx.font = 'bold 10px Arial';
-                    const desktopTextY = desktopY + desktopHeight / 2 + 3;
-                    if (desktopHeight > 15) {
-                        ctx.fillText(desktopCount.toString(), x + width / 2, desktopTextY);
-                    }
-                }
-                
-                // Draw date label
-                ctx.fillStyle = '#64748b';
-                ctx.font = '10px Arial';
-                const dateObj = new Date(date);
-                const label = `${dateObj.getDate()}/${dateObj.getMonth() + 1}`;
-                ctx.save();
-                ctx.translate(x + width / 2, canvas.height - padding + 15);
-                ctx.rotate(-Math.PI / 4);
-                ctx.textAlign = 'right';
-                ctx.fillText(label, 0, 0);
-                ctx.restore();
-            });
-            
-            // Draw legend
-            ctx.fillStyle = '#10b981';
-            ctx.fillRect(padding, 30, 15, 15);
-            ctx.fillStyle = '#1e293b';
-            ctx.font = '12px Arial';
-            ctx.textAlign = 'left';
-            ctx.fillText('📱 Mobile', padding + 25, 42);
-            
-            ctx.fillStyle = '#3b82f6';
-            ctx.fillRect(padding + 120, 30, 15, 15);
-            ctx.fillText('💻 Desktop', padding + 145, 42);
-            
-            // Draw title
-            ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 14px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('Số lượt tra cứu 7 ngày qua (Mobile vs Desktop)', canvas.width / 2, 20);
-        }
-        
-        function drawRowChart() {
-            const canvas = document.getElementById('rowChart');
-            const ctx = canvas.getContext('2d');
-            const logs = getSearchLogs().filter(log => log.found);
-            
-            // Clear canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            if (logs.length === 0) {
-                ctx.fillStyle = '#64748b';
-                ctx.font = '16px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('Chưa có dữ liệu để hiển thị', canvas.width / 2, canvas.height / 2);
-                return;
-            }
-            
-            // Count searches by row
-            const rowCounts = {};
+            const seatingRows = document.getElementById('seatingRows');
             const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+            const seatsPerRow = 24;
             
-            rows.forEach(row => rowCounts[row] = 0);
-            
-            logs.forEach(log => {
-                if (log.delegate && log.delegate.row) {
-                    rowCounts[log.delegate.row]++;
-                }
-            });
-            
-            const maxCount = Math.max(...Object.values(rowCounts)) || 1;
-            
-            // Chart dimensions
-            const padding = 60;
-            const chartWidth = canvas.width - padding * 2;
-            const chartHeight = canvas.height - padding * 2;
-            const barWidth = chartWidth / rows.length;
-            
-            // Draw axes
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(padding, padding);
-            ctx.lineTo(padding, canvas.height - padding);
-            ctx.lineTo(canvas.width - padding, canvas.height - padding);
-            ctx.stroke();
-            
-            // Draw bars
-            rows.forEach((row, index) => {
-                const count = rowCounts[row];
-                const barHeight = (count / maxCount) * chartHeight;
-                const x = padding + index * barWidth + barWidth * 0.1;
-                const y = canvas.height - padding - barHeight;
-                const width = barWidth * 0.8;
+            rows.forEach(rowLabel => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
                 
-                // Color coding: VIP rows (A, B) in red, others in blue
-                const isVIP = row === 'A' || row === 'B';
-                const gradient = ctx.createLinearGradient(0, y, 0, y + barHeight);
-                if (isVIP) {
-                    gradient.addColorStop(0, '#dc2626');
-                    gradient.addColorStop(1, '#b91c1c');
+                if (rowLabel === 'A') {
+                    // Special row A handling
+                    const removedPositions = [7, 12, 13, 18];
+                    let newSeatNumber = 1;
+                    
+                    for (let i = 1; i <= seatsPerRow; i++) {
+                        if (!removedPositions.includes(i)) {
+                            const seatDiv = document.createElement('div');
+                            const seatId = `${rowLabel}${newSeatNumber}`;
+                            
+                            seatDiv.className = 'seat vip-area';
+                            seatDiv.id = `seat-${seatId}`;
+                            seatDiv.textContent = seatId;
+                            seatDiv.onclick = () => selectSeat(seatId);
+                            
+                            if (i === 6) seatDiv.style.marginRight = '15px';
+                            if (i === 18) seatDiv.style.marginRight = '15px';
+                            
+                            rowDiv.appendChild(seatDiv);
+                            newSeatNumber++;
+                        } else {
+                            const emptyDiv = document.createElement('div');
+                            emptyDiv.className = 'seat';
+                            emptyDiv.style.visibility = 'hidden';
+                            emptyDiv.style.pointerEvents = 'none';
+                            
+                            if (i === 6) emptyDiv.style.marginRight = '15px';
+                            if (i === 18) emptyDiv.style.marginRight = '15px';
+                            
+                            rowDiv.appendChild(emptyDiv);
+                        }
+                    }
                 } else {
-                    gradient.addColorStop(0, '#2563eb');
-                    gradient.addColorStop(1, '#1d4ed8');
+                    // Other rows
+                    for (let i = 1; i <= seatsPerRow; i++) {
+                        const seatDiv = document.createElement('div');
+                        const seatId = `${rowLabel}${i}`;
+                        
+                        seatDiv.className = rowLabel === 'B' ? 'seat vip-area' : 'seat';
+                        seatDiv.id = `seat-${seatId}`;
+                        seatDiv.textContent = seatId;
+                        seatDiv.onclick = () => selectSeat(seatId);
+                        
+                        if (i === 6) seatDiv.style.marginRight = '15px';
+                        if (i === 18) seatDiv.style.marginRight = '15px';
+                        
+                        rowDiv.appendChild(seatDiv);
+                    }
                 }
                 
-                ctx.fillStyle = gradient;
-                ctx.fillRect(x, y, width, barHeight);
-                
-                // Draw count on top of bar
-                if (count > 0) {
-                    ctx.fillStyle = '#1e293b';
-                    ctx.font = 'bold 12px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(count.toString(), x + width / 2, y - 5);
-                }
-                
-                // Draw row label
-                ctx.fillStyle = '#1e293b';
-                ctx.font = 'bold 14px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText(row, x + width / 2, canvas.height - padding + 20);
+                if (rowLabel === 'A') rowDiv.style.marginBottom = '9px';
+                if (rowLabel === 'F') rowDiv.style.marginBottom = '15px';
+                seatingRows.appendChild(rowDiv);
             });
             
-            // Draw legend
-            ctx.fillStyle = '#dc2626';
-            ctx.fillRect(padding, 30, 15, 15);
-            ctx.fillStyle = '#1e293b';
-            ctx.font = '12px Arial';
-            ctx.textAlign = 'left';
-            ctx.fillText('VIP (A, B)', padding + 25, 42);
-            
-            ctx.fillStyle = '#2563eb';
-            ctx.fillRect(padding + 120, 30, 15, 15);
-            ctx.fillText('Thường (C-N)', padding + 145, 42);
-            
-            // Draw title
-            ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 14px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('Thống kê tra cứu theo hàng ghế', canvas.width / 2, 20);
+            seatingChartCreated = true;
         }
-        
-        // ==================== DEBUG FUNCTIONS ====================
-        window.createTestMobileLog = function() {
-            const testLog = {
-                id: Date.now() + '_test_mobile',
-                timestamp: new Date().toISOString(),
-                searchTerm: 'TEST_MOBILE_' + Date.now(),
-                found: true,
-                device: 'mobile',
-                delegate: {
-                    fullName: 'Test Mobile User',
-                    seatNumber: 'A1',
-                    row: 'A',
-                    username: 'testmobile',
-                    phone: '0999999999'
-                }
-            };
-            
-            const logs = getSearchLogs();
-            logs.unshift(testLog);
-            saveSearchLogs(logs);
-            
-            alert('✅ Đã tạo test mobile log!');
-            loadDashboard();
-            loadDebugInfo();
-        };
 
-        window.createTestDesktopLog = function() {
-            const testLog = {
-                id: Date.now() + '_test_desktop',
-                timestamp: new Date().toISOString(),
-                searchTerm: 'TEST_DESKTOP_' + Date.now(),
-                found: true,
-                device: 'desktop',
-                delegate: {
-                    fullName: 'Test Desktop User',
-                    seatNumber: 'B2',
-                    row: 'B',
-                    username: 'testdesktop',
-                    phone: '0888888888'
-                }
-            };
-            
-            const logs = getSearchLogs();
-            logs.unshift(testLog);
-            saveSearchLogs(logs);
-            
-            alert('✅ Đã tạo test desktop log!');
-            loadDashboard();
-            loadDebugInfo();
-        };
+        // Search functions
+        function findDelegateBySeat(seatNumber) {
+            return seatIndex.get(seatNumber.toLowerCase());
+        }
 
-        window.showDetailedLogs = function() {
-            const logs = getSearchLogs();
-            console.log('📋 === CHI TIẾT TẤT CẢ LOGS ===');
-            console.table(logs.slice(0, 20));
+        function isValidSeatNumber(seatNumber) {
+            const pattern = /^[A-N]\d{1,2}$/i;
+            return pattern.test(seatNumber);
+        }
+
+        function searchBySeat() {
+            if (isLoading) return;
             
-            const mobileCount = logs.filter(log => log.device === 'mobile').length;
-            const desktopCount = logs.filter(log => log.device === 'desktop' || !log.device).length;
-            
-            alert(`📊 Chi tiết logs:\n• Tổng: ${logs.length}\n• Mobile: ${mobileCount}\n• Desktop: ${desktopCount}\n\nXem Console để thấy chi tiết 20 logs gần nhất`);
-        };
-        
-        window.clearAllLogs = function() {
-            if (confirm('⚠️ Xóa tất cả logs?')) {
-                resetAllLogs();
-                alert('✅ Đã xóa tất cả logs!');
-                loadDashboard();
-                loadDebugInfo();
+            const seatInput = document.getElementById('searchInput').value.trim().toUpperCase();
+            const errorMessage = document.getElementById('errorMessage');
+            const resultSection = document.getElementById('resultSection');
+            const searchBtn = document.getElementById('searchBtn');
+
+            errorMessage.classList.add('hidden');
+            resultSection.classList.add('hidden');
+            resetHighlight();
+
+            if (!seatInput) {
+                showError('Vui lòng nhập mã số ghế (VD: A1, B15, C23)!');
+                return;
             }
-        };
-        
-        // ==================== INTEGRATION FUNCTIONS ====================
-        window.logSearchActivity = function(searchTerm, delegate, found = true) {
-            return addSearchLog(searchTerm, delegate, found);
-        };
-        
-        window.getSearchStats = function() {
-            return calculateStats();
-        };
-        
-        window.exportSearchLogs = function() {
-            return exportLogs();
-        };
-        
-        window.resetSearchLogs = function() {
-            return resetAllLogs();
-        };
-        
-        // ==================== INITIALIZATION ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            // Kiểm tra quyền truy cập
-            checkAdminAccess();
-            
-            loadDashboard();
-            updateLastUpdateTime();
-            
-            // Auto refresh dashboard every 30 seconds
-            setInterval(() => {
-                if (document.getElementById('dashboard').classList.contains('active')) {
-                    loadDashboard();
-                    updateLastUpdateTime();
-                }
-            }, 30000);
-            
-            // Handle clicks outside modal
-            document.getElementById('resetConfirmation').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    hideResetConfirmation();
-                }
-            });
-            
-            // Listen for storage changes from main site
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'seatSearchLogs' || e.key === 'generalStats') {
-                    // Refresh data when main site updates
-                    setTimeout(() => {
-                        loadDashboard();
-                        updateLastUpdateTime();
-                    }, 1000);
-                }
-            });
-            
-            // Debug info for mobile detection
-            console.log('📱 Admin loaded - Mobile logs detection ready');
+
+            if (!isValidSeatNumber(seatInput)) {
+                showError('Mã ghế không hợp lệ! Vui lòng nhập theo định dạng: A1, B15, C23...');
+                return;
+            }
+
+            isLoading = true;
+            searchBtn.innerHTML = '<span class="loading"></span>Đang tra cứu...';
+            searchBtn.disabled = true;
+
             setTimeout(() => {
-                const stats = calculateStats();
-                console.log(`📊 Current stats: Total: ${stats.totalSearches}, Mobile: ${stats.mobileSearches}, Desktop: ${stats.desktopSearches}`);
+                const delegate = findDelegateBySeat(seatInput);
                 
-                if (stats.totalSearches > 0 && stats.mobileSearches === 0) {
-                    console.warn('⚠️ CÓ LOGS NHƯNG KHÔNG CÓ MOBILE LOGS - Kiểm tra trang tra cứu!');
-                }
-            }, 2000);
-        });
-        
-        function checkAdminAccess() {
-            const isAdmin = localStorage.getItem('isAdmin') === 'true';
-            if (!isAdmin) {
-                const password = prompt('🔐 Nhập mã truy cập quản trị để xem trang này:');
-                if (password === 'DAIHOI2025' || password === 'admin') {
-                    localStorage.setItem('isAdmin', 'true');
+                if (!delegate) {
+                    showError(`❌ <strong>Ghế ${seatInput} chưa có đại biểu!</strong><br>Ghế này hiện đang trống.`);
                 } else {
-                    alert('❌ Mã không đúng! Bạn sẽ được chuyển về trang chính.');
-                    window.location.href = 'index.html';
-                    return;
+                    displayDelegateInfo(delegate);
+                    highlightSeat(seatInput);
+                    
+                    document.getElementById('resultSection').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
                 }
+
+                isLoading = false;
+                searchBtn.innerHTML = 'Tra cứu';
+                searchBtn.disabled = false;
+            }, 300);
+        }
+
+        function selectSeat(seatNumber) {
+            document.getElementById('searchInput').value = seatNumber;
+            toggleClearButton();
+            
+            resetHighlight();
+            document.getElementById('errorMessage').classList.add('hidden');
+            
+            const delegate = findDelegateBySeat(seatNumber);
+            
+            if (!delegate) {
+                document.getElementById('resultSection').classList.add('hidden');
+                showError(`❌ <strong>Ghế ${seatNumber} chưa có đại biểu!</strong><br>Ghế này hiện đang trống.`);
+                document.getElementById('errorMessage').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            } else {
+                displayDelegateInfo(delegate);
+                highlightSeat(seatNumber);
+                
+                document.getElementById('resultSection').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
             }
         }
+
+        function displayDelegateInfo(delegate) {
+            document.getElementById('fullName').textContent = delegate.fullName;
+            document.getElementById('position').textContent = delegate.position;
+            
+            const phoneElement = document.getElementById('phoneNumber');
+            phoneElement.innerHTML = `<a href="tel:${delegate.phone}" class="phone-link">${delegate.phone}</a>`;
+            
+            document.getElementById('seatNumber').textContent = delegate.seatNumber;
+            
+            const seatHighlight = document.getElementById('seatHighlight');
+            const vipText = (delegate.row === 'A' || delegate.row === 'B') ? ' (Khu vực VIP)' : '';
+            seatHighlight.textContent = `Ghế ${delegate.seatNumber} - Hàng ${delegate.row}${vipText}`;
+            
+            document.getElementById('resultSection').classList.remove('hidden');
+        }
+
+        function resetHighlight() {
+            const selectedSeats = document.querySelectorAll('.seat.selected');
+            selectedSeats.forEach(seat => {
+                seat.classList.remove('selected');
+            });
+        }
+
+        function highlightSeat(seatNumber) {
+            const seatElement = document.getElementById(`seat-${seatNumber}`);
+            if (seatElement) {
+                seatElement.classList.add('selected');
+            }
+        }
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.innerHTML = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        function toggleClearButton() {
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            clearBtn.style.display = searchInput.value.trim() ? 'flex' : 'none';
+        }
+
+        function clearInput() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = '';
+            searchInput.focus();
+            toggleClearButton();
+            
+            document.getElementById('errorMessage').classList.add('hidden');
+            document.getElementById('resultSection').classList.add('hidden');
+            resetHighlight();
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, initializing...');
+            
+            initializeDelegateData();
+            createSeatingChart();
+            
+            const searchInput = document.getElementById('searchInput');
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchBySeat();
+                }
+            });
+
+            searchInput.addEventListener('input', function(e) {
+                e.target.value = e.target.value.toUpperCase();
+                toggleClearButton();
+            });
+            
+            searchInput.focus();
+            
+            console.log('Initialization complete');
+        });
     </script>
 </body>
 </html>
