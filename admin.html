@@ -30,6 +30,84 @@
             width: 100%;
         }
 
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-title {
+            color: #005993;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #005993;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #005993 0%, #004a7a 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            width: 100%;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #004a7a 0%, #003a61 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 89, 147, 0.3);
+        }
+
+        .login-error {
+            background: #fecaca;
+            color: #991b1b;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #dc2626;
+            font-size: 14px;
+        }
+
+        .login-instructions {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+            font-size: 14px;
+        }
+
         .header {
             text-align: center;
             margin-bottom: 30px;
@@ -446,6 +524,12 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
         @media (max-width: 1250px) {
             .container { max-width: 95%; padding: 15px; }
         }
@@ -480,7 +564,26 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="admin-badge">🔐 ADMIN PANEL</div>
+        <h1 class="login-title">Đăng nhập Admin</h1>
+        <p class="login-subtitle">Vui lòng nhập mật khẩu để truy cập hệ thống</p>
+        
+        <div class="login-instructions">
+            🔑 Nhập mật khẩu admin để truy cập hệ thống tra cứu thông tin đại biểu
+        </div>
+        
+        <input type="password" id="passwordInput" class="password-input" placeholder="Nhập mật khẩu admin..." />
+        <button id="loginBtn" class="login-btn">🚀 Đăng nhập</button>
+        
+        <div id="loginError" class="login-error hidden">
+            ❌ Mật khẩu không đúng! Vui lòng thử lại.
+        </div>
+    </div>
+
+    <!-- Main Admin Panel (Hidden initially) -->
+    <div id="mainPanel" class="container hidden">
         <div class="header">
             <div class="admin-badge">🔐 ADMIN PANEL</div>
             <div class="event-title">
@@ -498,10 +601,10 @@
                 <div class="input-container">
                     <input type="text" id="searchInput" placeholder="nhập mã số ghế tại đây..." />
                     <div class="input-actions">
-                        <button class="clear-btn" id="clearBtn" onclick="clearInput()">✕</button>
+                        <button class="clear-btn" id="clearBtn">✕</button>
                     </div>
                 </div>
-                <button class="search-btn" onclick="searchBySeat()" id="searchBtn">Tra cứu</button>
+                <button class="search-btn" id="searchBtn">Tra cứu</button>
             </div>
         </div>
 
@@ -549,285 +652,364 @@
         </div>
     </div>
 
-    <script>
-        // Global variables
-        let delegates = new Map();
-        let seatIndex = new Map();
-        let seatingChartCreated = false;
-        let isLoading = false;
+<script>
+// === GLOBAL VARIABLES ===
+var delegates = new Map();
+var seatIndex = new Map();
+var seatingChartCreated = false;
+var isLoading = false;
+var isLoggedIn = false;
 
-        // Sample data
-        function initializeDelegateData() {
-            const realDelegates = [
-                { 
-                    id: 1, 
-                    seatNumber: "A17",
-                    fullName: "Trần Minh Bình", 
-                    position: "Ủy viên BCH Đảng bộ Chính phủ, Bí thư Đảng ủy, Chủ tịch Hội đồng Quản trị NHCTVN",
-                    phone: "0913588832",
-                    row: "A", 
-                    seatPosition: 17 
-                },
-                { 
-                    id: 2, 
-                    seatNumber: "A1",
-                    fullName: "Trần Kiên Cường", 
-                    position: "Phó Bí thư Thường trực Đảng ủy NHCTVN",
-                    phone: "0913260131",
-                    row: "A", 
-                    seatPosition: 1 
-                },
-                { 
-                    id: 3, 
-                    seatNumber: "A19",
-                    fullName: "Nguyễn Trần Mạnh Trung", 
-                    position: "Phó Bí thư Đảng ủy, Thành viên Hội đồng Quản trị kiêm Tổng Giám đốc NHCTVN",
-                    phone: "0983832109",
-                    row: "A", 
-                    seatPosition: 19 
-                }
-            ];
+// === GLOBAL FUNCTIONS ===
+function loginAdmin() {
+    var passwordInput = document.getElementById('passwordInput');
+    var loginError = document.getElementById('loginError');
+    var loginBtn = document.getElementById('loginBtn');
+    
+    var enteredPassword = passwordInput.value.trim();
+    
+    if (enteredPassword === "daihoi2025") {
+        loginError.classList.add('hidden');
+        loginBtn.innerHTML = '✅ Đang đăng nhập...';
+        loginBtn.disabled = true;
+        
+        setTimeout(function() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainPanel').classList.remove('hidden');
+            isLoggedIn = true;
+            initializeApp();
+        }, 1000);
+        
+    } else {
+        loginError.classList.remove('hidden');
+        passwordInput.value = '';
+        passwordInput.focus();
+        
+        passwordInput.style.animation = 'shake 0.5s';
+        setTimeout(function() {
+            passwordInput.style.animation = '';
+        }, 500);
+    }
+}
 
-            // Save to maps
-            realDelegates.forEach(delegate => {
-                delegates.set(delegate.id, delegate);
-                seatIndex.set(delegate.seatNumber.toLowerCase(), delegate);
+function searchBySeat() {
+    if (!checkAccess() || isLoading) return;
+    
+    var seatInput = document.getElementById('searchInput').value.trim().toUpperCase();
+    var errorMessage = document.getElementById('errorMessage');
+    var resultSection = document.getElementById('resultSection');
+    var searchBtn = document.getElementById('searchBtn');
+
+    errorMessage.classList.add('hidden');
+    resultSection.classList.add('hidden');
+    resetHighlight();
+
+    if (!seatInput) {
+        showError('Vui lòng nhập mã số ghế (VD: A1, B15, C23)!');
+        return;
+    }
+
+    if (!isValidSeatNumber(seatInput)) {
+        showError('Mã ghế không hợp lệ! Vui lòng nhập theo định dạng: A1, B15, C23...');
+        return;
+    }
+
+    isLoading = true;
+    searchBtn.innerHTML = '<span class="loading"></span>Đang tra cứu...';
+    searchBtn.disabled = true;
+
+    setTimeout(function() {
+        var delegate = findDelegateBySeat(seatInput);
+        
+        if (!delegate) {
+            showError('❌ <strong>Ghế ' + seatInput + ' chưa có đại biểu!</strong><br>Ghế này hiện đang trống.');
+        } else {
+            displayDelegateInfo(delegate);
+            highlightSeat(seatInput);
+            
+            document.getElementById('resultSection').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
             });
         }
 
-        // Create seating chart
-        function createSeatingChart() {
-            if (seatingChartCreated) return;
-            
-            const seatingRows = document.getElementById('seatingRows');
-            const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
-            const seatsPerRow = 24;
-            
-            rows.forEach(rowLabel => {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'row';
-                
-                if (rowLabel === 'A') {
-                    // Special row A handling
-                    const removedPositions = [7, 12, 13, 18];
-                    let newSeatNumber = 1;
-                    
-                    for (let i = 1; i <= seatsPerRow; i++) {
-                        if (!removedPositions.includes(i)) {
-                            const seatDiv = document.createElement('div');
-                            const seatId = `${rowLabel}${newSeatNumber}`;
-                            
-                            seatDiv.className = 'seat vip-area';
-                            seatDiv.id = `seat-${seatId}`;
-                            seatDiv.textContent = seatId;
-                            seatDiv.onclick = () => selectSeat(seatId);
-                            
-                            if (i === 6) seatDiv.style.marginRight = '15px';
-                            if (i === 18) seatDiv.style.marginRight = '15px';
-                            
-                            rowDiv.appendChild(seatDiv);
-                            newSeatNumber++;
-                        } else {
-                            const emptyDiv = document.createElement('div');
-                            emptyDiv.className = 'seat';
-                            emptyDiv.style.visibility = 'hidden';
-                            emptyDiv.style.pointerEvents = 'none';
-                            
-                            if (i === 6) emptyDiv.style.marginRight = '15px';
-                            if (i === 18) emptyDiv.style.marginRight = '15px';
-                            
-                            rowDiv.appendChild(emptyDiv);
-                        }
-                    }
-                } else {
-                    // Other rows
-                    for (let i = 1; i <= seatsPerRow; i++) {
-                        const seatDiv = document.createElement('div');
-                        const seatId = `${rowLabel}${i}`;
-                        
-                        seatDiv.className = rowLabel === 'B' ? 'seat vip-area' : 'seat';
-                        seatDiv.id = `seat-${seatId}`;
-                        seatDiv.textContent = seatId;
-                        seatDiv.onclick = () => selectSeat(seatId);
-                        
-                        if (i === 6) seatDiv.style.marginRight = '15px';
-                        if (i === 18) seatDiv.style.marginRight = '15px';
-                        
-                        rowDiv.appendChild(seatDiv);
-                    }
-                }
-                
-                if (rowLabel === 'A') rowDiv.style.marginBottom = '9px';
-                if (rowLabel === 'F') rowDiv.style.marginBottom = '15px';
-                seatingRows.appendChild(rowDiv);
-            });
-            
-            seatingChartCreated = true;
-        }
+        isLoading = false;
+        searchBtn.innerHTML = 'Tra cứu';
+        searchBtn.disabled = false;
+    }, 300);
+}
 
-        // Search functions
-        function findDelegateBySeat(seatNumber) {
-            return seatIndex.get(seatNumber.toLowerCase());
-        }
-
-        function isValidSeatNumber(seatNumber) {
-            const pattern = /^[A-N]\d{1,2}$/i;
-            return pattern.test(seatNumber);
-        }
-
-        function searchBySeat() {
-            if (isLoading) return;
-            
-            const seatInput = document.getElementById('searchInput').value.trim().toUpperCase();
-            const errorMessage = document.getElementById('errorMessage');
-            const resultSection = document.getElementById('resultSection');
-            const searchBtn = document.getElementById('searchBtn');
-
-            errorMessage.classList.add('hidden');
-            resultSection.classList.add('hidden');
-            resetHighlight();
-
-            if (!seatInput) {
-                showError('Vui lòng nhập mã số ghế (VD: A1, B15, C23)!');
-                return;
-            }
-
-            if (!isValidSeatNumber(seatInput)) {
-                showError('Mã ghế không hợp lệ! Vui lòng nhập theo định dạng: A1, B15, C23...');
-                return;
-            }
-
-            isLoading = true;
-            searchBtn.innerHTML = '<span class="loading"></span>Đang tra cứu...';
-            searchBtn.disabled = true;
-
-            setTimeout(() => {
-                const delegate = findDelegateBySeat(seatInput);
-                
-                if (!delegate) {
-                    showError(`❌ <strong>Ghế ${seatInput} chưa có đại biểu!</strong><br>Ghế này hiện đang trống.`);
-                } else {
-                    displayDelegateInfo(delegate);
-                    highlightSeat(seatInput);
-                    
-                    document.getElementById('resultSection').scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'center' 
-                    });
-                }
-
-                isLoading = false;
-                searchBtn.innerHTML = 'Tra cứu';
-                searchBtn.disabled = false;
-            }, 300);
-        }
-
-        function selectSeat(seatNumber) {
-            document.getElementById('searchInput').value = seatNumber;
-            toggleClearButton();
-            
-            resetHighlight();
-            document.getElementById('errorMessage').classList.add('hidden');
-            
-            const delegate = findDelegateBySeat(seatNumber);
-            
-            if (!delegate) {
-                document.getElementById('resultSection').classList.add('hidden');
-                showError(`❌ <strong>Ghế ${seatNumber} chưa có đại biểu!</strong><br>Ghế này hiện đang trống.`);
-                document.getElementById('errorMessage').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-            } else {
-                displayDelegateInfo(delegate);
-                highlightSeat(seatNumber);
-                
-                document.getElementById('resultSection').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-            }
-        }
-
-        function displayDelegateInfo(delegate) {
-            document.getElementById('fullName').textContent = delegate.fullName;
-            document.getElementById('position').textContent = delegate.position;
-            
-            const phoneElement = document.getElementById('phoneNumber');
-            phoneElement.innerHTML = `<a href="tel:${delegate.phone}" class="phone-link">${delegate.phone}</a>`;
-            
-            document.getElementById('seatNumber').textContent = delegate.seatNumber;
-            
-            const seatHighlight = document.getElementById('seatHighlight');
-            const vipText = (delegate.row === 'A' || delegate.row === 'B') ? ' (Khu vực VIP)' : '';
-            seatHighlight.textContent = `Ghế ${delegate.seatNumber} - Hàng ${delegate.row}${vipText}`;
-            
-            document.getElementById('resultSection').classList.remove('hidden');
-        }
-
-        function resetHighlight() {
-            const selectedSeats = document.querySelectorAll('.seat.selected');
-            selectedSeats.forEach(seat => {
-                seat.classList.remove('selected');
-            });
-        }
-
-        function highlightSeat(seatNumber) {
-            const seatElement = document.getElementById(`seat-${seatNumber}`);
-            if (seatElement) {
-                seatElement.classList.add('selected');
-            }
-        }
-
-        function showError(message) {
-            const errorMessage = document.getElementById('errorMessage');
-            errorMessage.innerHTML = message;
-            errorMessage.classList.remove('hidden');
-        }
-
-        function toggleClearButton() {
-            const searchInput = document.getElementById('searchInput');
-            const clearBtn = document.getElementById('clearBtn');
-            
-            clearBtn.style.display = searchInput.value.trim() ? 'flex' : 'none';
-        }
-
-        function clearInput() {
-            const searchInput = document.getElementById('searchInput');
-            searchInput.value = '';
-            searchInput.focus();
-            toggleClearButton();
-            
-            document.getElementById('errorMessage').classList.add('hidden');
-            document.getElementById('resultSection').classList.add('hidden');
-            resetHighlight();
-        }
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Page loaded, initializing...');
-            
-            initializeDelegateData();
-            createSeatingChart();
-            
-            const searchInput = document.getElementById('searchInput');
-            
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    searchBySeat();
-                }
-            });
-
-            searchInput.addEventListener('input', function(e) {
-                e.target.value = e.target.value.toUpperCase();
-                toggleClearButton();
-            });
-            
-            searchInput.focus();
-            
-            console.log('Initialization complete');
+function selectSeat(seatNumber) {
+    if (!checkAccess()) return;
+    
+    document.getElementById('searchInput').value = seatNumber;
+    toggleClearButton();
+    
+    resetHighlight();
+    document.getElementById('errorMessage').classList.add('hidden');
+    
+    var delegate = findDelegateBySeat(seatNumber);
+    
+    if (!delegate) {
+        document.getElementById('resultSection').classList.add('hidden');
+        showError('❌ <strong>Ghế ' + seatNumber + ' chưa có đại biểu!</strong><br>Ghế này hiện đang trống.');
+        document.getElementById('errorMessage').scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
         });
-    </script>
+    } else {
+        displayDelegateInfo(delegate);
+        highlightSeat(seatNumber);
+        
+        document.getElementById('resultSection').scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+        });
+    }
+}
+
+function clearInput() {
+    if (!checkAccess()) return;
+    
+    var searchInput = document.getElementById('searchInput');
+    searchInput.value = '';
+    searchInput.focus();
+    toggleClearButton();
+    
+    document.getElementById('errorMessage').classList.add('hidden');
+    document.getElementById('resultSection').classList.add('hidden');
+    resetHighlight();
+}
+
+// === HELPER FUNCTIONS ===
+function checkAccess() {
+    if (!isLoggedIn) {
+        alert('⚠️ Vui lòng đăng nhập để sử dụng chức năng này!');
+        return false;
+    }
+    return true;
+}
+
+function initializeDelegateData() {
+    var realDelegates = [
+        { 
+            id: 1, 
+            seatNumber: "A17",
+            fullName: "Trần Minh Bình", 
+            position: "Ủy viên BCH Đảng bộ Chính phủ, Bí thư Đảng ủy, Chủ tịch Hội đồng Quản trị NHCTVN",
+            phone: "0913588832",
+            row: "A", 
+            seatPosition: 17 
+        },
+        { 
+            id: 2, 
+            seatNumber: "A1",
+            fullName: "Trần Kiên Cường", 
+            position: "Phó Bí thư Thường trực Đảng ủy NHCTVN",
+            phone: "0913260131",
+            row: "A", 
+            seatPosition: 1 
+        },
+        { 
+            id: 3, 
+            seatNumber: "A19",
+            fullName: "Nguyễn Trần Mạnh Trung", 
+            position: "Phó Bí thư Đảng ủy, Thành viên Hội đồng Quản trị kiêm Tổng Giám đốc NHCTVN",
+            phone: "0983832109",
+            row: "A", 
+            seatPosition: 19 
+        }
+    ];
+
+    realDelegates.forEach(function(delegate) {
+        delegates.set(delegate.id, delegate);
+        seatIndex.set(delegate.seatNumber.toLowerCase(), delegate);
+    });
+}
+
+function createSeatingChart() {
+    if (seatingChartCreated) return;
+    
+    var seatingRows = document.getElementById('seatingRows');
+    var rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+    var seatsPerRow = 24;
+    
+    rows.forEach(function(rowLabel) {
+        var rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
+        
+        if (rowLabel === 'A') {
+            var removedPositions = [7, 12, 13, 18];
+            var newSeatNumber = 1;
+            
+            for (var i = 1; i <= seatsPerRow; i++) {
+                if (removedPositions.indexOf(i) === -1) {
+                    var seatDiv = document.createElement('div');
+                    var seatId = rowLabel + newSeatNumber;
+                    
+                    seatDiv.className = 'seat vip-area';
+                    seatDiv.id = 'seat-' + seatId;
+                    seatDiv.textContent = seatId;
+                    seatDiv.onclick = function(seatNumber) {
+                        return function() { selectSeat(seatNumber); };
+                    }(seatId);
+                    
+                    if (i === 6) seatDiv.style.marginRight = '15px';
+                    if (i === 18) seatDiv.style.marginRight = '15px';
+                    
+                    rowDiv.appendChild(seatDiv);
+                    newSeatNumber++;
+                } else {
+                    var emptyDiv = document.createElement('div');
+                    emptyDiv.className = 'seat';
+                    emptyDiv.style.visibility = 'hidden';
+                    emptyDiv.style.pointerEvents = 'none';
+                    
+                    if (i === 6) emptyDiv.style.marginRight = '15px';
+                    if (i === 18) emptyDiv.style.marginRight = '15px';
+                    
+                    rowDiv.appendChild(emptyDiv);
+                }
+            }
+        } else {
+            for (var i = 1; i <= seatsPerRow; i++) {
+                var seatDiv = document.createElement('div');
+                var seatId = rowLabel + i;
+                
+                seatDiv.className = rowLabel === 'B' ? 'seat vip-area' : 'seat';
+                seatDiv.id = 'seat-' + seatId;
+                seatDiv.textContent = seatId;
+                seatDiv.onclick = function(seatNumber) {
+                    return function() { selectSeat(seatNumber); };
+                }(seatId);
+                
+                if (i === 6) seatDiv.style.marginRight = '15px';
+                if (i === 18) seatDiv.style.marginRight = '15px';
+                
+                rowDiv.appendChild(seatDiv);
+            }
+        }
+        
+        if (rowLabel === 'A') rowDiv.style.marginBottom = '9px';
+        if (rowLabel === 'F') rowDiv.style.marginBottom = '15px';
+        seatingRows.appendChild(rowDiv);
+    });
+    
+    seatingChartCreated = true;
+}
+
+function findDelegateBySeat(seatNumber) {
+    return seatIndex.get(seatNumber.toLowerCase());
+}
+
+function isValidSeatNumber(seatNumber) {
+    var pattern = /^[A-N]\d{1,2}$/i;
+    return pattern.test(seatNumber);
+}
+
+function displayDelegateInfo(delegate) {
+    document.getElementById('fullName').textContent = delegate.fullName;
+    document.getElementById('position').textContent = delegate.position;
+    
+    var phoneElement = document.getElementById('phoneNumber');
+    phoneElement.innerHTML = '<a href="tel:' + delegate.phone + '" class="phone-link">' + delegate.phone + '</a>';
+    
+    document.getElementById('seatNumber').textContent = delegate.seatNumber;
+    
+    var seatHighlight = document.getElementById('seatHighlight');
+    var vipText = (delegate.row === 'A' || delegate.row === 'B') ? ' (Khu vực VIP)' : '';
+    seatHighlight.textContent = 'Ghế ' + delegate.seatNumber + ' - Hàng ' + delegate.row + vipText;
+    
+    document.getElementById('resultSection').classList.remove('hidden');
+}
+
+function resetHighlight() {
+    var selectedSeats = document.querySelectorAll('.seat.selected');
+    selectedSeats.forEach(function(seat) {
+        seat.classList.remove('selected');
+    });
+}
+
+function highlightSeat(seatNumber) {
+    var seatElement = document.getElementById('seat-' + seatNumber);
+    if (seatElement) {
+        seatElement.classList.add('selected');
+    }
+}
+
+function showError(message) {
+    var errorMessage = document.getElementById('errorMessage');
+    errorMessage.innerHTML = message;
+    errorMessage.classList.remove('hidden');
+}
+
+function toggleClearButton() {
+    var searchInput = document.getElementById('searchInput');
+    var clearBtn = document.getElementById('clearBtn');
+    
+    if (clearBtn && searchInput) {
+        clearBtn.style.display = searchInput.value.trim() ? 'flex' : 'none';
+    }
+}
+
+function initializeApp() {
+    console.log('Admin logged in, initializing app...');
+    
+    initializeDelegateData();
+    createSeatingChart();
+    
+    var searchInput = document.getElementById('searchInput');
+    
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            searchBySeat();
+        }
+    });
+
+    searchInput.addEventListener('input', function(e) {
+        e.target.value = e.target.value.toUpperCase();
+        toggleClearButton();
+    });
+    
+    searchInput.focus();
+    
+    console.log('App initialization complete');
+}
+
+// === EVENT LISTENERS ===
+document.addEventListener('DOMContentLoaded', function() {
+    var passwordInput = document.getElementById('passwordInput');
+    var loginBtn = document.getElementById('loginBtn');
+    var searchBtn = document.getElementById('searchBtn');
+    var clearBtn = document.getElementById('clearBtn');
+    
+    // Password input enter key
+    if (passwordInput) {
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                loginAdmin();
+            }
+        });
+        passwordInput.focus();
+    }
+    
+    // Login button click
+    if (loginBtn) {
+        loginBtn.addEventListener('click', loginAdmin);
+    }
+    
+    // Search button click
+    if (searchBtn) {
+        searchBtn.addEventListener('click', searchBySeat);
+    }
+    
+    // Clear button click
+    if (clearBtn) {
+        clearBtn.addEventListener('click', clearInput);
+    }
+});
+</script>
 </body>
 </html>
