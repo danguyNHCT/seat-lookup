@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đại hội đã kết thúc</title>
+    <title>Tra cứu ghế theo Username</title>
     <style>
         * {
             margin: 0;
@@ -23,120 +23,421 @@
 
         .container {
             background: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            max-width: 800px;
+            max-width: 1200px;
             width: 100%;
-            text-align: center;
         }
 
         .header {
+            text-align: center;
             margin-bottom: 30px;
         }
 
-        .event-title {
+        .header .event-title {
             color: #d12525;
-            margin-bottom: 20px;
-            font-size: 1.6em;
+            margin-bottom: 15px;
+            font-size: 1.4em;
             font-weight: 700;
-            line-height: 1.4;
+            line-height: 1.3;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .ended-notice {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            padding: 25px;
-            border-radius: 12px;
-            border-left: 6px solid #dc2626;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
-        }
-
-        .ended-notice h2 {
-            color: #7c2d12;
-            margin-bottom: 15px;
-            font-size: 1.4em;
+        .header h1 {
+            color: #d12525;
+            margin-bottom: 10px;
+            font-size: 1.5em;
             font-weight: 600;
         }
 
-        .ended-notice p {
-            color: #a16207;
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 10px;
+        .search-section {
+            margin-bottom: 30px;
         }
 
-        .decorative-element {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            color: white;
-            text-align: center;
-            padding: 15px;
-            margin: 30px 0;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1.1em;
-            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
-        }
-
-        .success-info {
+        .input-tooltip {
             background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);
             color: #01579b;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
             border-left: 4px solid #0277bd;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 500;
             box-shadow: 0 2px 4px rgba(2, 119, 189, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-tooltip::before {
+            content: "💡";
+            font-size: 16px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
-        }
-
-        .success-info h3 {
-            margin-bottom: 10px;
-            font-size: 1.2em;
-        }
-
-        .achievement-list {
-            text-align: left;
-            margin-top: 15px;
-        }
-
-        .achievement-list li {
-            margin: 8px 0;
-            padding-left: 10px;
             position: relative;
         }
 
-        .achievement-list li:before {
-            content: "✓";
-            color: #dc2626;
-            font-weight: bold;
-            position: absolute;
-            left: -5px;
+        .input-container {
+            flex: 1;
+            position: relative;
         }
 
-        .footer-note {
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 50px 12px 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+
+        .input-actions {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .clear-btn {
+            background: rgba(255, 107, 107, 0.1);
+            color: #ff6b6b;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .clear-btn:hover {
+            background: rgba(255, 107, 107, 0.2);
+            transform: scale(1.1);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-section {
+            margin-bottom: 30px;
+        }
+
+        .seat-info {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #dc2626;
+            margin-bottom: 20px;
+        }
+
+        .seat-info h3 {
+            color: #7c2d12;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .seat-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #fed7aa;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #a16207;
+            font-size: 0.9em;
+        }
+
+        .detail-value {
+            color: #7c2d12;
+            font-size: 1.1em;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .seating-chart {
             background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
             padding: 20px;
             border-radius: 10px;
+            overflow-x: auto;
             border: 1px solid #fed7aa;
-            color: #7c2d12;
-            font-style: italic;
-            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
         }
 
-        .vip-decoration {
-            display: inline-block;
+        .chart-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #7c2d12;
+            font-size: 1.2em;
+            font-weight: bold;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        .stage {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin: 0 0 40px 0;
+            border-radius: 8px;
+            width: calc(24 * 38px + 23 * 3px + 30px);
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+            flex-shrink: 0;
+        }
+
+        .rows {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-start;
+            width: calc(24 * 38px + 23 * 3px + 30px);
+            flex-shrink: 0;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            flex-wrap: nowrap;
+        }
+
+        .seat {
+            width: 38px;
+            height: 30px;
+            border: 2px solid #fed7aa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            color: #a16207;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .seat.selected {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border-color: #991b1b;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+        }
+
+        .seat.vip-area {
             background: linear-gradient(135deg, #fde047 0%, #facc15 100%);
             color: #713f12;
-            padding: 8px 16px;
-            border-radius: 20px;
+            border-color: #eab308;
             font-weight: 900;
-            margin: 10px 5px;
-            border: 2px solid #eab308;
             animation: vipGlow 2s ease-in-out infinite alternate;
             box-shadow: 0 2px 8px rgba(234, 179, 8, 0.4);
+        }
+
+        .error-message {
+            background: #fecaca;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #dc2626;
+            animation: slideIn 0.5s ease;
+        }
+
+        .username-suggestion {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            border: 1px solid #fed7aa;
+            transition: all 0.3s ease;
+        }
+
+        .username-suggestion:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
+        }
+
+        .username-text {
+            flex: 1;
+            text-align: left;
+            font-size: 14px;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        .copy-btn {
+            background: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            background: rgba(220, 38, 38, 0.2);
+            transform: scale(1.05);
+        }
+
+        .suggestions-container {
+            margin-top: 15px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #dc2626;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .processing-info {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: #0c4a6e;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 3px solid #0284c7;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .processing-info::before {
+            content: "⚙️";
+            font-size: 14px;
+        }
+
+        .lotus-row {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            flex-wrap: nowrap;
+            margin-bottom: 15px;
+            height: 20px;
+        }
+
+        .lotus-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 20px;
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            border: 1px solid #f9a8d4;
+            border-radius: 10px;
+            color: #be185d;
+            font-size: 10px;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(190, 24, 93, 0.2);
+            animation: lotusGlow 3s ease-in-out infinite alternate;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lotus-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin: 0 4px;
+            position: relative;
+        }
+
+        .lotus-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #be185d;
+            filter: drop-shadow(0 1px 2px rgba(190, 24, 93, 0.3));
+            animation: lotusFloat 4s ease-in-out infinite alternate;
+        }
+
+        .lotus-segment:nth-child(1) {
+            width: calc(6 * 38px + 5 * 3px);
+            margin-right: 15px;
+        }
+
+        .lotus-segment:nth-child(2) {
+            width: calc(12 * 38px + 11 * 3px);
+            margin-right: 15px;
+        }
+
+        .lotus-segment:nth-child(3) {
+            width: calc(6 * 38px + 5 * 3px);
         }
 
         @keyframes vipGlow {
@@ -144,56 +445,46 @@
             100% { box-shadow: 0 4px 16px rgba(234, 179, 8, 0.6); }
         }
 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .container {
-            animation: slideIn 0.8s ease-out;
+        @media (max-width: 1250px) {
+            .container { max-width: 95%; padding: 15px; }
         }
 
         @media (max-width: 768px) {
-            .container { 
-                padding: 25px; 
-                margin: 10px;
-            }
-            
-            .event-title { 
-                font-size: 1.3em; 
-                line-height: 1.3;
-            }
-            
-            .ended-notice h2 { 
-                font-size: 1.2em; 
-            }
-            
-            .ended-notice p { 
-                font-size: 1em; 
-            }
-            
-            .decorative-element {
-                font-size: 1em;
-                padding: 12px;
-            }
+            .container { padding: 20px; }
+            .header .event-title { font-size: 1.2em; }
+            .header h1 { font-size: 1.3em; }
+            .input-tooltip { padding: 10px 12px; font-size: 13px; }
+            .input-group { flex-direction: column; }
+            .seat { width: 32px; height: 25px; font-size: 9px; }
+            .stage { width: calc(24 * 32px + 23 * 3px + 30px); }
+            .rows { width: calc(24 * 32px + 23 * 3px + 30px); }
+            .seating-chart { padding: 15px; align-items: flex-start; }
+            .username-suggestion { padding: 8px 12px; }
+            .username-text { font-size: 13px; }
+            .copy-btn { padding: 4px 8px; font-size: 11px; }
         }
 
         @media (max-width: 480px) {
-            .event-title { 
-                font-size: 1.1em; 
-            }
-            
-            .ended-notice {
-                padding: 20px;
-            }
-            
-            .ended-notice h2 { 
-                font-size: 1.1em; 
-            }
-            
-            .ended-notice p { 
-                font-size: 0.95em; 
-            }
+            .header .event-title { font-size: 1em; }
+            .header h1 { font-size: 1.1em; }
+            .input-tooltip { padding: 8px 10px; font-size: 12px; }
+            .seat { width: 28px; height: 22px; font-size: 8px; }
+            .stage { width: calc(24 * 28px + 23 * 2px + 20px); font-size: 14px; }
+            .rows { width: calc(24 * 28px + 23 * 2px + 20px); gap: 4px; }
+            .row { gap: 2px; }
+            .seating-chart { padding: 10px; }
+            .seat:nth-child(6) { margin-right: 10px !important; }
+            .seat:nth-child(18) { margin-right: 10px !important; }
         }
     </style>
 </head>
@@ -201,17 +492,507 @@
     <div class="container">
         <div class="header">
             <div class="event-title">
-                ĐẠI HỘI ĐẠI BIỂU<br>
-                ĐẢNG BỘ NGÂN HÀNG TMCP CÔNG THƯƠNG VIỆT NAM<br>
-                LẦN THỨ XI, NHIỆM KỲ 2025 - 2030
+                ĐẠI HỘI ĐẠI BIỂU ĐẢNG BỘ NHCTVN LẦN THỨ XI,<br>
+                NHIỆM KỲ 2025 - 2030
+            </div>
+            <h1>Chương trình tra cứu chỗ ngồi đại biểu tham dự Đại hội</h1>
+        </div>
+
+        <div class="search-section">
+            <div class="input-tooltip">
+                Đại biểu vui lòng nhập số điện thoại hoặc username email để tra cứu chỗ ngồi
+            </div>
+            <div class="input-group">
+                <div class="input-container">
+                    <input type="text" id="searchInput" placeholder="Đại biểu nhập tại đây..." />
+                    <div class="input-actions">
+                        <button class="clear-btn" id="clearBtn" onclick="clearInput()">✕</button>
+                    </div>
+                </div>
+                <button class="search-btn" onclick="searchSeat()" id="searchBtn">Tra cứu</button>
             </div>
         </div>
 
-        <div class="ended-notice">
-            <h2>🎉 Đại hội đã thành công tốt đẹp! 🎉</h2>
-            <p>Đại hội Đại biểu Đảng bộ Ngân hàng TMCP Công thương Việt Nam lần thứ XI, nhiệm kỳ 2025-2030 đã diễn ra thành công.</p>
-            <p>Cảm ơn tất cả các đại biểu đã tham gia và đóng góp cho sự thành công của đại hội!</p>
+        <div id="errorMessage" class="error-message hidden"></div>
+
+        <div id="resultSection" class="result-section hidden">
+            <div class="seat-info">
+                <h3>Thông tin ghế của đại biểu:</h3>
+                <div class="seat-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Họ và tên</div>
+                        <div class="detail-value" id="fullName"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Số ghế</div>
+                        <div class="detail-value" id="seatNumber"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Hàng</div>
+                        <div class="detail-value" id="rowNumber"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="seating-chart">
+            <div class="chart-title">Sơ đồ chỗ ngồi</div>
+            <div class="stage">SÂN KHẤU</div>
+            <div class="rows" id="seatingRows"></div>
         </div>
     </div>
+
+    <script>
+        // ==================== DATA STRUCTURES ====================
+        const delegates = new Map();
+        const phoneIndex = new Map();
+        const usernameIndex = new Map();
+        const usernameList = [];
+        
+        function initializeDelegateData() {
+            const realDelegates = [
+                { id: 1, username: "binhtm", phone: "0987654321", fullName: "Trần Minh Bình", seatNumber: "A18", row: "A", position: 18 },
+                { id: 2, username: "nh.quang", phone: "0912345678", fullName: "Nguyễn Hoàng Quang", seatNumber: "C6", row: "C", position: 6 },
+                { id: 3, username: "xuanbtt", phone: "0923456789", fullName: "Bùi Thị Thu Xuân", seatNumber: "B19", row: "B", position: 19 },
+            ];
+   // ⚠️ XÓA TOÀN BỘ PHẦN TẠO DỮ LIỆU GIẢ BÊN DƯỚI KHI DÙNG DỮ LIỆU THẬT
+            // Tạo dữ liệu mẫu
+            const names = ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Phan", "Vũ", "Võ", "Đặng", "Bùi"];
+            const firstNames = ["Văn", "Thị", "Minh", "Hương", "Quang", "Hải", "Thu", "Phúc", "Đức", "Hoàng"];
+            const lastNames = ["An", "Bình", "Cường", "Dung", "Em", "Giang", "Hạnh", "Khánh", "Linh", "Minh"];
+            
+            const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+            const seatsPerRow = 24;
+            let seatCounter = 6;
+            
+            for (let i = 4; i <= 300; i++) {
+                const name = names[i % names.length];
+                const firstName = firstNames[i % firstNames.length];
+                const lastName = lastNames[i % lastNames.length];
+                
+                const rowIndex = Math.floor(seatCounter / seatsPerRow);
+                const seatInRow = (seatCounter % seatsPerRow) + 1;
+                const row = rows[rowIndex] || 'N';
+                
+                realDelegates.push({
+                    id: i,
+                    username: `user${i.toString().padStart(3, '0')}`,
+                    phone: `09${(10000000 + i).toString().slice(1)}`,
+                    fullName: `${name} ${firstName} ${lastName}`,
+                    seatNumber: `${row}${seatInRow}`,
+                    row: row,
+                    position: seatInRow
+                });
+                
+                seatCounter++;
+            }
+ // === HẾT PHẦN TẠO DỮ LIỆU GIẢ ===
+
+            realDelegates.forEach(delegate => {
+                delegates.set(delegate.id, delegate);
+                phoneIndex.set(delegate.phone, delegate.id);
+                usernameIndex.set(delegate.username.toLowerCase(), delegate.id);
+                usernameList.push(delegate.username);
+            });
+        }
+
+        // ==================== INPUT PROCESSING ====================
+        function processSearchInput(input) {
+            let processedInput = input.trim();
+            let processingNote = "";
+            
+            // Xử lý số điện thoại với mã quốc gia +84
+            if (processedInput.startsWith('+84')) {
+                processedInput = '0' + processedInput.substring(3);
+                // Không tạo processingNote để xử lý ngầm
+            }
+            
+            // Xử lý số điện thoại có space (chạy ngầm, không hiển thị thông báo)
+            if (/^\d/.test(processedInput) || /\d/.test(processedInput)) {
+                const spaceCount = (processedInput.match(/\s/g) || []).length;
+                
+                if (spaceCount > 0) {
+                    processedInput = processedInput.replace(/\s+/g, '');
+                    // Không tạo processingNote cho số điện thoại
+                }
+            }
+            // Xử lý email đầy đủ (chạy ngầm, không hiển thị thông báo)
+            else if (processedInput.includes('@')) {
+                const atIndex = processedInput.indexOf('@');
+                processedInput = processedInput.substring(0, atIndex);
+                // Không tạo processingNote cho trường hợp email
+            }
+            
+            return { processedInput, processingNote };
+        }
+
+        function showProcessingInfo(message) {
+            // Hàm này không còn sử dụng, giữ lại để tránh lỗi
+        }
+
+        // ==================== SEARCH FUNCTIONS ====================
+        function findDelegate(searchKey) {
+            const lowerKey = searchKey.toLowerCase();
+            
+            if (/^\d/.test(searchKey)) {
+                const delegateId = phoneIndex.get(searchKey);
+                return delegateId ? delegates.get(delegateId) : null;
+            }
+            
+            const delegateId = usernameIndex.get(lowerKey);
+            return delegateId ? delegates.get(delegateId) : null;
+        }
+
+        function findSimilarUsernames(searchInput) {
+            const searchLower = searchInput.toLowerCase();
+            if (searchLower.length < 2) return [];
+            
+            const prefixMatches = usernameList.filter(username => 
+                username.toLowerCase().startsWith(searchLower.slice(0, 2))
+            );
+            
+            if (prefixMatches.length === 0) return [];
+            
+            return prefixMatches
+                .map(username => ({
+                    username,
+                    similarity: calculateSimilarity(searchLower, username.toLowerCase())
+                }))
+                .filter(item => item.similarity > 0.4)
+                .sort((a, b) => b.similarity - a.similarity)
+                .slice(0, 3)
+                .map(item => item.username);
+        }
+
+        function calculateSimilarity(str1, str2) {
+            const len1 = str1.length;
+            const len2 = str2.length;
+            const maxLen = Math.max(len1, len2);
+            
+            if (Math.abs(len1 - len2) > maxLen * 0.5) return 0;
+            
+            const matrix = Array(len1 + 1).fill().map(() => Array(len2 + 1).fill(0));
+            
+            for (let i = 0; i <= len1; i++) matrix[i][0] = i;
+            for (let j = 0; j <= len2; j++) matrix[0][j] = j;
+            
+            for (let i = 1; i <= len1; i++) {
+                for (let j = 1; j <= len2; j++) {
+                    const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j] + 1,
+                        matrix[i][j - 1] + 1,
+                        matrix[i - 1][j - 1] + cost
+                    );
+                }
+            }
+            
+            return (maxLen - matrix[len1][len2]) / maxLen;
+        }
+
+        // ==================== UI FUNCTIONS ====================
+        let seatingChartCreated = false;
+        
+        function createSeatingChart() {
+            if (seatingChartCreated) return;
+            
+            const seatingRows = document.getElementById('seatingRows');
+            const fragment = document.createDocumentFragment();
+            
+            const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+            const seatsPerRow = 24;
+            
+            rows.forEach(rowLabel => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
+                
+                if (rowLabel === 'A') {
+                    // Hàng A đặc biệt: bỏ ghế A7, A12, A13, A18 và đánh số lại
+                    const removedPositions = [7, 12, 13, 18];
+                    let newSeatNumber = 1;
+                    
+                    for (let i = 1; i <= seatsPerRow; i++) {
+                        if (!removedPositions.includes(i)) {
+                            const seatDiv = document.createElement('div');
+                            seatDiv.className = 'seat';
+                            seatDiv.id = `seat-${rowLabel}${newSeatNumber}`;
+                            seatDiv.textContent = `${rowLabel}${newSeatNumber}`;
+                            
+                            if (i === 6) seatDiv.style.marginRight = '15px';
+                            if (i === 18) seatDiv.style.marginRight = '15px';
+                            
+                            rowDiv.appendChild(seatDiv);
+                            newSeatNumber++;
+                        } else {
+                            // Tạo ghế ẩn để giữ nguyên khoảng cách
+                            const emptyDiv = document.createElement('div');
+                            emptyDiv.className = 'seat';
+                            emptyDiv.style.visibility = 'hidden';
+                            emptyDiv.style.pointerEvents = 'none';
+                            
+                            if (i === 6) emptyDiv.style.marginRight = '15px';
+                            if (i === 18) emptyDiv.style.marginRight = '15px';
+                            
+                            rowDiv.appendChild(emptyDiv);
+                        }
+                    }
+                } else {
+                    // Các hàng khác giữ nguyên
+                    for (let i = 1; i <= seatsPerRow; i++) {
+                        const seatDiv = document.createElement('div');
+                        seatDiv.className = 'seat';
+                        seatDiv.id = `seat-${rowLabel}${i}`;
+                        seatDiv.textContent = `${rowLabel}${i}`;
+                        
+                        if (i === 6) seatDiv.style.marginRight = '15px';
+                        if (i === 18) seatDiv.style.marginRight = '15px';
+                        
+                        rowDiv.appendChild(seatDiv);
+                    }
+                }
+                
+                // Tạo khoảng cách 9px giữa hàng A và hàng B, và khoảng cách thường giữa hàng F và hàng G
+                if (rowLabel === 'A') rowDiv.style.marginBottom = '9px';
+                if (rowLabel === 'F') rowDiv.style.marginBottom = '15px';
+                fragment.appendChild(rowDiv);
+            });
+            
+            seatingRows.appendChild(fragment);
+            seatingChartCreated = true;
+        }
+
+        let isLoading = false;
+        
+        function searchSeat() {
+            if (isLoading) return;
+            
+            const originalInput = document.getElementById('searchInput').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            const resultSection = document.getElementById('resultSection');
+            const searchBtn = document.getElementById('searchBtn');
+
+            errorMessage.classList.add('hidden');
+            resultSection.classList.add('hidden');
+            showProcessingInfo('');
+            resetHighlight();
+
+            if (!originalInput) {
+                showError('Vui lòng nhập username email hoặc số điện thoại!');
+                return;
+            }
+
+            const { processedInput, processingNote } = processSearchInput(originalInput);
+            
+            if (processingNote) {
+                showProcessingInfo(processingNote);
+            }
+
+            const isPhone = /^\d/.test(processedInput);
+            if (!isPhone && !isValidUsername(processedInput)) {
+                showError('Username email hoặc số điện thoại không hợp lệ!');
+                return;
+            }
+
+            isLoading = true;
+            searchBtn.innerHTML = '<span class="loading"></span>Đang tra cứu...';
+            searchBtn.disabled = true;
+
+            setTimeout(() => {
+                const delegate = findDelegate(processedInput);
+                
+                if (!delegate) {
+                    handleSearchNotFound(processedInput, isPhone, processingNote);
+                } else {
+                    displaySeatInfo(delegate);
+                    highlightSeatOrVIP(delegate);
+                }
+
+                isLoading = false;
+                searchBtn.innerHTML = 'Tra cứu';
+                searchBtn.disabled = false;
+            }, 100);
+        }
+
+        function handleSearchNotFound(processedInput, isPhone, processingNote) {
+            if (!isPhone) {
+                const similarUsernames = findSimilarUsernames(processedInput);
+                let errorMsg = `❌ <strong>Không tìm thấy username này trong hệ thống!</strong>`;
+                
+                if (similarUsernames.length > 0) {
+                    errorMsg += `<br><br><strong>🔍 Username gợi ý:</strong>`;
+                    errorMsg += `<div class="suggestions-container">`;
+                    similarUsernames.forEach(username => {
+                        errorMsg += `
+                            <div class="username-suggestion">
+                                <div class="username-text">💡 ${username}</div>
+                                <button class="copy-btn" onclick="copyInput('${username}')">🔍 Tra cứu</button>
+                            </div>
+                        `;
+                    });
+                    errorMsg += `</div>`;
+                }
+                showError(errorMsg);
+            } else {
+                let errorMsg = `❌ <strong>Không tìm thấy số điện thoại này trong hệ thống!</strong>`;
+                showError(errorMsg);
+            }
+        }
+
+        function displaySeatInfo(delegate) {
+            document.getElementById('fullName').textContent = delegate.fullName;
+            document.getElementById('seatNumber').textContent = (delegate.row === 'A' || delegate.row === 'B') ? 'VIP' : delegate.seatNumber;
+            document.getElementById('rowNumber').textContent = delegate.row;
+            document.getElementById('resultSection').classList.remove('hidden');
+        }
+
+        function highlightSeatOrVIP(delegate) {
+            if (!seatingChartCreated) createSeatingChart();
+            
+            if (delegate.row === 'A' || delegate.row === 'B') {
+                highlightVIPRow(delegate.row);
+            } else {
+                highlightSeat(delegate.seatNumber);
+            }
+        }
+
+        function resetHighlight() {
+            const selectedSeats = document.querySelectorAll('.seat.selected, .seat.vip-area');
+            selectedSeats.forEach(seat => {
+                seat.classList.remove('selected', 'vip-area');
+            });
+        }
+
+        function highlightVIPRow(row) {
+            if (row === 'A') {
+                // Hàng A có 20 ghế sau khi bỏ 4 ghế
+                const totalSeatsInRowA = 20;
+                for (let i = 1; i <= totalSeatsInRowA; i++) {
+                    const seatElement = document.getElementById(`seat-${row}${i}`);
+                    if (seatElement) {
+                        seatElement.classList.add('vip-area');
+                    }
+                }
+            } else {
+                // Hàng B vẫn có 24 ghế
+                const seatsPerRow = 24;
+                for (let i = 1; i <= seatsPerRow; i++) {
+                    const seatElement = document.getElementById(`seat-${row}${i}`);
+                    if (seatElement) {
+                        seatElement.classList.add('vip-area');
+                    }
+                }
+            }
+
+            const firstSeat = document.getElementById(`seat-${row}1`);
+            if (firstSeat) {
+                firstSeat.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function highlightSeat(seatNumber) {
+            const seatElement = document.getElementById(`seat-${seatNumber}`);
+            if (seatElement) {
+                seatElement.classList.add('selected');
+                seatElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.innerHTML = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        function isValidUsername(input) {
+            if (/^\d/.test(input)) {
+                return /^0\d{9,10}$/.test(input);
+            }
+            return /^[a-zA-Z0-9.]+$/.test(input) && input.length >= 2;
+        }
+
+        function toggleClearButton() {
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            clearBtn.style.display = searchInput.value.trim() ? 'flex' : 'none';
+        }
+
+        function clearInput() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = '';
+            searchInput.focus();
+            toggleClearButton();
+            
+            document.getElementById('errorMessage').classList.add('hidden');
+            document.getElementById('resultSection').classList.add('hidden');
+            showProcessingInfo('');
+            resetHighlight();
+        }
+
+        function copyInput(input) {
+            const searchInput = document.getElementById('searchInput');
+            
+            searchInput.value = input;
+            searchInput.focus();
+            toggleClearButton();
+            
+            setTimeout(() => {
+                if (document.getElementById('searchInput').value.trim().toLowerCase() === input.toLowerCase()) {
+                    searchSeat();
+                }
+            }, 300);
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        function throttle(func, delay) {
+            let timeoutId;
+            let lastExecTime = 0;
+            return function (...args) {
+                const currentTime = Date.now();
+                
+                if (currentTime - lastExecTime > delay) {
+                    func.apply(this, args);
+                    lastExecTime = currentTime;
+                } else {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        func.apply(this, args);
+                        lastExecTime = Date.now();
+                    }, delay - (currentTime - lastExecTime));
+                }
+            };
+        }
+
+        const throttledToggleClear = throttle(toggleClearButton, 100);
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDelegateData();
+            
+            const searchInput = document.getElementById('searchInput');
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchSeat();
+                }
+            });
+
+            searchInput.addEventListener('input', throttledToggleClear);
+            searchInput.focus();
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        createSeatingChart();
+                        observer.disconnect();
+                    }
+                });
+            });
+            
+            const seatingChart = document.querySelector('.seating-chart');
+            observer.observe(seatingChart);
+        });
+    </script>
 </body>
 </html>
